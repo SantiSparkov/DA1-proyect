@@ -12,11 +12,7 @@ public class TrashEntityTest
     public void Initialize()
     {
         //Arrange
-        trash = new Trash()
-        {
-            TaskList = new List<Task>(),
-            PanelList = new List<Panel>()
-        };
+        trash = new Trash();
         
     }
     
@@ -60,6 +56,38 @@ public class TrashEntityTest
         Assert.AreEqual(trash.PanelList.Count, 1);
     }
     
+    [TestMethod]
+    public void Add11ElemntTrashTest()
+    {
+        //Arrange 
+        Panel panel1 = new Panel();
+        Panel panel2 = new Panel();
+        Panel panel3 = new Panel();
+        Panel panel4 = new Panel();
+        Panel panel5 = new Panel();
+        Panel panel6 = new Panel();
+        Panel panel7 = new Panel();
+        Panel panel8 = new Panel();
+        Panel panel9 = new Panel();
+        Panel panel10 = new Panel();
+        Panel panel11 = new Panel();
+        
+        //Act 
+        trash.addPanel(panel1);
+        trash.addPanel(panel2);
+        trash.addPanel(panel3);
+        trash.addPanel(panel4);
+        trash.addPanel(panel5);
+        trash.addPanel(panel6);
+        trash.addPanel(panel7);
+        trash.addPanel(panel8);
+        trash.addPanel(panel9);
+        trash.addPanel(panel10);
+        // Assert
+        // Assert
+        var ex = Assert.ThrowsException<Exception>(() => trash.addPanel(panel11));
+        Assert.AreEqual("Papelera llena", ex.Message);
+    }
     
 
     [TestCleanup]
