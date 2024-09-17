@@ -57,7 +57,7 @@ public class TrashEntityTest
     }
     
     [TestMethod]
-    public void Add11ElemntTrashTest()
+    public void Add11PanelTrashTest()
     {
         //Arrange 
         Panel panel1 = new Panel();
@@ -83,12 +83,48 @@ public class TrashEntityTest
         trash.addPanel(panel8);
         trash.addPanel(panel9);
         trash.addPanel(panel10);
-        // Assert
+        
+        
         // Assert
         var ex = Assert.ThrowsException<Exception>(() => trash.addPanel(panel11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
     
+    [TestMethod]
+    public void Add11TaskTrashTest()
+    {
+        //Arrange 
+        Task task1 = new Task();
+        Task task2 = new Task();
+        Task task3 = new Task();
+        Task task4 = new Task();
+        Task task5 = new Task();
+        Task task6 = new Task();
+        Task task7 = new Task();
+        Task task8 = new Task();
+        Task task9 = new Task();
+        Task task10 = new Task();
+        Task task11 = new Task();
+        
+        
+        //Act 
+        trash.addTask(task1);
+        trash.addTask(task2);
+        trash.addTask(task3);
+        trash.addTask(task4);
+        trash.addTask(task5);
+        trash.addTask(task6);
+        trash.addTask(task7);
+        trash.addTask(task8);
+        trash.addTask(task9);
+        trash.addTask(task10);
+        
+        
+        
+        // Assert
+        var ex = Assert.ThrowsException<Exception>(() => trash.addTask(task11));
+        Assert.AreEqual("Papelera llena", ex.Message);
+    }
 
     [TestCleanup]
     public void Cleanup()
