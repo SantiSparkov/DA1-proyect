@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPanel", "TaskPanel\TaskPanel.csproj", "{9F9AC981-34A2-42C4-BA5F-42DDF8B68557}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPanelTest", "TaskPanelTest\TaskPanelTest.csproj", "{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{9F9AC981-34A2-42C4-BA5F-42DDF8B68557}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F9AC981-34A2-42C4-BA5F-42DDF8B68557}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F9AC981-34A2-42C4-BA5F-42DDF8B68557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
