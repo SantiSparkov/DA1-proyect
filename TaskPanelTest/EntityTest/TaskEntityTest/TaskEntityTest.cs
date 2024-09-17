@@ -1,4 +1,6 @@
 namespace TaskPanelTest.EntityTest.TaskEntityTest;
+using TaskPanel.Models.Entity;
+using TaskPriority = TaskPanel.Models.Entity.Task.TaskPriority;
 
 [TestClass]
 public class TaskEntityTest
@@ -12,7 +14,7 @@ public class TaskEntityTest
             Title = "Title",
             Description = "Description",
             DueDate = new DateTime(2008, 6, 1, 7, 47, 0),
-            Priority = Priority.Hight,
+            Priority = TaskPriority.High,
             CommentList = new List<Comment>(),
         };
         
@@ -22,7 +24,7 @@ public class TaskEntityTest
         Assert.AreEqual("Title", task.Title);
         Assert.AreEqual("Description", task.Description);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), task.DueDate);
-        Assert.AreEqual(Priority.Urgente, task.Priority);
+        Assert.AreEqual(TaskPriority.High, task.Priority);
         Assert.IsNotNull(task.CommentList);
 
     }
