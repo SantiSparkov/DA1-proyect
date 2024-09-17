@@ -10,7 +10,7 @@ public class CommentEntityTest
     {
         Comment comment = new Comment()
         {
-            User = "User",
+            User = new User(),
             Message = "Message",
             CreateDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Status = EStatus.Active
