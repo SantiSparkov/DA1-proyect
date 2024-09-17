@@ -17,7 +17,7 @@ public class UserEntityTest
             BrithDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            //Trash = new Trash()
+            Trash = new Trash()
         };
         
         //Act 
@@ -29,5 +29,6 @@ public class UserEntityTest
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), user.BrithDate);
         Assert.AreEqual("password", user.Password);
         Assert.IsFalse(user.IsAdmin);
+        Assert.IsNotNull(user.Trash);
     }
 }
