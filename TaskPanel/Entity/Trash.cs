@@ -14,12 +14,25 @@ public class Trash
 
     public void addPanel(Panel panel)
     {
+        CheckTrashSpace();
+        PanelList.Add(panel);
+    }
+    
+    public void addTask(Task task)
+    {
+        CheckTrashSpace();
+        TaskList.Add(task);
+    }
+
+    
+    private void CheckTrashSpace()
+    {
         int count = quantityElemnt();
         if (count == 10)
         {
             throw new Exception("Papelera llena");
         }
-        PanelList.Add(panel);
+        
     }
 
     private int quantityElemnt()
