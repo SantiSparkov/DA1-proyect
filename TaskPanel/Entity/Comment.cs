@@ -2,17 +2,19 @@ namespace TaskPanel.Models.Entity;
 
 public class Comment
 {
+    public int CommentId { get; set; }
+    
     public string Message { get; set; }
     
-    public User User { get; set; }
+    public User ResolvedBy { get; set; }
     
-    public DateTime CreateDate { get; set; }
+    public DateTime ResolvedAt { get; set; }
     
     public EStatus Status { get; set; }
     
     public enum EStatus
     {
-        Active,
-        Passive
+        RESOLVED,
+        PENDING
     }
 }

@@ -9,6 +9,8 @@ public class Task
         CommentList = new List<Comment>();
     }
     
+    public int TaskId { get; set; }
+    
     public string Title { get; set; }
     
     public string Description { get; set; }
@@ -19,8 +21,14 @@ public class Task
     
     public enum TaskPriority
     {
-        High,
-        Medium,
-        Low
+        HIGH,
+        MEDIUM,
+        LOW
     }
+    
+    public void AddComment(Comment comment)
+    {
+        CommentList.Add(comment);
+    }
+    
 }
