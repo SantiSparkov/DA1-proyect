@@ -1,4 +1,4 @@
-namespace TaskPanelTest.EntityTest.TaskEntityTest;
+namespace TaskPanelTest.EntityTest.PanelEntityTest;
 using TaskPanel.Models.Entity;
 using TaskPriority = TaskPanel.Models.Entity.Task.TaskPriority;
 
