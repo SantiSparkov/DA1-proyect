@@ -1,6 +1,7 @@
+using TaskPanelLibrary.Entity;
+using Task = TaskPanelLibrary.Entity.Task;
+
 namespace TaskPanelTest.EntityTest.PanelEntityTest;
-using TaskPanel.Models.Entity;
-using TaskPriority = TaskPanel.Models.Entity.Task.TaskPriority;
 
 [TestClass]
 public class PanelEntityTest

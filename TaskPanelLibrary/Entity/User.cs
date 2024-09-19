@@ -1,4 +1,4 @@
-namespace TaskPanel.Models.Entity;
+namespace TaskPanelLibrary.Entity;
 
 public class User
 {

@@ -1,4 +1,4 @@
-using TaskPanel.Models.Entity;
+using TaskPanelLibrary.Entity;
 
 namespace TaskPanelTest.EntityTest.UserEntityTest;
 

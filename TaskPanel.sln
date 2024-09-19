@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPanel", "TaskPanel\Task
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPanelTest", "TaskPanelTest\TaskPanelTest.csproj", "{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskPanelLibrary", "TaskPanelLibrary\TaskPanelLibrary.csproj", "{24B3B015-5193-4CCA-888C-024BFFC86A80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35E6E4B5-A90D-42A1-A3FA-E73D4361D039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24B3B015-5193-4CCA-888C-024BFFC86A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B3B015-5193-4CCA-888C-024BFFC86A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24B3B015-5193-4CCA-888C-024BFFC86A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24B3B015-5193-4CCA-888C-024BFFC86A80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

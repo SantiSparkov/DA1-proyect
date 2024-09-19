@@ -1,5 +1,5 @@
-using TaskPanel.Models.Entity;
-using Task = TaskPanel.Models.Entity.Task;
+using TaskPanelLibrary.Entity;
+using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.EntityTest.TashEntityTest;
 

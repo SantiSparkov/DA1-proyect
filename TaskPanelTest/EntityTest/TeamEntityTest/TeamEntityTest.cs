@@ -1,5 +1,6 @@
+using TaskPanelLibrary.Entity;
+
 namespace TaskPanelTest.EntityTest.TeamEntityTest;
-using TaskPanel.Models.Entity;
 
 [TestClass]
 public class TeamEntityTest
