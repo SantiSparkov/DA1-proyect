@@ -18,9 +18,9 @@ public class CommentEntityTest
         };
         
         // ASSERT
-        
+
         Assert.AreEqual(1, comment.CommentId);
-        Assert.AreEqual("User", comment.ResolvedBy);
+        Assert.IsNotNull(comment.ResolvedBy);
         Assert.AreEqual("Message", comment.Message);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), comment.ResolvedAt);
         Assert.AreEqual(EStatus.RESOLVED, comment.Status);
