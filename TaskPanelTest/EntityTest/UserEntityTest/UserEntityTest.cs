@@ -1,6 +1,6 @@
 using TaskPanel.Models.Entity;
 
-namespace TaskPanelTest.UserEntityTest;
+namespace TaskPanelTest.EntityTest.UserEntityTest;
 
 [TestClass]
 public class UserEntityTest
