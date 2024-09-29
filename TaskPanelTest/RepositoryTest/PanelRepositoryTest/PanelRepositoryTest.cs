@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
 namespace TaskPanelTest.RepositoryTest.PanelRepositoryTest;
@@ -27,24 +28,29 @@ public class PanelRepositoryTest
     public void PanelRepository_addPanel()
     {
         //Arrange 
-        Panel panel = new Panel();
+        Panel panel = new Panel()
+        {
+            Id = 1234
+        };
         
         //Act 
         _panelRepository.add(panel);
-        Panel panelSave = _panelRepository.findById(panel.Id);
+        Panel panelSaved = _panelRepository.findById(panel.Id);
         
         // Assert
-        Assert.Equals(panel.Id, panelSave.Id);
+        Assert.AreEqual(panel.Id, panelSaved.Id);
     }
 
     [TestMethod] 
     public void PanelRepositoryDeletePanel()
     {
         //Arrange 
-        Panel panel = new Panel();
+        Panel panel = new Panel()
+        {
+            Id = 123
+        };
         
         //Act 
-        _panelRepository.add(panel);
         var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.findById(panel.Id));
         
         // Assert
