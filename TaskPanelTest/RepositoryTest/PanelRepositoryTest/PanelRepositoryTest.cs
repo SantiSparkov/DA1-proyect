@@ -51,6 +51,38 @@ public class PanelRepositoryTest
         };
         
         //Act 
+        _panelRepository.add(panel);
+        Panel panelRemoved = _panelRepository.delete(panel.Id);
+        // Assert
+        Assert.AreEqual(0, _panelRepository.getAll().Count);
+    }
+    
+    [TestMethod] 
+    public void PanelRepositoryNotExistDeletePanel()
+    {
+        //Arrange 
+        
+        //Act 
+        var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.delete(12345));
+        
+        // Assert
+        Assert.AreEqual("Panel does not exist", exception.Message);
+    }
+    
+    [TestMethod] 
+    public void PanelRepositoryNotExistPanel()
+    {
+        //Arrange 
+        Panel panel = new Panel()
+        {
+            Id = 123
+        };
+        Panel panel2 = new Panel()
+        {
+            Id = 1234
+        };
+        
+        //Act 
         var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.findById(panel.Id));
         
         // Assert
