@@ -1,4 +1,9 @@
-﻿namespace TaskPanelTest.RepositoryTest.UserRepositoryTest;
+﻿using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
+
+namespace TaskPanelTest.RepositoryTest.UserRepositoryTest;
 
 [TestClass]
 public class UserRepositoryTests
@@ -15,9 +20,10 @@ public class UserRepositoryTests
     public void Cleanup()
     {
         var users = _userRepository.GetAllUsers();
-        foreach (var user in users)
+        var usersToDelete = users.ToList();
+        foreach (var user in usersToDelete)
         {
-            _userRepository.DeleteUser(user.Email);
+            _userRepository.DeleteUser(user.Id);
         }
     }
 
@@ -25,13 +31,13 @@ public class UserRepositoryTests
     public void AddUser()
     {
         // Arrange
-        var user = new RUser { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
 
         // Act
         _userRepository.AddUser(user);
 
         // Assert
-        var actualUser = _userRepository.GetUserByEmail(user.Email);
+        var actualUser = _userRepository.GetUserById(user.Id);
         Assert.IsNotNull(actualUser, "The user was not added to the repository.");
         Assert.AreEqual("John", actualUser.Name, "The user's name was not stored correctly.");
     }
@@ -40,14 +46,14 @@ public class UserRepositoryTests
     public void DeleteUser()
     {
         // Arrange
-        var user = new RUser { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
         _userRepository.AddUser(user);
 
         // Act
-        _userRepository.DeleteUser(user.Email);
+        _userRepository.DeleteUser(user.Id);
 
         // Assert
-        var actualUser = _userRepository.GetUserByEmail(user.Email);
+        var actualUser = _userRepository.GetUserById(user.Id);
         Assert.IsNull(actualUser, "The user was not deleted from the repository.");
     }
 
@@ -55,15 +61,15 @@ public class UserRepositoryTests
     public void UpdateUser()
     {
         // Arrange
-        var user = new RUser { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
-        _userRepository.AddUser(user);
+        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var addedUser = _userRepository.AddUser(user);
 
         // Act
-        var updatedUser = new RUser { Name = "John Updated", LastName = "Doe Updated", Email = user.Email };
+        var updatedUser = new User { Id = addedUser.Id, Name = "John Updated", LastName = "Doe Updated", Email = user.Email };
         _userRepository.UpdateUser(updatedUser);
 
         // Assert
-        var actualUser = _userRepository.GetUserByEmail(user.Email);
+        var actualUser = _userRepository.GetUserById(user.Id);
         Assert.IsNotNull(actualUser, "The user was not found after update.");
         Assert.AreEqual("John Updated", actualUser.Name, "The user's name was not updated correctly.");
         Assert.AreEqual("Doe Updated", actualUser.LastName, "The user's last name was not updated correctly.");
@@ -73,13 +79,12 @@ public class UserRepositoryTests
     public void GetUserByEmail()
     {
         // Arrange
-        var user1 = new RUser { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
-        var user2 = new RUser { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
+        var user1 = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user2 = new User { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
         _userRepository.AddUser(user1);
-        _userRepository.AddUser(user2);
 
         // Act
-        var actualUser = _userRepository.GetUserByEmail("jane.doe@example.com");
+        var actualUser = _userRepository.AddUser(user2);
 
         // Assert
         Assert.IsNotNull(actualUser, "The user was not found.");
@@ -90,8 +95,8 @@ public class UserRepositoryTests
     public void GetAllUsers()
     {
         // Arrange
-        var user1 = new RUser { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
-        var user2 = new RUser { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
+        var user1 = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user2 = new User { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
         _userRepository.AddUser(user1);
         _userRepository.AddUser(user2);
 
@@ -106,11 +111,11 @@ public class UserRepositoryTests
     public void UpdateUser_ShouldThrowExceptionIfUserDoesNotExist()
     {
         // Arrange
-        var user = new RUser { Name = "Non Existent", Email = "non.existent@example.com" };
+        var user = new User { Name = "Non Existent", Email = "non.existent@example.com" };
 
         // Act & Assert
         var exception = Assert.ThrowsException<UserNotFoundException>(new Action(() => _userRepository.UpdateUser(user)));
-        Assert.AreEqual("User with email non.existent@example.com does not exist.", exception.Message);
+        Assert.AreEqual("User with email non.existent@example.com was not found.", exception.Message);
     }
 
 }
