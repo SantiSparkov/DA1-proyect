@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
 namespace TaskPanelTest.RepositoryTest.CommentRepositoryTest;
@@ -86,10 +87,11 @@ public class CommentRepositoryTest
         _commentRepository.add(comment);
         
         //Act 
-        Comment commentSaved = _commentRepository.finById(comment.CommentId);
-        _commentRepository.delete(comment.CommentId);
+        Comment commentDelete = _commentRepository.delete(comment.CommentId);
 
         // Assert
+        Assert.AreEqual(comment.CommentId, commentDelete.CommentId);
+        Assert.AreEqual(comment.Message, commentDelete.Message);
         Assert.AreEqual(0, _commentRepository.getAll().Count);
     }
     
@@ -139,6 +141,7 @@ public class CommentRepositoryTest
         };
         
         //Act 
+        _commentRepository.add(comment);
         List<Comment> comments = _commentRepository.getAll();
 
         // Assert
