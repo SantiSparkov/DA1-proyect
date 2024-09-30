@@ -9,7 +9,7 @@ public class Task
         CommentList = new List<Comment>();
     }
     
-    public int TaskId { get; set; }
+    public int Id { get; set; }
     
     public string Title { get; set; }
     
