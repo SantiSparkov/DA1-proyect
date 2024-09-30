@@ -12,7 +12,7 @@ public class TaskEntityTest
         //Arrange 
         Task task = new Task()
         {
-            TaskId = 1,
+            Id = 1,
             Title = "Title",
             Description = "Description",
             DueDate = new DateTime(2008, 6, 1, 7, 47, 0),
@@ -21,7 +21,7 @@ public class TaskEntityTest
         };
         
         // Assert
-        Assert.AreEqual(1, task.TaskId);
+        Assert.AreEqual(1, task.Id);
         Assert.AreEqual("Title", task.Title);
         Assert.AreEqual("Description", task.Description);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), task.DueDate);
@@ -36,7 +36,7 @@ public class TaskEntityTest
         //Arrange 
         Task task = new Task()
         {
-            TaskId = 1,
+            Id = 1,
             Title = "Title",
             Description = "Description",
             DueDate = new DateTime(2008, 6, 1, 7, 47, 0),
