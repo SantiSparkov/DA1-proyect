@@ -30,7 +30,7 @@ public class Trash
         int count = quantityElemnt();
         if (count == 10)
         {
-            throw new Exception("Papelera llena");
+            throw new System.Exception("Papelera llena");
         }
         
     }
