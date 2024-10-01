@@ -1,5 +1,7 @@
 ﻿using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Service;
+using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelTest.ServiceTest;
 
@@ -26,7 +28,7 @@ public class UserServiceTest
     }
 
     [TestMethod]
-    public User AddUser()
+    public void AddUser()
     {
         // Arrange
         var newUser = new User
@@ -35,7 +37,6 @@ public class UserServiceTest
             Name = "John",
             LastName = "Doe",
             BirthDate = DateTime.Now,
-            Password = "StrongPass123#"
         };
 
         // Act
@@ -56,7 +57,6 @@ public class UserServiceTest
             Name = "Jane",
             LastName = "Doe",
             BirthDate = DateTime.Now,
-            Password = "OldPass123#"
         };
 
         _userService.AddUser(existingUser);
@@ -68,7 +68,6 @@ public class UserServiceTest
             Name = "Jane Updated",
             LastName = "Doe Updated",
             BirthDate = DateTime.Now,
-            Password = "NewPass123#"
         };
 
         // Act
@@ -90,7 +89,6 @@ public class UserServiceTest
             Name = "Mark",
             LastName = "Smith",
             BirthDate = DateTime.Now,
-            Password = "Pass123#"
         };
 
         var addedUser = _userService.AddUser(existingUser);
@@ -111,36 +109,17 @@ public class UserServiceTest
         // Arrange
         var existingUser = new User
         {
-            Email = "admin@example.com", Name = "Admin", LastName = "Test", BirthDate = DateTime.Now,
-            Password = "Admin123#"
+            Email = "admin@example.com", Name = "Admin", LastName = "Test", BirthDate = DateTime.Now
         };
 
         _userService.AddUser(existingUser);
 
         var newUser = new User
         {
-            Email = "admin@example.com", Name = "New", LastName = "User", BirthDate = DateTime.Now,
-            Password = "User123#"
+            Email = "admin@example.com", Name = "New", LastName = "User", BirthDate = DateTime.Now
         };
 
         // Act & Assert
         Assert.ThrowsException<UserAlreadyExistsException>(new Action(() => _userService.AddUser(newUser)));
-    }
-
-    [TestMethod]
-    public void AddUser_ShouldValidatePassword()
-    {
-        // Arrange
-        var newUser = new User
-        {
-            Email = "user@example.com",
-            Name = "John",
-            LastName = "Doe",
-            BirthDate = DateTime.Now,
-            Password = "weakpass"
-        };
-
-        // Act & Assert
-        Assert.ThrowsException<WeakPasswordException>(new Action(() => _userService.AddUser(newUser)));
     }
 }

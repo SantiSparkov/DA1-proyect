@@ -33,7 +33,7 @@ public class CommentRepositoryTest
             Name = "Name",
             LastName = "LastName",
             Email = "email@email.com",
-            BrithDate = new DateTime(2008, 6, 1, 7, 47, 0),
+            BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
             Trash = new Trash()
@@ -59,7 +59,7 @@ public class CommentRepositoryTest
         Assert.AreEqual(resolvedBy.Email, user.Email);
         Assert.AreEqual(resolvedBy.Name, user.Name);
         Assert.AreEqual(resolvedBy.LastName, user.LastName);
-        Assert.AreEqual(resolvedBy.BrithDate, user.BrithDate);
+        Assert.AreEqual(resolvedBy.BirthDate, user.BirthDate);
     }
     
     [TestMethod]
@@ -71,7 +71,7 @@ public class CommentRepositoryTest
             Name = "Name",
             LastName = "LastName",
             Email = "email@email.com",
-            BrithDate = new DateTime(2008, 6, 1, 7, 47, 0),
+            BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
             Trash = new Trash()
@@ -104,7 +104,7 @@ public class CommentRepositoryTest
             Name = "Name",
             LastName = "LastName",
             Email = "email@email.com",
-            BrithDate = new DateTime(2008, 6, 1, 7, 47, 0),
+            BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
             Trash = new Trash()
