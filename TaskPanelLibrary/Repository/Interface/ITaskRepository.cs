@@ -12,6 +12,5 @@ public interface ITaskRepository
     
     Task UpdateTask(Task task);
     
-    void DeleteTask(int id);
-
+    Task DeleteTask(int id);
 }

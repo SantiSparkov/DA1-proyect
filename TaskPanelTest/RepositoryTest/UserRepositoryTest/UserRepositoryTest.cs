@@ -31,7 +31,11 @@ public class UserRepositoryTests
     public void AddUser()
     {
         // Arrange
-        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user = new User
+        {
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            IsAdmin = false
+        };
 
         // Act
         _userRepository.AddUser(user);
@@ -46,7 +50,11 @@ public class UserRepositoryTests
     public void DeleteUser()
     {
         // Arrange
-        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user = new User
+        {
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            IsAdmin = false
+        };
         _userRepository.AddUser(user);
 
         // Act
@@ -61,11 +69,16 @@ public class UserRepositoryTests
     public void UpdateUser()
     {
         // Arrange
-        var user = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
+        var user = new User
+        {
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            IsAdmin = false
+        };
         var addedUser = _userRepository.AddUser(user);
 
         // Act
-        var updatedUser = new User { Id = addedUser.Id, Name = "John Updated", LastName = "Doe Updated", Email = user.Email };
+        var updatedUser = new User
+            { Id = addedUser.Id, Name = "John Updated", LastName = "Doe Updated", Email = user.Email };
         _userRepository.UpdateUser(updatedUser);
 
         // Assert
@@ -79,8 +92,16 @@ public class UserRepositoryTests
     public void GetUserByEmail()
     {
         // Arrange
-        var user1 = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
-        var user2 = new User { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
+        var user1 = new User
+        {
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            IsAdmin = false
+        };
+        var user2 = new User
+        {
+            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1),
+            IsAdmin = false
+        };
         _userRepository.AddUser(user1);
 
         // Act
@@ -95,8 +116,16 @@ public class UserRepositoryTests
     public void GetAllUsers()
     {
         // Arrange
-        var user1 = new User { Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1), IsAdmin = false };
-        var user2 = new User { Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1), IsAdmin = false };
+        var user1 = new User
+        {
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            IsAdmin = false
+        };
+        var user2 = new User
+        {
+            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1),
+            IsAdmin = false
+        };
         _userRepository.AddUser(user1);
         _userRepository.AddUser(user2);
 
@@ -106,7 +135,7 @@ public class UserRepositoryTests
         // Assert
         Assert.AreEqual(2, allUsers.Count, "The number of users in the repository does not match.");
     }
-    
+
     [TestMethod]
     public void UpdateUser_ShouldThrowExceptionIfUserDoesNotExist()
     {
@@ -114,8 +143,8 @@ public class UserRepositoryTests
         var user = new User { Name = "Non Existent", Email = "non.existent@example.com" };
 
         // Act & Assert
-        var exception = Assert.ThrowsException<UserNotFoundException>(new Action(() => _userRepository.UpdateUser(user)));
+        var exception =
+            Assert.ThrowsException<UserNotFoundException>(new Action(() => _userRepository.UpdateUser(user)));
         Assert.AreEqual("User with email non.existent@example.com was not found.", exception.Message);
     }
-
 }

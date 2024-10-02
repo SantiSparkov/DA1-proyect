@@ -6,60 +6,46 @@ namespace TaskPanelLibrary.Repository;
 
 public class TaskRepository : ITaskRepository
 {
-    private List<Task> _tasks;
-
-    public TaskRepository()
-    {
-        _tasks = new List<Task>();
-    }
-
-    public Task GetTaskById(int id)
-    {
-        var task = _tasks.FirstOrDefault(t => t.Id == id);
-        if (task.Id == id)
-        {
-            return task;
-        }
-
-        throw new TaskNotFoundException(id);
-    }
-
-    public List<Task> GetAllTasks()
-    {
-        return _tasks;
-    }
+    private readonly List<Task> _tasks = new List<Task>();
 
     public Task AddTask(Task task)
     {
+        task.Id = _tasks.Count > 0 ? _tasks.Max(t => t.Id) + 1 : 1;
         _tasks.Add(task);
         return task;
     }
 
-    public Task UpdateTask(Task task)
+    public Task DeleteTask(int id)
     {
-        var exsistingTask = _tasks.FirstOrDefault(t => t.Id == task.Id);
-        if (exsistingTask.Id == task.Id)
-        {
-            exsistingTask.Title = task.Title ?? exsistingTask.Title;
-            exsistingTask.Description = task.Description ?? exsistingTask.Description;
-            exsistingTask.DueDate = task.DueDate != default(DateTime) ? task.DueDate : exsistingTask.DueDate;
-            exsistingTask.Priority = task.Priority;
-            return exsistingTask;
-        }
-
-        throw new TaskNotFoundException(task.Id);
+        var task = _tasks.FirstOrDefault(t => t.Id == id)
+                   ?? throw new TaskNotFoundException(id);
+        _tasks.Remove(task);
+        return task;
     }
 
-    public void DeleteTask(int id)
+    public Task GetTaskById(int id)
     {
-        var task = GetTaskById(id);
-        if (task.Id == id)
-        {
-            _tasks.Remove(task);
-        }
-        else
-        {
-            throw new TaskNotFoundException(id);
-        }
+        var task = _tasks.FirstOrDefault(t => t.Id == id)
+                   ?? throw new TaskNotFoundException(id);
+        return task;
+    }
+
+    public List<Task> GetAllTasks()
+    {
+        var tasks = _tasks;
+        return tasks;
+    }
+
+    public Task UpdateTask(Task task)
+    {
+        var existingTask = _tasks.FirstOrDefault(t => t.Id == task.Id)
+                           ?? throw new TaskNotFoundException(task.Id);
+
+        existingTask.Title = task.Title ?? existingTask.Title;
+        existingTask.Description = task.Description ?? existingTask.Description;
+        existingTask.DueDate = task.DueDate != default(DateTime) ? task.DueDate : existingTask.DueDate;
+        existingTask.Priority = task.Priority;
+
+        return existingTask;
     }
 }

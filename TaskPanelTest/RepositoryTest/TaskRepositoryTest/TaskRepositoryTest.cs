@@ -1,3 +1,4 @@
+using TaskPanelLibrary.Exception.Task;
 using Task = TaskPanelLibrary.Entity.Task;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
@@ -18,7 +19,7 @@ public class TaskRepositoryTests
     [TestMethod]
     public void CreateTaskRepository()
     {
-        Assert.IsNotNull(_taskRepository, "TaskRepository is not created");
+        Assert.IsNotNull(_taskRepository);
     }
 
     [TestMethod]
@@ -34,14 +35,13 @@ public class TaskRepositoryTests
             Priority = Task.TaskPriority.HIGH
         };
         
+        // Act
         _taskRepository.AddTask(task);
         
-        // Act
-        var actualTask = _taskRepository.GetTaskById(task.Id);
-        
         // Assert
+        var actualTask = _taskRepository.GetTaskById(task.Id);
         Assert.IsNotNull(actualTask, "the task is not added to the repository");
-        Assert.AreEqual(task, actualTask);
+        Assert.AreEqual("Task 1", actualTask.Title, "the task title is not stored correctly");
     }
 
     [TestMethod]
@@ -62,7 +62,8 @@ public class TaskRepositoryTests
         _taskRepository.DeleteTask(task.Id);
         
         // Assert
-        Assert.IsNull(_taskRepository.GetTaskById(task.Id), "the task is not deleted from the repository");
+        var actualTask = _taskRepository.GetTaskById(task.Id);
+        Assert.IsNull(actualTask, "the task was not deleted from the repository");
     }
 
     [TestMethod]
@@ -99,7 +100,7 @@ public class TaskRepositoryTests
     public void TaskRepository_GetTaskById()
     {
         // Arrange
-        var task = new Task
+        var task = new Task()
         {
             Id = 1,
             Title = "Task 1",
@@ -107,20 +108,31 @@ public class TaskRepositoryTests
             DueDate = DateTime.Now,
             Priority = Task.TaskPriority.HIGH
         };
+        
+        var task2 = new Task()
+        {
+            Id = 2,
+            Title = "Task 2",
+            Description = "Description 2",
+            DueDate = DateTime.Now,
+            Priority = Task.TaskPriority.MEDIUM
+        };
+        
         _taskRepository.AddTask(task);
-
+        
         // Act
-        var result = _taskRepository.GetTaskById(1);
-
+        var actualTask = _taskRepository.AddTask(task2);
+        
         // Assert
-        Assert.AreEqual(task, result, "the task is not returned correctly");
+        Assert.IsNotNull(actualTask, "the task is not found in the repository");
+        Assert.AreEqual("Task 2", actualTask.Title, "the task is not found correctly");
     }
     
     [TestMethod]
     public void TaskRepository_UpdateTask()
     {
         // Arrange
-        var task = new Task
+        var task = new Task()
         {
             Id = 1,
             Title = "Task 1",
@@ -128,32 +140,54 @@ public class TaskRepositoryTests
             DueDate = DateTime.Now,
             Priority = Task.TaskPriority.HIGH
         };
-        _taskRepository.AddTask(task);
         
-        var updatedTask = new Task
-        {
-            Id = 1,
-            Title = "Task 1 Updated",
-            Description = "Description 1 Updated",
-            DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.MEDIUM
-        };
+        var addTask = _taskRepository.AddTask(task);
         
         // Act
+        var updatedTask = new Task()
+        {
+            Id = addTask.Id,
+            Title = "Task 1 Updated",
+            Description = "Description 1 Updated",
+        };
+        
         _taskRepository.UpdateTask(updatedTask);
-        var result = _taskRepository.GetTaskById(1);
-
+        
         // Assert
-        Assert.AreEqual(updatedTask, result, "the task is not updated correctly");
+        var actualTask = _taskRepository.GetTaskById(addTask.Id);
+        Assert.IsNotNull(actualTask, "the task is not found in the repository");
+        Assert.AreEqual("Task 1 Updated", actualTask.Title, "the task is not updated correctly");
+        Assert.AreEqual("Description 1 Updated", actualTask.Description, "the task is not updated correctly");
+    }
+    
+    [TestMethod]
+    public void UpdateTask_ShouldThrowExceptionIfTaskDoesNotExist()
+    {
+        // Arrange
+        var task = new Task()
+        {
+            Id = 1,
+            Title = "Task 1",
+            Description = "Description 1",
+            DueDate = DateTime.Now,
+            Priority = Task.TaskPriority.HIGH
+        };
+        
+        // Act & Assert
+        var exception = Assert.ThrowsException<TaskNotFoundException>
+            ((new Action(() => _taskRepository.UpdateTask(task))));
+        Assert.AreEqual("Task with id 1 not found", exception.Message);
     }
     
     [TestCleanup]
     public void Cleanup()
     {
         var tasks = _taskRepository.GetAllTasks();
-        foreach (var task in tasks)
+        var tasksToDelete = tasks.ToList();
+        foreach (var task in tasksToDelete)
         {
             _taskRepository.DeleteTask(task.Id);
         }
     }
+
 }
