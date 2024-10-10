@@ -17,4 +17,20 @@ public class User
     public bool IsAdmin { get; set; }
     
     public Trash Trash { get; set; }
+
+
+    public User()
+    {
+        Trash = new Trash();
+    }
+
+    public void DeleteTask(Task task)
+    {
+        Trash.AddTask(task);
+    }
+
+    public Trash getTrash()
+    {
+        return Trash;
+    }
 }

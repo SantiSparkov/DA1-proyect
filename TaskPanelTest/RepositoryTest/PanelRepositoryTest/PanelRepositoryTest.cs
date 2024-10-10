@@ -34,8 +34,8 @@ public class PanelRepositoryTest
         };
         
         //Act 
-        _panelRepository.add(panel);
-        Panel panelSaved = _panelRepository.findById(panel.Id);
+        _panelRepository.AddPanel(panel);
+        Panel panelSaved = _panelRepository.FindById(panel.Id);
         
         // Assert
         Assert.AreEqual(panel.Id, panelSaved.Id);
@@ -51,10 +51,10 @@ public class PanelRepositoryTest
         };
         
         //Act 
-        _panelRepository.add(panel);
-        Panel panelRemoved = _panelRepository.delete(panel.Id);
+        _panelRepository.AddPanel(panel);
+        Panel panelRemoved = _panelRepository.Delete(panel.Id);
         // Assert
-        Assert.AreEqual(0, _panelRepository.getAll().Count);
+        Assert.AreEqual(0, _panelRepository.GetAll().Count);
     }
     
     [TestMethod] 
@@ -63,7 +63,7 @@ public class PanelRepositoryTest
         //Arrange 
         
         //Act 
-        var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.delete(12345));
+        var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.Delete(12345));
         
         // Assert
         Assert.AreEqual("Panel does not exist", exception.Message);
@@ -83,7 +83,7 @@ public class PanelRepositoryTest
         };
         
         //Act 
-        var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.findById(panel.Id));
+        var exception = Assert.ThrowsException<System.ArgumentException>(() => _panelRepository.FindById(panel.Id));
         
         // Assert
         Assert.AreEqual("Panel does not exist", exception.Message);
@@ -99,13 +99,13 @@ public class PanelRepositoryTest
             Name = "Panel test",
             Description = "Description test"
         };
-        _panelRepository.add(panel);
+        _panelRepository.AddPanel(panel);
         panel.Description = "Update description";
         panel.Name = "Update panel test";
 
         //Act 
-        _panelRepository.update(panel);
-        Panel panelUpdated = _panelRepository.findById(panel.Id);
+        _panelRepository.Update(panel);
+        Panel panelUpdated = _panelRepository.FindById(panel.Id);
         
         // Assert
         Assert.AreEqual("Update description", panelUpdated.Description);
@@ -115,6 +115,6 @@ public class PanelRepositoryTest
     [TestCleanup]
     public void Cleanup()
     {
-        _panelRepository.getAll().Clear();
+        _panelRepository.GetAll().Clear();
     }
 }

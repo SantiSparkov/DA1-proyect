@@ -1,15 +1,14 @@
+using TaskPanelLibrary.Entity.Enum;
+
 namespace TaskPanelLibrary.Entity;
 
 public class Task
 {
     public List<Comment> CommentList { get; set; }
-    
-    public Task()
-    {
-        CommentList = new List<Comment>();
-    }
-    
+
     public int Id { get; set; }
+
+    public int PanelId { get; set;}
     
     public string Title { get; set; }
     
@@ -19,13 +18,11 @@ public class Task
     
     public TaskPriority Priority { get; set; }
     
-    public enum TaskPriority
+    public Task()
     {
-        HIGH,
-        MEDIUM,
-        LOW
+        CommentList = new List<Comment>();
     }
-    
+
     public void AddComment(Comment comment)
     {
         CommentList.Add(comment);

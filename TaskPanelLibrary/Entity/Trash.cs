@@ -1,3 +1,5 @@
+using TaskPanelLibrary.Exception;
+
 namespace TaskPanelLibrary.Entity;
 
 public class Trash
@@ -12,13 +14,13 @@ public class Trash
         PanelList = new List<Panel>();
     }
 
-    public void addPanel(Panel panel)
+    public void AddPanel(Panel panel)
     {
         CheckTrashSpace();
         PanelList.Add(panel);
     }
     
-    public void addTask(Task task)
+    public void AddTask(Task task)
     {
         CheckTrashSpace();
         TaskList.Add(task);
@@ -27,15 +29,15 @@ public class Trash
     
     private void CheckTrashSpace()
     {
-        int count = quantityElemnt();
-        if (count == 10)
+        int count = QuantityElemnt();
+        if (count >= 10)
         {
-            throw new System.Exception("Papelera llena");
+            throw new ApiException("Papelera llena");
         }
         
     }
 
-    private int quantityElemnt()
+    private int QuantityElemnt()
     { 
         return PanelList.Count + TaskList.Count;
     }

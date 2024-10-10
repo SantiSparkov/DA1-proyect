@@ -1,3 +1,4 @@
+using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Task;
 using Task = TaskPanelLibrary.Entity.Task;
 using TaskPanelLibrary.Repository;
@@ -32,7 +33,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         
         // Act
@@ -54,7 +55,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         _taskRepository.AddTask(task);
         
@@ -62,8 +63,8 @@ public class TaskRepositoryTests
         _taskRepository.DeleteTask(task.Id);
         
         // Assert
-        var actualTask = _taskRepository.GetTaskById(task.Id);
-        Assert.IsNull(actualTask, "the task was not deleted from the repository");
+        var exception = Assert.ThrowsException<TaskNotFoundException>(() => _taskRepository.GetTaskById(task.Id));
+        Assert.AreEqual(exception.Message, $"Task with id {task.Id} not found");
     }
 
     [TestMethod]
@@ -76,7 +77,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         var task2 = new Task
         {
@@ -84,7 +85,7 @@ public class TaskRepositoryTests
             Title = "Task 2",
             Description = "Description 2",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.MEDIUM
+            Priority = TaskPriority.MEDIUM
         };
         _taskRepository.AddTask(task1);
         _taskRepository.AddTask(task2);
@@ -106,7 +107,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         
         var task2 = new Task()
@@ -115,7 +116,7 @@ public class TaskRepositoryTests
             Title = "Task 2",
             Description = "Description 2",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.MEDIUM
+            Priority = TaskPriority.MEDIUM
         };
         
         _taskRepository.AddTask(task);
@@ -138,7 +139,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         
         var addTask = _taskRepository.AddTask(task);
@@ -170,7 +171,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = Task.TaskPriority.HIGH
+            Priority = TaskPriority.HIGH
         };
         
         // Act & Assert

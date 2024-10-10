@@ -4,13 +4,13 @@ namespace TaskPanelLibrary.Repository.Interface;
 
 public interface IPanelRepository
 { 
-    public Panel add(Panel panel);
+    public Panel AddPanel(Panel panel);
 
-    public Panel delete(int id);
+    public Panel Delete(int id);
 
-    public Panel findById(int id);
+    public Panel FindById(int id);
 
-    public Panel update(Panel panel);
+    public Panel Update(Panel panel);
 
-    public List<Panel> getAll();
+    public List<Panel> GetAll();
 }
