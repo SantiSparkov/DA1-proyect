@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository.Interface;
 
 namespace TaskPanelLibrary.Repository;
@@ -23,27 +24,27 @@ public class CommentRepository : ICommentRepository
         List<Comment> comments = getAll();
         foreach (var comment in comments)
         {
-            if (comment.CommentId == id)
+            if (comment.Id == id)
             {
                 return comment;
             }
         }
 
-        throw new ArgumentException($"Panel with id: {id} does not exist");
+        throw new TaskPanelException($"Panel with id: {id} does not exist");
     }
 
     public Comment delete(int id)
     {
         foreach (var comment in _comments)
         {
-            if (comment.CommentId == id)
+            if (comment.Id == id)
             {
                 _comments.Remove(comment);
                 return comment;
             }
         }
 
-        throw new ArgumentException($"Comment with id: {id} does not exist");
+        throw new TaskPanelException($"Comment with id: {id} does not exist");
     }
 
     public List<Comment> getAll()
@@ -53,7 +54,7 @@ public class CommentRepository : ICommentRepository
 
     public Comment update(Comment comment)
     {
-        Comment commentSaved = finById(comment.CommentId);
+        Comment commentSaved = finById(comment.Id);
         commentSaved.Status = comment.Status;
         commentSaved.Message = comment.Message;
         commentSaved.ResolvedBy = comment.ResolvedBy;
