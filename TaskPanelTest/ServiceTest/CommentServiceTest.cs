@@ -50,18 +50,16 @@ public class CommentServiceTest
     public void AddComment()
     {
         //Arrange
-        Panel panel = _panelService.CreatePanel(_user);
         Comment comment = new Comment()
         {
-            Id = 1,
+            Id = 14,
             Message = "Comment test",
             Status = Comment.EStatus.PENDING
         };
-        _panelService.AddTask(panel.Id, _task);
-        
+
         //Act
-        _commentService.AddComment(_task, comment);
-        Comment commentSaved = _commentService.FindById(panel,comment.Id);
+        _task.AddComment(comment);
+        Comment commentSaved = _commentService.FindById(_task,comment.Id);
 
         //Assert
         Assert.AreEqual(comment.Id, commentSaved.Id);
@@ -73,44 +71,40 @@ public class CommentServiceTest
     public void FindByIdNotExist()
     {
         //Arrange
-        Panel panel = _panelService.CreatePanel(_user);
-
         //Act
-        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(panel,12));
+        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(_task,12));
 
         //Assert
-        Assert.AreEqual("Comment do not exist", exception.Message);
+        Assert.AreEqual("Comment with id: 12 do not exist", exception.Message);
     }
     
     [TestMethod]
     public void DeleteComment()
     {
         //Arrange
-        Panel panel = _panelService.CreatePanel(_user);
         Comment comment = new Comment()
         {
-            Id = 1,
+            Id = 15,
             Message = "Comment test",
             Status = Comment.EStatus.PENDING
         };
         
         //Act
-        _commentService.AddComment(_task, comment);
+        _task.AddComment(comment);
         Comment commentDeleted = _commentService.DeleteComment(_task, comment);
-        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(panel,commentDeleted.Id));
+        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(_task,commentDeleted.Id));
         
         //Assert
         Assert.AreEqual(comment.Message, commentDeleted.Message);
         Assert.AreEqual(comment.Id, commentDeleted.Id);
         Assert.AreEqual(comment.Status, commentDeleted.Status);
-        Assert.AreEqual("Comment do not exist", exception.Message);
+        Assert.AreEqual($"Comment with id: {commentDeleted.Id} do not exist", exception.Message);
     }
     
     [TestMethod]
     public void UpdateComment()
     {
         //Arrange
-        Panel panel = _panelService.CreatePanel(_user);
         Comment comment = new Comment()
         {
             Id = 1,
@@ -127,9 +121,9 @@ public class CommentServiceTest
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0)
         };
         //Act
-        _commentService.AddComment(_task, comment);
+        _task.AddComment(comment);
         _commentService.UpdateComment(_task, commentToUpdate);
-        Comment comentUpdated = _commentService.FindById(panel, comment.Id);
+        Comment comentUpdated = _commentService.FindById(_task, comment.Id);
         
         //Assert
         Assert.AreEqual(comentUpdated.Message, commentToUpdate.Message);
