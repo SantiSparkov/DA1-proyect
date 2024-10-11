@@ -8,7 +8,7 @@ public interface ITrashRepository
 
     public Trash GetTrashById(int id);
 
-    public void DeleteTrashForId(int id);
+    public Trash DeleteTrashForId(int id);
 
     public int Count();
 

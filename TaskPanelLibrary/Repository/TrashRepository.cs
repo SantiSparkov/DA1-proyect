@@ -30,7 +30,7 @@ public class TrashRepository : ITrashRepository
         throw new TaskPanelException($"Trash with id: {id} do no exist");
     }
 
-    public void DeleteTrashForId(int id)
+    public Trash DeleteTrashForId(int id)
     {
         
         foreach (var trash in _trashes)
@@ -38,7 +38,7 @@ public class TrashRepository : ITrashRepository
             if (trash.Id == id)
             {
                 _trashes.Remove(trash);
-                return;
+                return trash;
             }
         }
         throw new TaskPanelException($"Trash with id: {id} do no exist");
