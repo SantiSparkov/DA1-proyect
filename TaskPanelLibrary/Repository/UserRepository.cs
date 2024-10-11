@@ -6,7 +6,7 @@ namespace TaskPanelLibrary.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly List<User> _users = new List<User>();
+    private readonly List<User> _users = new();
 
     public User AddUser(User user)
     {
@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
         {
             existingUser.Name = user.Name ?? existingUser.Name;
             existingUser.LastName = user.LastName ?? existingUser.LastName;
-            existingUser.BrithDate = user.BrithDate != default(DateTime) ? user.BrithDate : existingUser.BrithDate;
+            existingUser.BirthDate = user.BirthDate != default(DateTime) ? user.BirthDate : existingUser.BirthDate;
             existingUser.IsAdmin = user.IsAdmin;
             return existingUser;
         }

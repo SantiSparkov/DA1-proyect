@@ -33,7 +33,7 @@ public class UserRepositoryTests
         // Arrange
         var user = new User
         {
-            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1980, 5, 1),
             IsAdmin = false
         };
 
@@ -52,7 +52,7 @@ public class UserRepositoryTests
         // Arrange
         var user = new User
         {
-            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1980, 5, 1),
             IsAdmin = false
         };
         _userRepository.AddUser(user);
@@ -71,7 +71,7 @@ public class UserRepositoryTests
         // Arrange
         var user = new User
         {
-            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1980, 5, 1),
             IsAdmin = false
         };
         var addedUser = _userRepository.AddUser(user);
@@ -94,12 +94,12 @@ public class UserRepositoryTests
         // Arrange
         var user1 = new User
         {
-            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1980, 5, 1),
             IsAdmin = false
         };
         var user2 = new User
         {
-            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1),
+            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1985, 6, 1),
             IsAdmin = false
         };
         _userRepository.AddUser(user1);
@@ -118,12 +118,12 @@ public class UserRepositoryTests
         // Arrange
         var user1 = new User
         {
-            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1980, 5, 1),
+            Name = "John", Email = "john.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1980, 5, 1),
             IsAdmin = false
         };
         var user2 = new User
         {
-            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BrithDate = new DateTime(1985, 6, 1),
+            Name = "Jane", Email = "jane.doe@example.com", LastName = "Doe", BirthDate = new DateTime(1985, 6, 1),
             IsAdmin = false
         };
         _userRepository.AddUser(user1);

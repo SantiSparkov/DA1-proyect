@@ -12,7 +12,7 @@ public class User
     
     public string LastName { get; set; }
     
-    public DateTime BrithDate { get; set; }
+    public DateTime BirthDate { get; set; }
     
     public bool IsAdmin { get; set; }
     
