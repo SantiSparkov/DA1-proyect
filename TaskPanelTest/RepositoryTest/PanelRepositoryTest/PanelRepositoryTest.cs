@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
@@ -49,8 +50,13 @@ public class PanelRepositoryTest
         {
             Id = 123
         };
+        Panel panel2 = new Panel()
+        {
+            Id = 2
+        };
         
-        //Act 
+        //Actt
+        _panelRepository.AddPanel(panel2);
         _panelRepository.AddPanel(panel);
         Panel panelRemoved = _panelRepository.Delete(panel.Id);
         // Assert
@@ -111,6 +117,19 @@ public class PanelRepositoryTest
         Assert.AreEqual("Update description", panelUpdated.Description);
         Assert.AreEqual("Update panel test", panelUpdated.Name);
     }
+    
+    [TestMethod]
+    public void TestCount()
+    {
+        //Arrange 
+        
+        //Act 
+        int count = _panelRepository.Count();
+        
+        // Assert
+        Assert.AreEqual(0, count);
+    }
+    
     
     [TestCleanup]
     public void Cleanup()

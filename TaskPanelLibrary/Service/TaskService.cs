@@ -1,10 +1,12 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
-using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
+
+namespace TaskPanelLibrary.Service;
 
 public class TaskService : ITaskService
 {

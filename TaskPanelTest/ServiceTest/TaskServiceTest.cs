@@ -1,5 +1,7 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
+using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
@@ -9,12 +11,21 @@ namespace TaskPanelTest.ServiceTest;
 public class TaskServiceTest
 {
     private ITaskService _taskService;
-    private IPanelService _panelService;
+
+    private TaskRepository taskRepository;
+
+    private PanelService _panelService;
+    
+    private CommentService _commentService;
+    
+    private CommentRepository _commentRepository;
 
     [TestInitialize]
     public void Initialize()
     {
-        _taskService = new TaskService();
+        _commentService = new CommentService(_commentRepository);
+        taskRepository = new TaskRepository();
+        _taskService = new TaskService(taskRepository, _panelService, _commentService);
     }
 
     [TestCleanup]
@@ -26,7 +37,7 @@ public class TaskServiceTest
         {
             foreach (var task in panel.Tasks)
             {
-                _taskService.DeleteTask(task.Id, panel.Id);
+                _taskService.DeleteTask(task);
             }
         }
     }
@@ -59,7 +70,7 @@ public class TaskServiceTest
         };
 
         // Act
-        var addedTask = _taskService.AddTask(newTask, panel.Id);
+        var addedTask = _taskService.AddTask(newTask);
 
         // Assert
         Assert.IsNotNull(addedTask);
@@ -92,10 +103,10 @@ public class TaskServiceTest
             DueDate = DateTime.Now,
         };
 
-        var task = _taskService.AddTask(newTask, panel.Id);
+        var task = _taskService.AddTask(newTask);
 
         // Act
-        _taskService.DeleteTask(task.Id, panel.Id);
+        _taskService.DeleteTask(newTask);
         
         // Assert
         var deletedTask = _taskService.GetTaskById(task.Id);

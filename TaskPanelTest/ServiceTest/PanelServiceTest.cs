@@ -12,7 +12,7 @@ namespace TaskPanelTest.ServiceTest;
 [TestClass]
 public class PanelServiceTest
 {
-    private IPanelService _panelService;
+    private PanelService _panelService;
 
     private PanelRepository panelRepository;
 
@@ -21,14 +21,23 @@ public class PanelServiceTest
     private Panel panel;
 
     private User user;
+    
+    private TaskRepository taskRepository;
+    
+    private CommentService _commentService;
+
+    private CommentRepository _commentRepository;
 
 
     [TestInitialize]
     public void Initialize()
     {
         //Arrange
+        _commentService = new CommentService(_commentRepository);
+        taskRepository = new TaskRepository();
+        _panelService = new PanelService(panelRepository, _taskService);
         panelRepository = new PanelRepository();
-        _taskService = new TaskService();
+        _taskService = new TaskService(taskRepository, _panelService, _commentService);
         _panelService = new PanelService(panelRepository, _taskService);
         
         user = new User()
@@ -54,7 +63,11 @@ public class PanelServiceTest
     {
         //Arrange
         Panel panel = _panelService.CreatePanel(user);
-        Task task = new Task();
+        Task task = new Task()
+        {
+            Title = "Test",
+            Description = "Desc test"
+        };
         
         //Act 
         var result = _panelService.AddTask(panel.Id, task);
@@ -70,13 +83,17 @@ public class PanelServiceTest
     public void DeleteTask()
     {
         //Arrange 
-        Task task = new Task();
+        Task task = new Task()
+        {
+            Title = "Test",
+            Description = "Desc test"
+        };
         
         Panel panel = _panelService.CreatePanel(user);
         
         //Act
-        var result = _panelService.AddTask(panel.Id, task);
-        var taskDelete = _panelService.DeleteTask(task, user);
+        Task result = _panelService.AddTask(panel.Id, task);
+        Task taskDelete = _panelService.DeleteTask(task, user);
         
         // Assert
         Assert.IsNotNull(result);

@@ -55,14 +55,14 @@ public class CommentService : ICommentService
         return commentSaved;
     }
 
-    public Comment Add(Comment comment)
+    public Comment AddComment(Comment comment)
     {
-        verifyComment(comment);
+        VerifyComment(comment);
         _commentRepository.Add(comment);
         return comment;
     }
 
-    public void verifyComment(Comment comment)
+    public void VerifyComment(Comment comment)
     {
         if (String.IsNullOrEmpty(comment.Message) || comment.Status == null)
         {

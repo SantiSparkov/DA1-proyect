@@ -14,7 +14,6 @@ public class PanelService : IPanelService
 
     private ITaskService _taskService;
 
-
     public PanelService(PanelRepository panelRepository, TaskService taskService)
     {
         this._taskService = taskService;
@@ -28,9 +27,9 @@ public class PanelService : IPanelService
         Panel panel = new Panel()
         {
             Team = CreateTeamDefault(user),
-            Description = "Description defoult",
+            Description = "Description default",
             Tasks = tasks,
-            Name = "Name defoult"
+            Name = "Name default"
         };
         return panelRepository.AddPanel(panel);
     }
@@ -60,6 +59,7 @@ public class PanelService : IPanelService
     {
         IsValidTask(task);
         Panel panel = panelRepository.FindById(panelId);
+        _taskService.AddTask(task);
         panel.Tasks.Add(task);
         return task;
     }
@@ -70,7 +70,7 @@ public class PanelService : IPanelService
         Task taskFormRepo = _taskService.GetTaskById(task.Id);
         
         panel.Tasks.Remove(taskFormRepo);
-        _taskService.DeleteTask(taskFormRepo.Id, panel.Id);
+        _taskService.DeleteTask(task);
         panelRepository.Update(panel);
         
         user.Trash.AddTask(task);
