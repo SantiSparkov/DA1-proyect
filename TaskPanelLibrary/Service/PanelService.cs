@@ -66,21 +66,6 @@ public class PanelService : IPanelService
         panel.Tasks.Add(task);
         return task;
     }
-    
-    /*public Task AddTask(Task task, int panelId)
-    {
-        var panel = BringExistingPanel(panelId);
-        if (!IsValidTask(task))
-            throw new InvalidTaskException();
-        
-        task.PanelId = panelId;
-        panel.Tasks.Add(task);
-
-        _taskRepository.AddTask(task);
-        _panelRepository.Update(panel);
-
-        return task;
-    }*/
 
     public Task DeleteTask(Task task, User user)
     {
