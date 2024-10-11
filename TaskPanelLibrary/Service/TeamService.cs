@@ -176,6 +176,9 @@ public class TeamService : ITeamService
         if (team.MaxAmountOfMembers <= 0)
             throw new TeamNotValidException("Max amount of members is zero or negative");
         
+        if (!IsTeamNameUnique(team.Name))
+            throw new TeamNotValidException("Team name is not unique");
+        
         if (string.IsNullOrEmpty(team.TasksDescription))
             throw new TaskNotValidException("Tasks description is null");
         
@@ -184,7 +187,7 @@ public class TeamService : ITeamService
     
     private bool CanAddUserToTeam(User user, Team team)
     {
-        if (team.Users.Count >= team.MaxAmountOfMembers)
+        if (IsTeamFull(team))
             throw new TeamNotValidException("Team is full");
         
         if (team.Users.Contains(user))
@@ -223,5 +226,15 @@ public class TeamService : ITeamService
             throw new PanelNotValidException("Panel is not in team");
         
         return true;
+    }
+    
+    private bool IsTeamNameUnique(string teamName)
+    {
+        return _teamRepository.GetAllTeams().Any(t => t.Name != teamName);
+    }
+
+    private bool IsTeamFull(Team team)
+    {
+        return team.Users.Count >= team.MaxAmountOfMembers;
     }
 }

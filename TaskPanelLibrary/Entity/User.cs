@@ -23,14 +23,4 @@ public class User
     {
         Trash = new Trash();
     }
-
-    public void DeleteTask(Task task)
-    {
-        Trash.AddTask(task);
-    }
-
-    public Trash getTrash()
-    {
-        return Trash;
-    }
 }
