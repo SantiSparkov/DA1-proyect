@@ -14,7 +14,6 @@ public class PanelService : IPanelService
 
     private ITaskService _taskService;
 
-
     public PanelService(PanelRepository panelRepository, TaskService taskService)
     {
         this._taskService = taskService;
@@ -28,9 +27,9 @@ public class PanelService : IPanelService
         Panel panel = new Panel()
         {
             Team = CreateTeamDefault(user),
-            Description = "Description defoult",
+            Description = "Description default",
             Tasks = tasks,
-            Name = "Name defoult"
+            Name = "Name default"
         };
         return panelRepository.AddPanel(panel);
     }
