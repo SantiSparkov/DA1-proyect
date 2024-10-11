@@ -4,6 +4,8 @@ namespace TaskPanelLibrary.Entity;
 
 public class Trash
 {
+    public int Id { get; set; }
+    
     public List<Task> TaskList { get; }
     
     public List<Panel> PanelList { get; }

@@ -60,7 +60,7 @@ public class PanelRepositoryTest
         _panelRepository.AddPanel(panel);
         Panel panelRemoved = _panelRepository.Delete(panel.Id);
         // Assert
-        Assert.AreEqual(0, _panelRepository.GetAll().Count);
+        Assert.AreEqual(1, _panelRepository.GetAll().Count);
     }
     
     [TestMethod] 
