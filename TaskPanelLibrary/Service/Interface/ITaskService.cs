@@ -10,11 +10,13 @@ public interface ITaskService
     
     List<Task> GetAllTasks(int panelId);
     
-    Task AddTask(Task task, int panelId);
+    Task AddTask(Task task);
     
     Task UpdateTask(Task task);
     
-    Task DeleteTask(int id, int panelId);
+    Task DeleteTask(Task task)
     
     void AddComentToTask(int taskId, Comment comment);
+    
+    void MarkCommentAsDone(int taskId, int commentId);
 }
