@@ -30,28 +30,4 @@ public class TaskEntityTest
         Assert.IsNotNull(task.CommentList);
 
     }
-    
-    [TestMethod]
-    public void AddCommentTest()
-    {
-        //Arrange 
-        Task task = new Task()
-        {
-            Id = 1,
-            Title = "Title",
-            Description = "Description",
-            DueDate = new DateTime(2008, 6, 1, 7, 47, 0),
-            Priority = TaskPriority.HIGH,
-            CommentList = new List<Comment>(),
-        };
-
-        Comment comment = new Comment();
-        
-        //Act 
-        task.AddComment(comment);
-        
-        // Assert
-        Assert.AreEqual(1, task.CommentList.Count);
-        Assert.AreEqual(comment, task.CommentList[0]);
-    }
 }

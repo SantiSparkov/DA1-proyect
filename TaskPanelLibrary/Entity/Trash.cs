@@ -25,7 +25,6 @@ public class Trash
         CheckTrashSpace();
         TaskList.Add(task);
     }
-
     
     private void CheckTrashSpace()
     {
@@ -34,7 +33,6 @@ public class Trash
         {
             throw new TaskPanelException("Papelera llena");
         }
-        
     }
 
     private int QuantityElemnt()

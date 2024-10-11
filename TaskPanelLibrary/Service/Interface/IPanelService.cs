@@ -22,4 +22,6 @@ public interface IPanelService
     public User RemoveUser(int panelId, User user);
 
     public Panel FindById(int panelId);
+    
+    public List<Panel> GetAllPanels();
 }

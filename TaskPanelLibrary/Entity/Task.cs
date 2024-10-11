@@ -22,10 +22,5 @@ public class Task
     {
         CommentList = new List<Comment>();
     }
-
-    public void AddComment(Comment comment)
-    {
-        CommentList.Add(comment);
-    }
     
 }
