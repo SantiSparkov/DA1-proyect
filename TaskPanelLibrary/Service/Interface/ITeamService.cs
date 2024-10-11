@@ -1,4 +1,4 @@
-using Team = TaskPanelLibrary.Entity.Task;
+using Team = TaskPanelLibrary.Entity.Team;
 using TaskPanelLibrary.Entity;
 
 namespace TaskPanelLibrary.Service.Interface;

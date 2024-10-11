@@ -33,7 +33,7 @@ public class UserService : IUserService
         bool exists = users.Exists(actualUser => actualUser.Email == user.Email);
         if (exists)
         {
-            throw new UserAlreadyExistsException(user.Email);
+            throw new UserNotValidException("User already exists");
         }
         
         return _userRepository.AddUser(user);

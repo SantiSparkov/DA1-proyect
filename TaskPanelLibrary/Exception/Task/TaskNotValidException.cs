@@ -6,4 +6,10 @@ public class TaskNotValidException : System.Exception
         : base($"La tarea con id {id} no es válida")
     {
     }
+    
+    public TaskNotValidException(string message) 
+        : base(message)
+    {
+    }
+    
 }

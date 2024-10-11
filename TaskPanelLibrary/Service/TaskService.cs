@@ -30,7 +30,7 @@ public class TaskService : ITaskService
     public Task AddTask(Task task)
     {
         if (!IsValidTask(task))
-            throw new InvalidTaskException();
+            throw new TaskNotValidException(task.Id);
         
         taskRepository.AddTask(task);
 
