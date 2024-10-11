@@ -11,7 +11,7 @@ public interface ICommentService
 
     public Comment UpdateComment(Task task, Comment comment);
 
-    public Comment Add(Comment comment);
+    public Comment AddComment(Comment comment);
     
     
 }

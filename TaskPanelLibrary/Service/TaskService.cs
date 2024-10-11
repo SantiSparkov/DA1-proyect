@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
