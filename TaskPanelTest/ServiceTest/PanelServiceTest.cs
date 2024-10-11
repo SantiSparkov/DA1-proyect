@@ -12,7 +12,7 @@ namespace TaskPanelTest.ServiceTest;
 [TestClass]
 public class PanelServiceTest
 {
-    private IPanelService _panelService;
+    private PanelService _panelService;
 
     private PanelRepository panelRepository;
 
@@ -21,14 +21,23 @@ public class PanelServiceTest
     private Panel panel;
 
     private User user;
+    
+    private TaskRepository taskRepository;
+    
+    private CommentService _commentService;
+
+    private CommentRepository _commentRepository;
 
 
     [TestInitialize]
     public void Initialize()
     {
         //Arrange
+        _commentService = new CommentService(_commentRepository);
+        taskRepository = new TaskRepository();
+        _panelService = new PanelService(panelRepository, _taskService);
         panelRepository = new PanelRepository();
-        _taskService = new TaskService();
+        _taskService = new TaskService(taskRepository, _panelService, _commentService);
         _panelService = new PanelService(panelRepository, _taskService);
         
         user = new User()
