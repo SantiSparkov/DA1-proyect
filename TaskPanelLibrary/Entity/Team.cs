@@ -14,4 +14,14 @@ public class Team
     
     public List<User> Users { get; set; }
     
+    public List<Panel> Panels { get; set; }
+    
+    public User TeamLeader { get; set; }
+    
+    public Team()
+    {
+        Users = new List<User>();
+        Panels = new List<Panel>();
+    }
+    
 }

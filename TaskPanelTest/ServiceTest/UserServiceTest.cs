@@ -120,6 +120,6 @@ public class UserServiceTest
         };
 
         // Act & Assert
-        Assert.ThrowsException<UserAlreadyExistsException>(new Action(() => _userService.AddUser(newUser)));
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
     }
 }

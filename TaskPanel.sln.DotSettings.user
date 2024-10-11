@@ -17,9 +17,14 @@
 	
 	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4917dbbc_002D6705_002D4658_002D9f35_002D634d11ae708e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TaskServiceTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.TaskServiceTest&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Or&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.TaskServiceTest&lt;/TestId&gt;
+      &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.TeamServiceTest.CreateTeam&lt;/TestId&gt;
+      &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.TeamServiceTest.CreateTeam_ValidTeam_CreatesTeamSuccessfully&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+    &lt;ProjectFile&gt;35E6E4B5-A90D-42A1-A3FA-E73D4361D039/d:ServiceTest/f:TeamServiceTest.cs&lt;/ProjectFile&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4a03d890_002D6afe_002D4ec3_002Dac66_002D216af7fd0856/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddTask" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

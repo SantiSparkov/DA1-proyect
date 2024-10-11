@@ -11,7 +11,7 @@ public class TeamRepository : ITeamRepository
     public Team GetTeamById(int id)
     {
         var team = _teams.FirstOrDefault(t => t.Id == id)
-                   ?? throw new TeamNotFoundException(id);
+                   ?? throw new TeamNotValidException(id);
         return team;
     }
 
@@ -31,19 +31,17 @@ public class TeamRepository : ITeamRepository
     public Team UpdateTeam(Team team)
     {
         var existingTeam = _teams.FirstOrDefault(t => t.Id == team.Id)
-                           ?? throw new TeamNotFoundException(team.Id);
+                           ?? throw new TeamNotValidException(team.Id);
         existingTeam.Name = team.Name ?? existingTeam.Name;
-        existingTeam.CreationDate = team.CreationDate != default(DateTime) ? team.CreationDate : existingTeam.CreationDate;
         existingTeam.TasksDescription = team.TasksDescription ?? existingTeam.TasksDescription;
         existingTeam.MaxAmountOfMembers = team.MaxAmountOfMembers != default(int) ? team.MaxAmountOfMembers : existingTeam.MaxAmountOfMembers;
-        existingTeam.Users = team.Users ?? existingTeam.Users;
         return existingTeam;
     }
 
     public Team DeleteTeam(int id)
     {
         var team = _teams.FirstOrDefault(t => t.Id == id)
-                   ?? throw new TeamNotFoundException(id);
+                   ?? throw new TeamNotValidException(id);
         _teams.Remove(team);
         return team;
     }
