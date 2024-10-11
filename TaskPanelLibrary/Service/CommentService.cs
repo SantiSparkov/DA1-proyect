@@ -1,5 +1,6 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
@@ -7,6 +8,13 @@ namespace TaskPanelLibrary.Service;
 
 public class CommentService : ICommentService
 {
+    private CommentRepository _commentRepository;
+
+    public CommentService(CommentRepository commentRepository)
+    {
+        _commentRepository = commentRepository;
+    }
+
     public Comment FindById(Task task, int id)
     {
         List<Comment> comments = task.CommentList;
@@ -45,5 +53,20 @@ public class CommentService : ICommentService
         commentSaved.ResolvedAt = comment.ResolvedAt;
         commentSaved.ResolvedBy = comment.ResolvedBy;
         return commentSaved;
+    }
+
+    public Comment Add(Comment comment)
+    {
+        verifyComment(comment);
+        _commentRepository.Add(comment);
+        return comment;
+    }
+
+    public void verifyComment(Comment comment)
+    {
+        if (String.IsNullOrEmpty(comment.Message) || comment.Status == null)
+        {
+            throw new TaskPanelException("Comment not valid");
+        }
     }
 }
