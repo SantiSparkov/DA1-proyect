@@ -13,15 +13,15 @@ public class CommentRepository : ICommentRepository
         _comments = new List<Comment>();
     }
 
-    public Comment add(Comment comment)
+    public Comment Add(Comment comment)
     {
         _comments.Add(comment);
         return comment;
     }
 
-    public Comment finById(int id)
+    public Comment FindById(int id)
     {
-        List<Comment> comments = getAll();
+        List<Comment> comments = GetAll();
         foreach (var comment in comments)
         {
             if (comment.Id == id)
@@ -33,7 +33,7 @@ public class CommentRepository : ICommentRepository
         throw new TaskPanelException($"Panel with id: {id} does not exist");
     }
 
-    public Comment delete(int id)
+    public Comment Delete(int id)
     {
         foreach (var comment in _comments)
         {
@@ -47,14 +47,14 @@ public class CommentRepository : ICommentRepository
         throw new TaskPanelException($"Comment with id: {id} does not exist");
     }
 
-    public List<Comment> getAll()
+    public List<Comment> GetAll()
     {
         return _comments;
     }
 
-    public Comment update(Comment comment)
+    public Comment Update(Comment comment)
     {
-        Comment commentSaved = finById(comment.Id);
+        Comment commentSaved = FindById(comment.Id);
         commentSaved.Status = comment.Status;
         commentSaved.Message = comment.Message;
         commentSaved.ResolvedBy = comment.ResolvedBy;

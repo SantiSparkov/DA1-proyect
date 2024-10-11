@@ -1,4 +1,6 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
+using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
@@ -44,12 +46,12 @@ public class CommentRepositoryTest
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.RESOLVED
+            Status = EStatusComment.RESOLVED
         };
         
         //Act 
-        _commentRepository.add(comment);
-        Comment commentSaved = _commentRepository.finById(comment.Id);
+        _commentRepository.Add(comment);
+        Comment commentSaved = _commentRepository.FindById(comment.Id);
         User user = comment.ResolvedBy;
         
         // Assert
@@ -82,17 +84,17 @@ public class CommentRepositoryTest
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.RESOLVED
+            Status = EStatusComment.RESOLVED
         };
-        _commentRepository.add(comment);
+        _commentRepository.Add(comment);
         
         //Act 
-        Comment commentDelete = _commentRepository.delete(comment.Id);
+        Comment commentDelete = _commentRepository.Delete(comment.Id);
 
         // Assert
         Assert.AreEqual(comment.Id, commentDelete.Id);
         Assert.AreEqual(comment.Message, commentDelete.Message);
-        Assert.AreEqual(0, _commentRepository.getAll().Count);
+        Assert.AreEqual(0, _commentRepository.GetAll().Count);
     }
     
     [TestMethod]
@@ -115,12 +117,11 @@ public class CommentRepositoryTest
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.RESOLVED
+            Status = EStatusComment.RESOLVED
         };
         
         //Act 
-        var exception = Assert.ThrowsException<System.ArgumentException>(() => _commentRepository.delete(comment.Id));
-
+        var exception = Assert.ThrowsException<TaskPanelException>(() => _commentRepository.Delete(comment.Id));
 
         // Assert
         Assert.AreEqual($"Comment with id: {comment.Id} does not exist", exception.Message);
@@ -137,12 +138,12 @@ public class CommentRepositoryTest
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.RESOLVED
+            Status = EStatusComment.RESOLVED
         };
         
         //Act 
-        _commentRepository.add(comment);
-        List<Comment> comments = _commentRepository.getAll();
+        _commentRepository.Add(comment);
+        List<Comment> comments = _commentRepository.GetAll();
 
         // Assert
         Assert.AreEqual(1, comments.Count);
@@ -159,27 +160,27 @@ public class CommentRepositoryTest
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.PENDING
+            Status = EStatusComment.PENDING
         };
         
         //Act 
-        _commentRepository.add(comment);
+        _commentRepository.Add(comment);
 
         comment.Message = "New message";
-        comment.Status = Comment.EStatus.RESOLVED;
-        Comment commentUpdated = _commentRepository.update(comment);
+        comment.Status = EStatusComment.RESOLVED;
+        Comment commentUpdated = _commentRepository.Update(comment);
         
 
         // Assert
         Assert.AreEqual("New message", commentUpdated.Message);
-        Assert.AreEqual(Comment.EStatus.RESOLVED, commentUpdated.Status);
+        Assert.AreEqual(EStatusComment.RESOLVED, commentUpdated.Status);
     }
     
     
     [TestCleanup]
     public void Cleanup()
     {
-        _commentRepository.getAll().Clear();
+        _commentRepository.GetAll().Clear();
     }
     
 }

@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
 
 namespace TaskPanelTest.EntityTest.CommentEntityTest;
 
@@ -15,7 +16,7 @@ public class CommentEntityTest
             ResolvedBy = new User(),
             Message = "Message",
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
-            Status = Comment.EStatus.RESOLVED
+            Status = EStatusComment.RESOLVED
         };
         
         // ASSERT
@@ -24,6 +25,6 @@ public class CommentEntityTest
         Assert.IsNotNull(comment.ResolvedBy);
         Assert.AreEqual("Message", comment.Message);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), comment.ResolvedAt);
-        Assert.AreEqual(Comment.EStatus.RESOLVED, comment.Status);
+        Assert.AreEqual(EStatusComment.RESOLVED, comment.Status);
     }
 }

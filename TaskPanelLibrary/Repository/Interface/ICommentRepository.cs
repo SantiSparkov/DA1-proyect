@@ -4,13 +4,13 @@ namespace TaskPanelLibrary.Repository.Interface;
 
 public interface ICommentRepository
 {
-    public Comment add(Comment comment);
+    public Comment Add(Comment comment);
 
-    public Comment finById(int id);
+    public Comment FindById(int id);
 
-    public Comment delete(int id);
+    public Comment Delete(int id);
 
-    public List<Comment> getAll();
+    public List<Comment> GetAll();
 
-    public Comment update(Comment comment);
+    public Comment Update(Comment comment);
 }

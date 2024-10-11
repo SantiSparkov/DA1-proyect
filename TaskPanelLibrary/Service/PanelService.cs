@@ -3,41 +3,44 @@ using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
+using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
 {
-    private PanelRepository panelRepository;
+    private IPanelRepository panelRepository;
+
+    private ITaskService _taskService;
 
     private UserService _userService;
 
-    public PanelService(PanelRepository panelRepository)
+    public PanelService(PanelRepository panelRepository, TaskService taskService)
     {
+        this._taskService = taskService;
         this.panelRepository = panelRepository;
     }
 
     public Panel CreatePanel(User user)
     {
-        int countPanel = panelRepository.Count();
+        
         List<Task> tasks = new List<Task>();
         Panel panel = new Panel()
         {
-            Id = countPanel++,
             Team = CreateTeamDefault(user),
-            Description = "Description",
+            Description = "Description defoult",
             Tasks = tasks,
-            Name = "Name panel"
+            Name = "Name defoult"
         };
         return panelRepository.AddPanel(panel);
     }
 
-    public Panel UpdatePanel(int panelId, Panel panel)
+    public Panel UpdatePanel(Panel panelUpdated)
     {
-        Panel panelSaved = panelRepository.FindById(panelId);
-        panelSaved.Description = panel.Description ?? panelSaved.Description;
-        panelSaved.Name = panel.Name ?? panelSaved.Name;
+        Panel panelSaved = panelRepository.FindById(panelUpdated.Id);
+        panelSaved.Description = panelUpdated.Description ?? panelSaved.Description;
+        panelSaved.Name = panelUpdated.Name ?? panelSaved.Name;
         return panelSaved;
     }
 
@@ -56,6 +59,7 @@ public class PanelService : IPanelService
 
     public Task AddTask(int panelId, Task task)
     {
+        IsValidTask(task);
         Panel panel = panelRepository.FindById(panelId);
         panel.Tasks.Add(task);
         return task;
@@ -136,5 +140,10 @@ public class PanelService : IPanelService
     public List<Panel> GetAllPanels()
     {
         return panelRepository.GetAll();
+    }
+    
+    private bool IsValidTask(Task task)
+    {
+        return task != null && !string.IsNullOrEmpty(task.Title) && !string.IsNullOrEmpty(task.Description);
     }
 }
