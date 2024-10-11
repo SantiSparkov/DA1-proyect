@@ -1,3 +1,5 @@
+using TaskPanelLibrary.Entity.Enum;
+
 namespace TaskPanelLibrary.Entity;
 
 public class Comment
@@ -10,11 +12,7 @@ public class Comment
     
     public DateTime ResolvedAt { get; set; }
     
-    public EStatus Status { get; set; }
+    public EStatusComment Status { get; set; }
     
-    public enum EStatus
-    {
-        RESOLVED,
-        PENDING
-    }
+    
 }

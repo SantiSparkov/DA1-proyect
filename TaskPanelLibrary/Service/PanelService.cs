@@ -3,23 +3,28 @@ using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
+using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
 {
-    private PanelRepository panelRepository;
+    private IPanelRepository panelRepository;
+
+    private ITaskService _taskService;
 
     private UserService _userService;
 
-    public PanelService(PanelRepository panelRepository)
+    public PanelService(PanelRepository panelRepository, TaskService taskService)
     {
+        this._taskService = taskService;
         this.panelRepository = panelRepository;
     }
 
     public Panel CreatePanel(User user)
     {
+        
         int countPanel = panelRepository.Count();
         List<Task> tasks = new List<Task>();
         Panel panel = new Panel()
@@ -56,10 +61,26 @@ public class PanelService : IPanelService
 
     public Task AddTask(int panelId, Task task)
     {
+        IsValidTask(task);
         Panel panel = panelRepository.FindById(panelId);
         panel.Tasks.Add(task);
         return task;
     }
+    
+    /*public Task AddTask(Task task, int panelId)
+    {
+        var panel = BringExistingPanel(panelId);
+        if (!IsValidTask(task))
+            throw new InvalidTaskException();
+        
+        task.PanelId = panelId;
+        panel.Tasks.Add(task);
+
+        _taskRepository.AddTask(task);
+        _panelRepository.Update(panel);
+
+        return task;
+    }*/
 
     public Task DeleteTask(Task task, User user)
     {
@@ -136,5 +157,10 @@ public class PanelService : IPanelService
     public List<Panel> GetAllPanels()
     {
         return panelRepository.GetAll();
+    }
+    
+    private bool IsValidTask(Task task)
+    {
+        return task != null && !string.IsNullOrEmpty(task.Title) && !string.IsNullOrEmpty(task.Description);
     }
 }

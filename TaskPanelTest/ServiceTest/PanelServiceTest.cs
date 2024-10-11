@@ -16,6 +16,8 @@ public class PanelServiceTest
 
     private PanelRepository panelRepository;
 
+    private TaskService _taskService;
+    
     private Panel panel;
 
     private User user;
@@ -26,7 +28,8 @@ public class PanelServiceTest
     {
         //Arrange
         panelRepository = new PanelRepository();
-        _panelService = new PanelService(panelRepository);
+        _taskService = new TaskService();
+        _panelService = new PanelService(panelRepository, _taskService);
         
         user = new User()
         {

@@ -16,7 +16,9 @@ public class CommentServiceTest
     private PanelRepository _panelRepository;
 
     private IPanelService _panelService;
-
+    
+    private TaskService _taskService;
+    
     private User _user;
 
     private Task _task;
@@ -26,7 +28,8 @@ public class CommentServiceTest
     {
         //Arrange
         _panelRepository = new PanelRepository();
-        _panelService = new PanelService(_panelRepository);
+        _taskService = new TaskService();
+        _panelService = new PanelService(_panelRepository,_taskService);
         _commentService = new CommentService();
         
         _task = new Task()
@@ -54,11 +57,11 @@ public class CommentServiceTest
         {
             Id = 14,
             Message = "Comment test",
-            Status = Comment.EStatus.PENDING
+            Status = EStatusComment.PENDING
         };
 
         //Act
-        _task.AddComment(comment);
+        _task.CommentList.Add(comment);
         Comment commentSaved = _commentService.FindById(_task,comment.Id);
 
         //Assert
@@ -86,11 +89,11 @@ public class CommentServiceTest
         {
             Id = 15,
             Message = "Comment test",
-            Status = Comment.EStatus.PENDING
+            Status = EStatusComment.PENDING
         };
         
         //Act
-        _task.AddComment(comment);
+        _task.CommentList.Add(comment);
         Comment commentDeleted = _commentService.DeleteComment(_task, comment);
         var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(_task,commentDeleted.Id));
         
@@ -109,19 +112,19 @@ public class CommentServiceTest
         {
             Id = 1,
             Message = "Comment test",
-            Status = Comment.EStatus.PENDING
+            Status = EStatusComment.PENDING
         };
         
         Comment commentToUpdate = new Comment()
         {
             Id = 1,
             Message = "Comment update",
-            Status = Comment.EStatus.RESOLVED,
+            Status = EStatusComment.RESOLVED,
             ResolvedBy = _user,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0)
         };
         //Act
-        _task.AddComment(comment);
+        _task.CommentList.Add(comment);
         _commentService.UpdateComment(_task, commentToUpdate);
         Comment comentUpdated = _commentService.FindById(_task, comment.Id);
         

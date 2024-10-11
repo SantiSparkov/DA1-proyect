@@ -13,4 +13,6 @@ public interface IPanelRepository
     public Panel Update(Panel panel);
 
     public List<Panel> GetAll();
+
+    public int Count();
 }
