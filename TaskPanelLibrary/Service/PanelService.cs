@@ -70,7 +70,7 @@ public class PanelService : IPanelService
         Task taskFormRepo = _taskService.GetTaskById(task.Id);
         
         panel.Tasks.Remove(taskFormRepo);
-        _taskService.DeleteTask(taskFormRepo.Id, panel.Id);
+        _taskService.DeleteTask(task);
         panelRepository.Update(panel);
         
         user.Trash.AddTask(task);

@@ -13,8 +13,8 @@ public interface ITaskService
     Task AddTask(Task task);
     
     Task UpdateTask(Task task);
-    
-    Task DeleteTask(Task task)
+
+    Task DeleteTask(Task task);
     
     void AddComentToTask(int taskId, Comment comment);
     
