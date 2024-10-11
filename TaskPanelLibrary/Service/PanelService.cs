@@ -132,4 +132,9 @@ public class PanelService : IPanelService
         };
         return team;
     }
+    
+    public List<Panel> GetAllPanels()
+    {
+        return panelRepository.GetAll();
+    }
 }

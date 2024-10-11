@@ -32,8 +32,7 @@ public class TaskRepository : ITaskRepository
 
     public List<Task> GetAllTasks()
     {
-        var tasks = _tasks;
-        return tasks;
+        return new List<Task>(_tasks);
     }
 
     public Task UpdateTask(Task task)
@@ -43,8 +42,6 @@ public class TaskRepository : ITaskRepository
 
         existingTask.Title = task.Title ?? existingTask.Title;
         existingTask.Description = task.Description ?? existingTask.Description;
-        existingTask.DueDate = task.DueDate != default(DateTime) ? task.DueDate : existingTask.DueDate;
-        existingTask.Priority = task.Priority;
 
         return existingTask;
     }
