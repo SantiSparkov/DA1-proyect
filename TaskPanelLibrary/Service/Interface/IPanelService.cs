@@ -7,7 +7,7 @@ public interface IPanelService
 {
     public Panel CreatePanel(User user);
     
-    public Panel UpdatePanel(int panelId, Panel panel);
+    public Panel UpdatePanel(Panel panelUpdated);
 
     public Panel DeletePanel(int panelId, User user);
 

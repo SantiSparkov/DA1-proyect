@@ -36,11 +36,11 @@ public class PanelService : IPanelService
         return panelRepository.AddPanel(panel);
     }
 
-    public Panel UpdatePanel(int panelId, Panel panel)
+    public Panel UpdatePanel(Panel panelUpdated)
     {
-        Panel panelSaved = panelRepository.FindById(panelId);
-        panelSaved.Description = panel.Description ?? panelSaved.Description;
-        panelSaved.Name = panel.Name ?? panelSaved.Name;
+        Panel panelSaved = panelRepository.FindById(panelUpdated.Id);
+        panelSaved.Description = panelUpdated.Description ?? panelSaved.Description;
+        panelSaved.Name = panelUpdated.Name ?? panelSaved.Name;
         return panelSaved;
     }
 
