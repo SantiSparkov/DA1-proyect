@@ -87,7 +87,7 @@ public class TrashEntityTest
         
         
         // Assert
-        var ex = Assert.ThrowsException<ApiException>(() => trash.AddPanel(panel11));
+        var ex = Assert.ThrowsException<TaskPanelException>(() => trash.AddPanel(panel11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
     
@@ -123,7 +123,7 @@ public class TrashEntityTest
         
         
         // Assert
-        var ex = Assert.ThrowsException<ApiException>(() => trash.AddTask(task11));
+        var ex = Assert.ThrowsException<TaskPanelException>(() => trash.AddTask(task11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
 

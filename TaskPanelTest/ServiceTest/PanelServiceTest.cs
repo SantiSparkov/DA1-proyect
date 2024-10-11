@@ -109,7 +109,7 @@ public class PanelServiceTest
             IsAdmin = false
         };
         //Act 
-        var exception = Assert.ThrowsException<ApiException>(() => _panelService.DeletePanel(panel.Id, user1));
+        var exception = Assert.ThrowsException<TaskPanelException>(() => _panelService.DeletePanel(panel.Id, user1));
 
         // Assert
         Assert.AreEqual(exception.Message, $"User is not admin, userId: {user1.Id}");
@@ -264,7 +264,7 @@ public class PanelServiceTest
             IsAdmin = true
         };
         //Act 
-        var exception = Assert.ThrowsException<ApiException>(() => _panelService.RemoveUser(panel.Id, user1));
+        var exception = Assert.ThrowsException<TaskPanelException>(() => _panelService.RemoveUser(panel.Id, user1));
 
         // Assert
         Assert.AreEqual(exception.Message, $"User does not belong to the group, userId: {user1.Id}");

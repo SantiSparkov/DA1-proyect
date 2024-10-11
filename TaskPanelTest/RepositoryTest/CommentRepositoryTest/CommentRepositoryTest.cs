@@ -40,7 +40,7 @@ public class CommentRepositoryTest
         };
         Comment comment = new Comment()
         {
-            CommentId = 123,
+            Id = 123,
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
@@ -49,11 +49,11 @@ public class CommentRepositoryTest
         
         //Act 
         _commentRepository.add(comment);
-        Comment commentSaved = _commentRepository.finById(comment.CommentId);
+        Comment commentSaved = _commentRepository.finById(comment.Id);
         User user = comment.ResolvedBy;
         
         // Assert
-        Assert.AreEqual(comment.CommentId, commentSaved.CommentId);
+        Assert.AreEqual(comment.Id, commentSaved.Id);
         Assert.AreEqual(comment.Message, commentSaved.Message);
         Assert.AreEqual(comment.ResolvedAt, commentSaved.ResolvedAt);
         Assert.AreEqual(resolvedBy.Email, user.Email);
@@ -78,7 +78,7 @@ public class CommentRepositoryTest
         };
         Comment comment = new Comment()
         {
-            CommentId = 123,
+            Id = 123,
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
@@ -87,10 +87,10 @@ public class CommentRepositoryTest
         _commentRepository.add(comment);
         
         //Act 
-        Comment commentDelete = _commentRepository.delete(comment.CommentId);
+        Comment commentDelete = _commentRepository.delete(comment.Id);
 
         // Assert
-        Assert.AreEqual(comment.CommentId, commentDelete.CommentId);
+        Assert.AreEqual(comment.Id, commentDelete.Id);
         Assert.AreEqual(comment.Message, commentDelete.Message);
         Assert.AreEqual(0, _commentRepository.getAll().Count);
     }
@@ -111,7 +111,7 @@ public class CommentRepositoryTest
         };
         Comment comment = new Comment()
         {
-            CommentId = 123,
+            Id = 123,
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
@@ -119,11 +119,11 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        var exception = Assert.ThrowsException<System.ArgumentException>(() => _commentRepository.delete(comment.CommentId));
+        var exception = Assert.ThrowsException<System.ArgumentException>(() => _commentRepository.delete(comment.Id));
 
 
         // Assert
-        Assert.AreEqual($"Comment with id: {comment.CommentId} does not exist", exception.Message);
+        Assert.AreEqual($"Comment with id: {comment.Id} does not exist", exception.Message);
     }
     
     [TestMethod]
@@ -133,7 +133,7 @@ public class CommentRepositoryTest
         User resolvedBy = new User();
         Comment comment = new Comment()
         {
-            CommentId = 123,
+            Id = 123,
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
@@ -155,7 +155,7 @@ public class CommentRepositoryTest
         User resolvedBy = new User();
         Comment comment = new Comment()
         {
-            CommentId = 123,
+            Id = 123,
             Message = "Message comment",
             ResolvedBy = resolvedBy,
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),

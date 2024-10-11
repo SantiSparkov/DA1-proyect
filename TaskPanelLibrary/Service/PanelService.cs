@@ -45,7 +45,7 @@ public class PanelService : IPanelService
     {
         if (!user.IsAdmin)
         {
-            throw new ApiException($"User is not admin, userId: {user.Id}");
+            throw new TaskPanelException($"User is not admin, userId: {user.Id}");
         }
 
         Panel panel = panelRepository.Delete(panelId);
@@ -101,7 +101,7 @@ public class PanelService : IPanelService
         }
         else
         {
-            throw new ApiException($"User does not belong to the group, userId: {user.Id}");
+            throw new TaskPanelException($"User does not belong to the group, userId: {user.Id}");
         }
         
     }

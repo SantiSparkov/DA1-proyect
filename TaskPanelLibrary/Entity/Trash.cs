@@ -32,7 +32,7 @@ public class Trash
         int count = QuantityElemnt();
         if (count >= 10)
         {
-            throw new ApiException("Papelera llena");
+            throw new TaskPanelException("Papelera llena");
         }
         
     }
