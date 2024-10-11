@@ -1,8 +1,7 @@
 using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Exception.User;
-using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Service;
 
 namespace TaskPanelTest.ServiceTest
 {
@@ -15,12 +14,14 @@ namespace TaskPanelTest.ServiceTest
         private PanelRepository _panelRepository;
         private TaskService _taskService;
         private TeamRepository _teamRepository;
+        private UserRepository _userRepository;
+        private PasswordGeneratorService _passwordGenerator;
 
         [TestInitialize]
         public void Initialize()
         {
             _teamRepository = new TeamRepository();
-            _userService = new UserService();
+            _userService = new UserService(_userRepository, _passwordGenerator);
             _panelService = new PanelService(_panelRepository, _taskService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
         }

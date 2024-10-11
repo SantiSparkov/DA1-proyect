@@ -1,5 +1,6 @@
 ﻿using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 
@@ -13,7 +14,7 @@ public class UserServiceTest
     [TestInitialize]
     public void Initialize()
     {
-        _userService = new UserService();
+        _userService = new UserService(new UserRepository(), new PasswordGeneratorService());
     }
 
     [TestCleanup]
@@ -120,6 +121,6 @@ public class UserServiceTest
         };
 
         // Act & Assert
-        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
+        Assert.ThrowsException<UserAlreadyExistsException>(new Action(() => _userService.AddUser(newUser)));
     }
 }
