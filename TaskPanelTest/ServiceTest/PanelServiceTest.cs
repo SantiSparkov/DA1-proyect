@@ -63,7 +63,11 @@ public class PanelServiceTest
     {
         //Arrange
         Panel panel = _panelService.CreatePanel(user);
-        Task task = new Task();
+        Task task = new Task()
+        {
+            Title = "Test",
+            Description = "Desc test"
+        };
         
         //Act 
         var result = _panelService.AddTask(panel.Id, task);
@@ -79,13 +83,17 @@ public class PanelServiceTest
     public void DeleteTask()
     {
         //Arrange 
-        Task task = new Task();
+        Task task = new Task()
+        {
+            Title = "Test",
+            Description = "Desc test"
+        };
         
         Panel panel = _panelService.CreatePanel(user);
         
         //Act
-        var result = _panelService.AddTask(panel.Id, task);
-        var taskDelete = _panelService.DeleteTask(task, user);
+        Task result = _panelService.AddTask(panel.Id, task);
+        Task taskDelete = _panelService.DeleteTask(task, user);
         
         // Assert
         Assert.IsNotNull(result);

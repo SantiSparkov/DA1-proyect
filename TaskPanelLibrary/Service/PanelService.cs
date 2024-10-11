@@ -60,6 +60,7 @@ public class PanelService : IPanelService
     {
         IsValidTask(task);
         Panel panel = panelRepository.FindById(panelId);
+        _taskService.AddTask(task);
         panel.Tasks.Add(task);
         return task;
     }
