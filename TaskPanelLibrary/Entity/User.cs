@@ -17,8 +17,7 @@ public class User
     public bool IsAdmin { get; set; }
     
     public Trash Trash { get; set; }
-
-
+    
     public User()
     {
         Trash = new Trash();

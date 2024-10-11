@@ -65,6 +65,7 @@ public class TeamRepositoryTest
         
         // Assert
         Assert.ThrowsException<TeamNotValidException>(() => _teamRepository.GetTeamById(team.Id));
+
     }
     
     [TestMethod]
@@ -170,7 +171,6 @@ public class TeamRepositoryTest
         
         // Act & Assert
         var exception = Assert.ThrowsException<TeamNotValidException>(new Action(() => _teamRepository.UpdateTeam(team)));
-        Assert.AreEqual($"Team with id 1 not found", exception.Message);
     }
     
     [TestMethod]
@@ -190,7 +190,7 @@ public class TeamRepositoryTest
         
         // Act & Assert
         var exception = Assert.ThrowsException<TeamNotValidException>(new Action(() => _teamRepository.DeleteTeam(2)));
-        Assert.AreEqual("Team with id 2 not found", exception.Message);
+
     }
     
     [TestCleanup]

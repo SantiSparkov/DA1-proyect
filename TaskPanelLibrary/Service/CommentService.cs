@@ -15,9 +15,19 @@ public class CommentService : ICommentService
         _commentRepository = commentRepository;
     }
 
-    public Comment FindById(Task task, int id)
+    public Comment CreateComment()
     {
-        List<Comment> comments = task.CommentList;
+        Comment comment = new Comment()
+        {
+            Id = _commentRepository.GetAll().Count + 1
+        };
+        _commentRepository.Add(comment);
+        return comment;
+    }
+
+    public Comment FindById(int id)
+    {
+        List<Comment> comments = _commentRepository.GetAll();
         foreach (Comment comment in comments)
         {
             if (comment.Id == id)
@@ -36,6 +46,7 @@ public class CommentService : ICommentService
         {
             if (c.Id == comment.Id)
             {
+                _commentRepository.Delete(comment.Id);
                 comments.Remove(c);
                 return c;
             }
@@ -47,7 +58,7 @@ public class CommentService : ICommentService
 
     public Comment UpdateComment(Task task, Comment comment)
     {
-        Comment commentSaved = FindById(task, comment.Id);
+        Comment commentSaved = FindById(comment.Id);
         commentSaved.Message = comment.Message ?? commentSaved.Message;
         commentSaved.Status = comment.Status;
         commentSaved.ResolvedAt = comment.ResolvedAt;
