@@ -50,16 +50,13 @@ public class CommentServiceTest
     public void AddComment()
     {
         //Arrange
-        Comment comment = new Comment()
-        {
-            Id = 14,
-            Message = "Comment test",
-            Status = EStatusComment.PENDING
-        };
+        Comment comment = _commentService.CreateComment();
+        comment.Message = "Comment test";
+        comment.Status = EStatusComment.PENDING;
 
         //Act
         _task.CommentList.Add(comment);
-        Comment commentSaved = _commentService.FindById(_task,comment.Id);
+        Comment commentSaved = _commentService.FindById(comment.Id);
 
         //Assert
         Assert.AreEqual(comment.Id, commentSaved.Id);
@@ -72,27 +69,41 @@ public class CommentServiceTest
     {
         //Arrange
         //Act
-        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(_task,12));
+        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(12));
 
         //Assert
         Assert.AreEqual("Comment with id: 12 do not exist", exception.Message);
     }
     
     [TestMethod]
+    public void FindById()
+    {
+        //Arrange
+        Comment comment1 = _commentService.CreateComment();
+        Comment comment2 = _commentService.CreateComment();
+        comment2.Message = "test";
+        comment2.Status = EStatusComment.PENDING;
+        //Act
+        Comment commentSaved = _commentService.FindById(comment2.Id);
+
+        //Assert
+        Assert.AreEqual(commentSaved.Id, comment2.Id);
+        Assert.AreEqual(commentSaved.Message, comment2.Message);
+        Assert.AreEqual(commentSaved.Status, comment2.Status);
+    }
+    
+    [TestMethod]
     public void DeleteComment()
     {
         //Arrange
-        Comment comment = new Comment()
-        {
-            Id = 15,
-            Message = "Comment test",
-            Status = EStatusComment.PENDING
-        };
+        Comment comment = _commentService.CreateComment();
+        comment.Message = "Comment test";
+        comment.Status = EStatusComment.PENDING;
         
         //Act
         _task.CommentList.Add(comment);
         Comment commentDeleted = _commentService.DeleteComment(_task, comment);
-        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(_task,commentDeleted.Id));
+        var exception= Assert.ThrowsException<TaskPanelException>(() =>_commentService.FindById(commentDeleted.Id));
         
         //Assert
         Assert.AreEqual(comment.Message, commentDeleted.Message);
@@ -111,19 +122,17 @@ public class CommentServiceTest
             Message = "Comment test",
             Status = EStatusComment.PENDING
         };
-        
-        Comment commentToUpdate = new Comment()
-        {
-            Id = 1,
-            Message = "Comment update",
-            Status = EStatusComment.RESOLVED,
-            ResolvedBy = _user,
-            ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0)
-        };
+
+        Comment commentToUpdate = _commentService.CreateComment();
+        commentToUpdate.Message = "Comment update";
+        commentToUpdate.Status = EStatusComment.RESOLVED;
+        commentToUpdate.ResolvedBy = _user;
+        commentToUpdate.ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0);
+    
         //Act
         _task.CommentList.Add(comment);
         _commentService.UpdateComment(_task, commentToUpdate);
-        Comment comentUpdated = _commentService.FindById(_task, comment.Id);
+        Comment comentUpdated = _commentService.FindById(comment.Id);
         
         //Assert
         Assert.AreEqual(comentUpdated.Message, commentToUpdate.Message);

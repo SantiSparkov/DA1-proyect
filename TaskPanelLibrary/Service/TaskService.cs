@@ -72,7 +72,7 @@ public class TaskService : ITaskService
     public void MarkCommentAsDone(int taskId, int commentId)
     {
         var task = taskRepository.GetTaskById(taskId);
-        var existingComment = _commentService.FindById(task, commentId);
+        var existingComment = _commentService.FindById(commentId);
         
         existingComment.ResolvedAt = DateTime.Now;
         existingComment.Status = EStatusComment.RESOLVED;
