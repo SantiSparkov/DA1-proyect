@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.CompilerServices;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository.Interface;
 
@@ -5,20 +6,20 @@ namespace TaskPanelLibrary.Repository;
 
 public class PanelRepository : IPanelRepository
 {
-    private List<Panel> _panels;
+    private readonly List<Panel> _panels;
 
     public PanelRepository()
     {
         _panels = new List<Panel>();
     }
 
-    public Panel add(Panel panel)
+    public Panel AddPanel(Panel panel)
     {
         this._panels.Add(panel);
         return panel;
     }
     
-    public Panel delete(int id)
+    public Panel Delete(int id)
     {
         foreach (var panel in _panels)
         {
@@ -31,7 +32,7 @@ public class PanelRepository : IPanelRepository
         throw new ArgumentException("Panel does not exist");
     }
 
-    public Panel findById(int id)
+    public Panel FindById(int id)
     {
         List<Panel> panels = _panels.Where(p => p.Id == id).ToList();
 
@@ -43,16 +44,21 @@ public class PanelRepository : IPanelRepository
         return panels[0];
     }
 
-    public Panel update(Panel panel)
+    public Panel Update(Panel panel)
     {
-        Panel panelSaved = findById(panel.Id);
+        Panel panelSaved = FindById(panel.Id);
         panelSaved.Description = panel.Description;
         panelSaved.Name = panel.Name;
         return panelSaved;
     }
 
-    public List<Panel> getAll()
+    public List<Panel> GetAll()
     {
         return _panels;
+    }
+
+    public int Count()
+    {
+        return _panels?.Count ?? 0;
     }
 }

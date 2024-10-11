@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception;
 using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.EntityTest.TashEntityTest;
@@ -73,20 +74,20 @@ public class TrashEntityTest
         Panel panel11 = new Panel();
         
         //Act 
-        trash.addPanel(panel1);
-        trash.addPanel(panel2);
-        trash.addPanel(panel3);
-        trash.addPanel(panel4);
-        trash.addPanel(panel5);
-        trash.addPanel(panel6);
-        trash.addPanel(panel7);
-        trash.addPanel(panel8);
-        trash.addPanel(panel9);
-        trash.addPanel(panel10);
+        trash.AddPanel(panel1);
+        trash.AddPanel(panel2);
+        trash.AddPanel(panel3);
+        trash.AddPanel(panel4);
+        trash.AddPanel(panel5);
+        trash.AddPanel(panel6);
+        trash.AddPanel(panel7);
+        trash.AddPanel(panel8);
+        trash.AddPanel(panel9);
+        trash.AddPanel(panel10);
         
         
         // Assert
-        var ex = Assert.ThrowsException<Exception>(() => trash.addPanel(panel11));
+        var ex = Assert.ThrowsException<ApiException>(() => trash.AddPanel(panel11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
     
@@ -108,21 +109,21 @@ public class TrashEntityTest
         
         
         //Act 
-        trash.addTask(task1);
-        trash.addTask(task2);
-        trash.addTask(task3);
-        trash.addTask(task4);
-        trash.addTask(task5);
-        trash.addTask(task6);
-        trash.addTask(task7);
-        trash.addTask(task8);
-        trash.addTask(task9);
-        trash.addTask(task10);
+        trash.AddTask(task1);
+        trash.AddTask(task2);
+        trash.AddTask(task3);
+        trash.AddTask(task4);
+        trash.AddTask(task5);
+        trash.AddTask(task6);
+        trash.AddTask(task7);
+        trash.AddTask(task8);
+        trash.AddTask(task9);
+        trash.AddTask(task10);
         
         
         
         // Assert
-        var ex = Assert.ThrowsException<Exception>(() => trash.addTask(task11));
+        var ex = Assert.ThrowsException<ApiException>(() => trash.AddTask(task11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
 
