@@ -13,11 +13,10 @@ public class CommentServiceTest
 {
     private ICommentService _commentService;
 
-    private PanelRepository _panelRepository;
+    private CommentRepository _commentRepository;
+
 
     private IPanelService _panelService;
-    
-    private TaskService _taskService;
     
     private User _user;
 
@@ -27,10 +26,8 @@ public class CommentServiceTest
     public void Initialize()
     {
         //Arrange
-        _panelRepository = new PanelRepository();
-        _taskService = new TaskService();
-        _panelService = new PanelService(_panelRepository,_taskService);
-        _commentService = new CommentService();
+        _commentRepository = new CommentRepository();
+        _commentService = new CommentService(_commentRepository);
         
         _task = new Task()
         {

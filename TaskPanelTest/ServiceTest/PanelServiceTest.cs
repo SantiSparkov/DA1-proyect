@@ -130,7 +130,7 @@ public class PanelServiceTest
             Description = "Descripción Actualziada",
         };
 
-        _panelService.UpdatePanel(panel.Id, newPanel);
+        _panelService.UpdatePanel(newPanel);
         Panel panelUpdated = _panelService.FindById(panel.Id);
         //Act 
         // Assert
