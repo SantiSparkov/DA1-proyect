@@ -25,15 +25,13 @@ public class PanelService : IPanelService
     public Panel CreatePanel(User user)
     {
         
-        int countPanel = panelRepository.Count();
         List<Task> tasks = new List<Task>();
         Panel panel = new Panel()
         {
-            Id = countPanel++,
             Team = CreateTeamDefault(user),
-            Description = "Description",
+            Description = "Description defoult",
             Tasks = tasks,
-            Name = "Name panel"
+            Name = "Name defoult"
         };
         return panelRepository.AddPanel(panel);
     }

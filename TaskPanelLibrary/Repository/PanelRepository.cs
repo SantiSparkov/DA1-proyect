@@ -16,6 +16,8 @@ public class PanelRepository : IPanelRepository
     public Panel AddPanel(Panel panel)
     {
         //Verificar datos a guardar
+        int count = _panels.Count;
+        panel.Id = count++;
         this._panels.Add(panel);
         return panel;
     }
