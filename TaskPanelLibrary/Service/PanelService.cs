@@ -14,7 +14,6 @@ public class PanelService : IPanelService
 
     private ITaskService _taskService;
 
-    private UserService _userService;
 
     public PanelService(PanelRepository panelRepository, TaskService taskService)
     {
@@ -68,7 +67,12 @@ public class PanelService : IPanelService
     public Task DeleteTask(Task task, User user)
     {
         Panel panel = panelRepository.FindById(task.PanelId);
-        panel.Tasks.Remove(task);
+        Task taskFormRepo = _taskService.GetTaskById(task.Id);
+        
+        panel.Tasks.Remove(taskFormRepo);
+        _taskService.DeleteTask(taskFormRepo.Id, panel.Id);
+        panelRepository.Update(panel);
+        
         user.Trash.AddTask(task);
         return task;
     }
