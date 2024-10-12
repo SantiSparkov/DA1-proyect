@@ -8,7 +8,17 @@ namespace TaskPanelLibrary.Service;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository = new UserRepository();
+    private readonly IUserRepository _userRepository;
+
+    private readonly PasswordGeneratorService _passwordGenerator;
+
+    private const int PASSWORD_LENGTH = 8;
+
+    public UserService(IUserRepository userRepository, PasswordGeneratorService passwordGenerator)
+    {
+        _userRepository = userRepository;
+        _passwordGenerator = passwordGenerator;
+    }
 
     public List<User> GetAllUsers()
     {
@@ -33,9 +43,10 @@ public class UserService : IUserService
         bool exists = users.Exists(actualUser => actualUser.Email == user.Email);
         if (exists)
         {
-            throw new UserNotValidException("User already exists");
+            throw new UserAlreadyExistsException(user.Email);
         }
-        
+
+        user.Password = _passwordGenerator.GeneratePassword(PASSWORD_LENGTH);
         return _userRepository.AddUser(user);
     }
 
@@ -61,4 +72,3 @@ public class UserService : IUserService
         return _userRepository.DeleteUser(id);
     }
 }
-
