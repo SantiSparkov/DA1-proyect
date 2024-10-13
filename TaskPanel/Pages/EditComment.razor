@@ -1,0 +1,50 @@
+@page "/editcomment/{commentId:int}"
+
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+
+@inject CommentService CommentService
+
+@inject Panels Panels;
+
+<title>TaskForPanel</title>
+
+<h1>Task for Panel</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@comment.Id</td>
+        <td>@comment.Message</td>
+        <td>@comment.Status</td>
+        <td>@comment.ResolvedAt</td>
+        <td>@comment.ResolvedBy.Id</td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public int commentId { get; set; }
+
+    Comment comment;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        comment = CommentService.FindById(commentId);
+        Panels.createTeamAndPanel();
+        
+    }
+}

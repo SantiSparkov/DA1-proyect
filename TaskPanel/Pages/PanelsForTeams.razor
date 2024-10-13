@@ -22,7 +22,7 @@
     <tbody>
     @foreach (Panel panel in _panels)
     {
-        <tr>
+        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">
             <td>@panel.Name</td>
             <td>@panel.Description</td>
         </tr>
@@ -44,4 +44,11 @@
         _panels = PanelService.GetAllPanelForTeam(idTeam);
     }
 
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationPanel(int panelId)
+    {
+        Navigation.NavigateTo($"/taskforpanel/{panelId}");
+    }
 }

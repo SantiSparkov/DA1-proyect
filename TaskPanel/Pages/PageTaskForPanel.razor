@@ -1,0 +1,60 @@
+@page "/taskforpanel/{panelId:int}"
+
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service.Interface
+@using Task = TaskPanelLibrary.Entity.Task
+
+@inject ITaskService TaskService;
+
+@inject Panels Panels;
+
+<title>TaskForPanel</title>
+
+<h1>Task for Panel</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach ( Task task in tasks)
+    {
+        <tr @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">
+            <td>@task.Id</td>
+            <td>@task.Title</td>
+            <td>@task.Description</td>
+            <td>@task.Priority</td>
+            <td>@task.DueDate</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public int panelId { get; set; }
+
+    List<Task> tasks;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        tasks = TaskService.GetAllTasks(panelId);
+    }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationComments(int taskId)
+    {
+        Navigation.NavigateTo($"/comments/{taskId}");
+    }
+}

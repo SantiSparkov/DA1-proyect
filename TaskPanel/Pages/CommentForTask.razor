@@ -1,0 +1,60 @@
+@page "/comments/{taskId:int}"
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+
+@inject ICommentService CommentService
+
+@inject Panels Panels;
+
+<title>CommentForTask</title>
+
+<h1>Comment for task</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <td>Task id</td>
+        <th>Description</th>
+        <th>Priority</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach ( Comment comment in comments)
+    {
+        <tr @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">
+             <td>@comment.Id </td>
+            <td>@comment.TaskId </td>
+            <td>@comment.Message </td>
+            <td>@comment.Status </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public int taskId { get; set; }
+
+    List<Comment> comments;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        comments = CommentService.GetCommentForTask(taskId);
+        
+        
+    }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationViewComment(int commentId)
+    {
+       Navigation.NavigateTo($"/updatecomment/{commentId}");
+    }
+}

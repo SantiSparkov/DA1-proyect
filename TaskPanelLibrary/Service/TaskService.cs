@@ -23,14 +23,13 @@ public class TaskService : ITaskService
 
     public List<Task> GetAllTasks(int panelId)
     {
-        List<Task> tasks = taskRepository.GetAllTasks().Where(i => i.PanelId == panelId).ToList();
-        return tasks;
+        return taskRepository.GetAllTasks();
     }
 
     public Task AddTask(Task task)
     {
-        if (!IsValidTask(task))
-            throw new TaskNotValidException(task.Id);
+       // if (!IsValidTask(task))
+         //   throw new TaskNotValidException(task.Id);
         
         taskRepository.AddTask(task);
 
@@ -62,10 +61,9 @@ public class TaskService : ITaskService
     public void AddComentToTask(int taskId, Comment comment)
     {
         var task = taskRepository.GetTaskById(taskId);
-        if (comment == null)
-            throw new CommentNotValidException();
+       //if (comment == null)
+         //   throw new CommentNotValidException();
         task.CommentList.Add(comment);
-        _commentService.AddComment(comment);
         taskRepository.UpdateTask(task);
     }
 
