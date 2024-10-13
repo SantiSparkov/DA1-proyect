@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TaskPanelLibrary.Entity;
 
 public class User
@@ -6,6 +8,9 @@ public class User
     
     public string Name { get; set; }
     
+    [Required(ErrorMessage = "Email must not be empty.")]
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
+    [RegularExpression(@"^[^@]+@[^@]+\.[a-zA-Z]{2,}$", ErrorMessage = "Email must contain both '@' and '.'")]
     public string Email { get; set; }
     
     public string Password { get; set; }

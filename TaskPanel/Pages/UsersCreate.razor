@@ -1,0 +1,102 @@
+﻿@page "/users/create"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Exception.User
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject IUserService userService
+@inject NavigationManager NavigationManager
+@inject PasswordGeneratorService PasswordGenerator
+
+<h3>Create User</h3>
+
+<EditForm Model="_newUser" OnValidSubmit="HandleAddUser">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Name:</label>
+        <InputText @bind-Value="_newUser.Name" class="form-control"/>
+        <ValidationMessage For="@(() => _newUser.Name)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Last Name:</label>
+        <InputText @bind-Value="_newUser.LastName" class="form-control"/>
+        <ValidationMessage For="@(() => _newUser.LastName)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Email:</label>
+        <InputText @bind-Value="_newUser.Email" class="form-control"/>
+        <ValidationMessage For="@(() => _newUser.Email)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Born Date:</label>
+        <InputDate @bind-Value="_newUser.BirthDate" class="form-control"/>
+        <ValidationMessage For="@(() => _newUser.BirthDate)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Password:</label>
+        <div class="input-group">
+            <InputText @bind-Value="_newUser.Password" class="form-control" type="@PasswordInputType" />
+            <button type="button" class="btn btn-secondary" @onclick="GeneratePassword">Generate Password</button>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" @bind="_showPassword" id="showPasswordCheckbox" />
+            <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
+        </div>
+        <ValidationMessage For="@(() => _newUser.Password)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Is administrator:</label>
+        <InputCheckbox @bind-Value="_newUser.IsAdmin" class="custom-checkbox"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" style="margin-top: 10px">@_errorMessage</div>
+}
+
+@code {
+    private User _newUser = new();
+    private const int PasswordLength = 8;
+    private string _errorMessage;
+    private bool _showPassword;
+
+    private string PasswordInputType => _showPassword ? "text" : "password";
+
+    private async Task HandleAddUser()
+    {
+        try
+        {
+            userService.AddUser(_newUser);
+            NavigationManager.NavigateTo("/users");
+        }
+        catch (UserAlreadyExistsException ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private void GeneratePassword()
+    {
+        _newUser.Password = GenerateSecurePassword();
+    }
+
+    private string GenerateSecurePassword()
+    {
+        return PasswordGenerator.GeneratePassword(PasswordLength);
+    }
+}

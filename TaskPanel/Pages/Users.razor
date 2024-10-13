@@ -39,7 +39,7 @@ else if (_currentUser.IsAdmin)
                 <td>@user.BirthDate.ToShortDateString()</td>
                 <td>@(user.IsAdmin ? "Yes" : "No")</td>
                 <td>
-                    @if (_currentUser.Id != user.Id)
+                    @if (_currentUser.Id != user.Id && !user.IsAdmin)
                     {
                         <button class="btn btn-warning" @onclick="() => EditUser(user.Id)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteUser(user.Id)">Delete</button>
@@ -59,7 +59,7 @@ else
 
 @code {
     private List<User> users;
-    
+
     private User _currentUser;
 
     protected override async Task OnInitializedAsync()
@@ -88,6 +88,11 @@ else
 
     private User DeleteUser(int id)
     {
+        if (!_currentUser.IsAdmin)
+        {
+            NavigationManager.NavigateTo("/error");
+        }
+
         var user = UserService.DeleteUser(id);
         users = UserService.GetAllUsers();
         return user;
@@ -95,6 +100,7 @@ else
 
     private void EditUser(int id)
     {
-        NavigationManager.NavigateTo($"/users/edit/{id}");
+        NavigationManager.NavigateTo(!_currentUser.IsAdmin ? "/error" : $"/users/edit/{id}");
     }
+
 }
