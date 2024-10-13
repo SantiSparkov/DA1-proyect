@@ -10,13 +10,10 @@ namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
 {
-    private IPanelRepository panelRepository;
-
-    private ITaskService _taskService;
-
-    public PanelService(PanelRepository panelRepository, TaskService taskService)
+    private readonly IPanelRepository panelRepository;
+    
+    public PanelService(IPanelRepository panelRepository)
     {
-        this._taskService = taskService;
         this.panelRepository = panelRepository;
     }
 
@@ -32,6 +29,11 @@ public class PanelService : IPanelService
             Name = "Name default"
         };
         return panelRepository.AddPanel(panel);
+    }
+    
+    public List<Panel> GetAllPanelForTeam(int idTeam)
+    {
+        return panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
     }
 
     public Panel UpdatePanel(Panel panelUpdated)
@@ -59,23 +61,10 @@ public class PanelService : IPanelService
     {
         IsValidTask(task);
         Panel panel = panelRepository.FindById(panelId);
-        _taskService.AddTask(task);
         panel.Tasks.Add(task);
         return task;
     }
-
-    public Task DeleteTask(Task task, User user)
-    {
-        Panel panel = panelRepository.FindById(task.PanelId);
-        Task taskFormRepo = _taskService.GetTaskById(task.Id);
-        
-        panel.Tasks.Remove(taskFormRepo);
-        _taskService.DeleteTask(task);
-        panelRepository.Update(panel);
-        
-        user.Trash.AddTask(task);
-        return task;
-    }
+    
 
     public void AddTeam(int panelId, Team team)
     {

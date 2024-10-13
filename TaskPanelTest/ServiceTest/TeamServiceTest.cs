@@ -22,7 +22,7 @@ namespace TaskPanelTest.ServiceTest
         {
             _teamRepository = new TeamRepository();
             _userService = new UserService(_userRepository, _passwordGenerator);
-            _panelService = new PanelService(_panelRepository, _taskService);
+            _panelService = new PanelService(_panelRepository);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
         }
 

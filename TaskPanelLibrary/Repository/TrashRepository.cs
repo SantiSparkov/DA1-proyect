@@ -6,7 +6,7 @@ namespace TaskPanelLibrary.Repository;
 
 public class TrashRepository : ITrashRepository
 {
-    private List<Trash> _trashes;
+    private readonly List<Trash> _trashes;
 
     public TrashRepository()
     {

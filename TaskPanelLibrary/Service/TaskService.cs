@@ -3,6 +3,7 @@ using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
@@ -10,21 +11,20 @@ namespace TaskPanelLibrary.Service;
 
 public class TaskService : ITaskService
 {
-    private readonly TaskRepository taskRepository;
-    private PanelService _panelService;
-    private CommentService _commentService;
+    private readonly ITaskRepository taskRepository;
     
-    public TaskService(TaskRepository taskRepository, PanelService panelService, CommentService commentService)
+    private ICommentService _commentService;
+    
+    public TaskService(ITaskRepository taskRepository, ICommentService commentService)
     {
         this.taskRepository = taskRepository;
-        _panelService = panelService;
         _commentService = commentService;
     }
 
     public List<Task> GetAllTasks(int panelId)
     {
-        var panel = _panelService.FindById(panelId);
-        return panel.Tasks;
+        List<Task> tasks = taskRepository.GetAllTasks().Where(i => i.PanelId == panelId).ToList();
+        return tasks;
     }
 
     public Task AddTask(Task task)

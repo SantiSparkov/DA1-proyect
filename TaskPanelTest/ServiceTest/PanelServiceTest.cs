@@ -35,10 +35,10 @@ public class PanelServiceTest
         //Arrange
         _commentService = new CommentService(_commentRepository);
         taskRepository = new TaskRepository();
-        _panelService = new PanelService(panelRepository, _taskService);
+        _panelService = new PanelService(panelRepository);
         panelRepository = new PanelRepository();
-        _taskService = new TaskService(taskRepository, _panelService, _commentService);
-        _panelService = new PanelService(panelRepository, _taskService);
+        _taskService = new TaskService(taskRepository, _commentService);
+        _panelService = new PanelService(panelRepository);
         
         user = new User()
         {
@@ -79,29 +79,6 @@ public class PanelServiceTest
         Assert.IsNotNull(panel.Tasks.Contains(task));
     }
     
-    [TestMethod]
-    public void DeleteTask()
-    {
-        //Arrange 
-        Task task = new Task()
-        {
-            Title = "Test",
-            Description = "Desc test"
-        };
-        
-        Panel panel = _panelService.CreatePanel(user);
-        
-        //Act
-        Task result = _panelService.AddTask(panel.Id, task);
-        Task taskDelete = _panelService.DeleteTask(task, user);
-        
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.IsTrue(user.Trash.TaskList.Contains(task));
-        Assert.IsNotNull(taskDelete);
-        Assert.AreEqual(taskDelete, task);
-        Assert.AreEqual(taskDelete, result);
-    }
 
     [TestMethod] public void DeletePanel()
     {

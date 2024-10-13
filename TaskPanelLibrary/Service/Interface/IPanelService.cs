@@ -1,7 +1,7 @@
 using TaskPanelLibrary.Entity;
 using Task = TaskPanelLibrary.Entity.Task;
 
-namespace TaskPanelLibrary.Repository.Interface;
+namespace TaskPanelLibrary.Service.Interface;
 
 public interface IPanelService
 {
@@ -12,9 +12,7 @@ public interface IPanelService
     public Panel DeletePanel(int panelId, User user);
 
     public Task AddTask(int panelId, Task task);
-
-    public Task DeleteTask(Task task, User user);
-
+    
     public void AddTeam(int panelId, Team team);
     
     public void AddUser(int panelId, User user);

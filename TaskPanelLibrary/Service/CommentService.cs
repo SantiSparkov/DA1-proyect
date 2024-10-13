@@ -1,6 +1,7 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
@@ -8,9 +9,9 @@ namespace TaskPanelLibrary.Service;
 
 public class CommentService : ICommentService
 {
-    private CommentRepository _commentRepository;
+    private readonly ICommentRepository _commentRepository;
 
-    public CommentService(CommentRepository commentRepository)
+    public CommentService(ICommentRepository commentRepository)
     {
         _commentRepository = commentRepository;
     }

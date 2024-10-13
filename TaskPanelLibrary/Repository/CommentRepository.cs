@@ -6,7 +6,7 @@ namespace TaskPanelLibrary.Repository;
 
 public class CommentRepository : ICommentRepository
 {
-    private List<Comment> _comments;
+    private readonly List<Comment> _comments;
 
     public CommentRepository()
     {

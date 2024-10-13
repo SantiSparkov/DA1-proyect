@@ -4,6 +4,7 @@ using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Team = TaskPanelLibrary.Entity.Team;
 
@@ -11,11 +12,13 @@ namespace TaskPanelLibrary.Service;
 
 public class TeamService : ITeamService
 {
-    private readonly TeamRepository _teamRepository;
-    private UserService _userService;
-    private PanelService _panelService;
+    private readonly ITeamRepository _teamRepository;
     
-    public TeamService(TeamRepository teamRepository, UserService userService, PanelService panelService)
+    private readonly IUserService _userService;
+    
+    private readonly IPanelService _panelService;
+    
+    public TeamService(ITeamRepository teamRepository, IUserService userService, IPanelService panelService)
     {
         _teamRepository = teamRepository;
         _userService = userService;
