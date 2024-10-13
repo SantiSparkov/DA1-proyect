@@ -11,6 +11,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<PasswordGeneratorService>();
+builder.Services.AddSingleton<AuthService>();
 
 var app = builder.Build();
 
