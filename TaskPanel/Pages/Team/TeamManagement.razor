@@ -1,0 +1,76 @@
+﻿@page "/teams"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+@code {
+    private List<Team> teams;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            teams = TeamService.GetAllTeams();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void NavigateToCreateTeam()
+    {
+        NavigationManager.NavigateTo("/teams/create");
+    }
+
+    private void EditTeam(int id)
+    {
+        NavigationManager.NavigateTo($"/teams/edit/{id}");
+    }
+}
+
+<h3>Teams</h3>
+
+@if (teams != null && teams.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Creation Date</th>
+            <th>Task Description</th>
+            <th>Max Members</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var team in teams)
+        {
+            <tr>
+                <td>@team.Id</td>
+                <td>@team.Name</td>
+                <td>@team.CreationDate.ToShortDateString()</td>
+                <td>@team.TasksDescription</td>
+                <td>@team.MaxAmountOfMembers</td>
+                <td>
+                    <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)">Edit</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No teams available. Please create one.</p>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<button class="btn btn-primary mt-3" @onclick="NavigateToCreateTeam">Create New Team</button>

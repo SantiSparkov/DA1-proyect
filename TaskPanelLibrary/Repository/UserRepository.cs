@@ -7,6 +7,22 @@ namespace TaskPanelLibrary.Repository;
 public class UserRepository : IUserRepository
 {
     private readonly List<User> _users = new();
+    
+    public UserRepository()
+    {
+        var adminUser = new User
+        {
+            Id = 1,
+            Name = "Admin",
+            LastName = "User",
+            Email = "admin@admin.com",
+            Password = "admin",
+            IsAdmin = true,
+            BirthDate = new DateTime(1990, 1, 1)
+        };
+
+        _users.Add(adminUser);
+    }
 
     public User AddUser(User user)
     {
@@ -14,7 +30,6 @@ public class UserRepository : IUserRepository
         _users.Add(user);
         return user;
     }
-
 
     public User DeleteUser(int id)
     {

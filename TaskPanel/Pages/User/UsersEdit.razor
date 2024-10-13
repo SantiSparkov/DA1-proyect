@@ -1,0 +1,105 @@
+﻿@page "/users/edit/{id:int}"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject IUserService UserService
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private User _user;
+    private string _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _user = UserService.GetUserById(Id);
+            if (isNotValidOperation())
+            {
+                NavigationManager.NavigateTo("/not-authorized");
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            UserService.UpdateUser(_user);
+            NavigationManager.NavigateTo("/users");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void CancelEdit()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private bool isNotValidOperation()
+    {
+        return _user == null || !AuthService.GetCurrentUser().IsAdmin || _user.IsAdmin || AuthService.GetCurrentUser().Email.Equals(_user.Email);
+    }
+
+}
+
+<h3>Edit User</h3>
+
+@if (_user != null)
+{
+    <EditForm Model="_user" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="form-group">
+            <label>Name:</label>
+            <InputText @bind-Value="_user.Name" class="form-control"/>
+            <ValidationMessage For="@(() => _user.Name)"/>
+        </div>
+
+        <div class="form-group">
+            <label>Last Name:</label>
+            <InputText @bind-Value="_user.LastName" class="form-control"/>
+            <ValidationMessage For="@(() => _user.LastName)"/>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <InputText @bind-Value="_user.Email" class="form-control"/>
+            <ValidationMessage For="@(() => _user.Email)"/>
+        </div>
+
+        <div class="form-group">
+            <label>Born Date:</label>
+            <InputDate @bind-Value="_user.BirthDate" class="form-control"/>
+            <ValidationMessage For="@(() => _user.BirthDate)"/>
+        </div>
+
+        <div class="form-group">
+            <label>Is Admin:</label>
+            <InputCheckbox @bind-Value="_user.IsAdmin" class="custom-checkbox"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" style="margin-top: 10px">@_errorMessage</div>
+}

@@ -1,7 +1,5 @@
-using System.Runtime.Serialization;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
-using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
@@ -9,17 +7,16 @@ using Task = TaskPanelLibrary.Entity.Task;
 namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
-{
-    private readonly IPanelRepository panelRepository;
+{ 
+    private readonly IPanelRepository _panelRepository;
     
     public PanelService(IPanelRepository panelRepository)
     {
-        this.panelRepository = panelRepository;
+        this._panelRepository = panelRepository;
     }
 
     public Panel CreatePanel(User user)
     {
-        
         List<Task> tasks = new List<Task>();
         Panel panel = new Panel()
         {
@@ -28,17 +25,18 @@ public class PanelService : IPanelService
             Tasks = tasks,
             Name = "Name panel 1"
         };
-        return panelRepository.AddPanel(panel);
+        return _panelRepository.AddPanel(panel);
     }
-    
+
     public List<Panel> GetAllPanelForTeam(int idTeam)
     {
-        return panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
+        return _panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
     }
+    
 
     public Panel UpdatePanel(Panel panelUpdated)
     {
-        Panel panelSaved = panelRepository.FindById(panelUpdated.Id);
+        Panel panelSaved = _panelRepository.FindById(panelUpdated.Id);
         panelSaved.Description = panelUpdated.Description ?? panelSaved.Description;
         panelSaved.Name = panelUpdated.Name ?? panelSaved.Name;
         return panelSaved;
@@ -51,7 +49,7 @@ public class PanelService : IPanelService
             throw new TaskPanelException($"User is not admin, userId: {user.Id}");
         }
 
-        Panel panel = panelRepository.Delete(panelId);
+        Panel panel = _panelRepository.Delete(panelId);
         user.Trash.AddPanel(panel);
         return panel;
     }
@@ -59,16 +57,15 @@ public class PanelService : IPanelService
 
     public Task AddTask(int panelId, Task task)
     {
-       // IsValidTask(task);
-        Panel panel = panelRepository.FindById(panelId);
+        IsValidTask(task);
+        Panel panel = _panelRepository.FindById(panelId);
         panel.Tasks.Add(task);
         return task;
     }
-    
 
     public void AddTeam(int panelId, Team team)
     {
-        Panel panel = panelRepository.FindById(panelId);
+        Panel panel = _panelRepository.FindById(panelId);
         foreach (var user in team.Users)
         {
             if (!ContainsInGroup(panel, user))
@@ -80,7 +77,7 @@ public class PanelService : IPanelService
 
     public void AddUser(int panelId, User user)
     {
-        Panel panel = panelRepository.FindById(panelId);
+        Panel panel = _panelRepository.FindById(panelId);
         if (!ContainsInGroup(panel, user))
         {
             panel.Team.Users.Add(user);
@@ -89,7 +86,7 @@ public class PanelService : IPanelService
 
     public User RemoveUser(int panelId, User user)
     {
-        Panel panel = panelRepository.FindById(panelId);
+        Panel panel = _panelRepository.FindById(panelId);
 
         if (ContainsInGroup(panel, user))
         {
@@ -100,12 +97,11 @@ public class PanelService : IPanelService
         {
             throw new TaskPanelException($"User does not belong to the group, userId: {user.Id}");
         }
-        
     }
 
     public Panel FindById(int panelId)
     {
-        return panelRepository.FindById(panelId);
+        return _panelRepository.FindById(panelId);
     }
 
     private Boolean ContainsInGroup(Panel panel, User user)
@@ -132,7 +128,7 @@ public class PanelService : IPanelService
     
     public List<Panel> GetAllPanels()
     {
-        return panelRepository.GetAll();
+        return _panelRepository.GetAll();
     }
     
     private bool IsValidTask(Task task)

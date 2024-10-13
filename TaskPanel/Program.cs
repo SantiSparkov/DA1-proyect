@@ -8,21 +8,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+    
+// Repositories
 
-
-builder.Services.AddSingleton<ITrashRepository, TrashRepository>();
-builder.Services.AddSingleton<ITrashService, TrashService>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
-builder.Services.AddSingleton<ICommentService, CommentService>();
-builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
-builder.Services.AddSingleton<ITaskService, TaskService>();
-builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
-builder.Services.AddSingleton<IPanelService, PanelService>();
-builder.Services.AddSingleton<PasswordGeneratorService>();
 builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
+builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
+builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+
+// Services
+builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ITeamService, TeamService>();
+builder.Services.AddSingleton<IPanelService, PanelService>();
+builder.Services.AddSingleton<ITaskService, TaskService>();
+builder.Services.AddSingleton<ICommentService, CommentService>();
+builder.Services.AddSingleton<PasswordGeneratorService>();
+builder.Services.AddSingleton<AuthService>();
 
 //Data for test
 builder.Services.AddSingleton<Panels>();

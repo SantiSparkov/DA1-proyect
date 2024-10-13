@@ -17,5 +17,5 @@ public interface ITaskService
     
     void AddComentToTask(int taskId, Comment comment);
     
-    void MarkCommentAsDone(int taskId, int commentId);
+    void MarkCommentAsDone(int taskId, int commentId);
 }
