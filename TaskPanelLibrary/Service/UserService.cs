@@ -45,8 +45,6 @@ public class UserService : IUserService
         {
             throw new UserAlreadyExistsException(user.Email);
         }
-
-        user.Password = _passwordGenerator.GeneratePassword(PASSWORD_LENGTH);
         return _userRepository.AddUser(user);
     }
 
