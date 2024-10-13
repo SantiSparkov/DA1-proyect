@@ -1,0 +1,28 @@
+﻿@page "/not-authorized"
+@inherits LayoutComponentBase
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no"/>
+    <title>Access Denied</title>
+    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet"/>
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true"/>
+</head>
+
+<body>
+<div class="main">
+    <div class="content px-4">
+        <h1 class="text-danger">Access Denied</h1>
+        <h2 class="text-danger">This feature is only available to administrators.</h2>
+        <p>If you believe you should have access to this functionality, please contact your system administrator.</p>
+        <p>
+            <a href="/">Return to the homepage</a>
+        </p>
+    </div>
+</div>
+</body>
+
+</html>
