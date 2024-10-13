@@ -1,3 +1,4 @@
+using TaskPanelLibrary.DataTest;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
@@ -22,6 +23,9 @@ builder.Services.AddSingleton<IPanelService, PanelService>();
 builder.Services.AddSingleton<PasswordGeneratorService>();
 builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
 builder.Services.AddSingleton<ITeamService, TeamService>();
+
+//Data for test
+builder.Services.AddSingleton<Panels>();
 
 var app = builder.Build();
 

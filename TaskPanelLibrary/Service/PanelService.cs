@@ -24,9 +24,9 @@ public class PanelService : IPanelService
         Panel panel = new Panel()
         {
             Team = CreateTeamDefault(user),
-            Description = "Description default",
+            Description = "Description panel 1",
             Tasks = tasks,
-            Name = "Name default"
+            Name = "Name panel 1"
         };
         return panelRepository.AddPanel(panel);
     }

@@ -6,6 +6,8 @@ namespace TaskPanelLibrary.Service.Interface;
 public interface IPanelService
 {
     public Panel CreatePanel(User user);
+
+    public List<Panel> GetAllPanelForTeam(int idTeam);
     
     public Panel UpdatePanel(Panel panelUpdated);
 

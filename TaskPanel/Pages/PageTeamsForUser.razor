@@ -1,0 +1,53 @@
+@page "/teamsforuser/{idUser:int}"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service.Interface
+
+@inject ITeamService TeamService
+
+@inject Panels Panels;
+
+<title>PageTeamsForUser</title>
+
+<h1>Teams for user</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach ( Team team in teams)
+    {
+        <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">
+            <td>@team.Name</td>
+            <td>@team.TasksDescription</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public int idUser { get; set; }
+
+    List<Team> teams;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        teams = TeamService.TeamsForUser(idUser);
+    }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigateToPanelsForTeams(int teamId)
+    {
+        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+    }
+}

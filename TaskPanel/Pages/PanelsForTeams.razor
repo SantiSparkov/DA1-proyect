@@ -1,19 +1,47 @@
-@page "/panelsforteams"
+@page "/panelsforteams/{idTeam:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService;
+
+@inject Panels Panels;
 
 <PageTitle>Panels for teams</PageTitle>
 
 <h1>Panels for team</h1>
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Panel panel in _panels)
+    {
+        <tr>
+            <td>@panel.Name</td>
+            <td>@panel.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    [Parameter]
+    public int idTeam { get; set; }
+
+    private List<Panel> _panels;
+
+    protected override void OnInitialized()
     {
-        currentCount++;
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        _panels = PanelService.GetAllPanelForTeam(idTeam);
     }
 
 }
