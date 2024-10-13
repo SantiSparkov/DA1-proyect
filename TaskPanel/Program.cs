@@ -8,8 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+// Repositories
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
+builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
+builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+
+// Services
 builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<ITeamService, TeamService>();
+builder.Services.AddSingleton<IPanelService, PanelService>();
+builder.Services.AddSingleton<ITaskService, TaskService>();
+builder.Services.AddSingleton<ICommentService, CommentService>();
 builder.Services.AddSingleton<PasswordGeneratorService>();
 builder.Services.AddSingleton<AuthService>();
 
