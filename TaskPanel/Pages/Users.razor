@@ -1,10 +1,12 @@
 ﻿@page "/users"
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = System.Threading.Tasks.Task
 @layout MainLayout
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
+@inject AuthService AuthService
 
 <h3>User Management</h3>
 
@@ -57,19 +59,18 @@ else
 
 @code {
     private List<User> users;
+    
     private User _currentUser;
 
     protected override async Task OnInitializedAsync()
     {
-        User user = new User
+        if (!AuthService.IsLoggedIn())
         {
-            Name = "Default",
-            LastName = "Admin",
-            Email = "admin@taskpanel.com",
-            BirthDate = new DateTime(1990, 1, 1),
-            IsAdmin = true,
-        };
-        _currentUser = UserService.AddUser(user);
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        _currentUser = AuthService.GetCurrentUser();
 
         if (_currentUser == null || !_currentUser.IsAdmin)
         {
