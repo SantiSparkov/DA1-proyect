@@ -5,6 +5,10 @@
 @if (AuthService.IsLoggedIn())
 {
     <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+        </li>
+        
         @if (AuthService.GetCurrentUser()?.IsAdmin == true)
         {
             <li class="nav-item">
