@@ -34,6 +34,7 @@
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	
+	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6f21ca0e_002D94fd_002D4a9d_002D93ee_002D733359e0f910/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="UserServiceTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.UserServiceTest&lt;/TestId&gt;&#xD;
