@@ -39,6 +39,9 @@
     </tbody>
 </table>
 
+<button class="btn btn-primary mt-3" @onclick="() => NavigateCreateTask(panelId)" style="cursor: pointer;">New task</button>
+
+
 @code {
     
     [Parameter]
@@ -64,5 +67,10 @@
     private void NavigationUpdateTask(int taskId)
     {
         Navigation.NavigateTo($"/updatetask/{taskId}");
+    }
+    
+    private void NavigateCreateTask(int panelId)
+    {
+        Navigation.NavigateTo($"/taskcreate/{panelId}");
     }
 }
