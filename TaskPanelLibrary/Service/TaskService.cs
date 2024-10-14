@@ -23,7 +23,14 @@ public class TaskService : ITaskService
 
     public List<Task> GetAllTasks(int panelId)
     {
-        return _taskRepository.GetAllTasks();
+        try
+        {
+            return _taskRepository.GetAllTasks().Where(i => i.PanelId == panelId).ToList();
+        }
+        catch (ArgumentException e)
+        {
+            return new List<Task>();
+        }
     }
 
     public Task CreateTask(Task task)
