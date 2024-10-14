@@ -1,5 +1,11 @@
 ﻿@page "/"
+
+@using TaskPanelLibrary.Service
+
 @inject NavigationManager NavigationManager
+
+@inject AuthService AuthService
+
 
 <PageTitle>Task Panel</PageTitle>
 
@@ -16,14 +22,18 @@
             <h4>Task Management</h4>
             <p>Create, prioritize, and track tasks with ease.</p>
         </div>
-        <div class="col-md-3 feature-box">
-            <div class="feature-icon">
-                <i class="fas fa-users fa-3x text-success"></i>
-            </div>
-            <h4>Team Collaboration</h4>
-            <p>Work together with your team on shared projects in real-time.</p>
-        </div>
-        <div class="col-md-3 feature-box">
+        
+      <div class="col-md-3 feature-box" @onclick="NavigateToTeamsForUser" style="cursor: pointer;">
+          <div class="feature-icon">
+              <i class="fas fa-users fa-3x text-success"></i>
+          </div>
+          <h4>Team Collaboration</h4>
+          <p>Work together with your team on shared projects in real-time.</p>
+      </div>
+
+        
+        
+      <div class="col-md-3 feature-box" @onclick="NavigateToTeamsForUser" style="cursor: pointer;">
             <div class="feature-icon">
                 <i class="fas fa-chalkboard fa-3x text-info"></i>
             </div>
@@ -110,4 +120,9 @@
         NavigationManager.NavigateTo("/users");
     }
 
+    private void NavigateToTeamsForUser()
+    {
+        TaskPanelLibrary.Entity.User user = AuthService.GetCurrentUser();
+        NavigationManager.NavigateTo( $"/teamsforuser/{user.Id}");
+    }
 }

@@ -58,6 +58,8 @@
     </table>
 
     <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
+    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()" >Cancel</button>
+
 </EditForm>
 
 
@@ -85,6 +87,10 @@
         CommentService.UpdateComment(comment);
         Navigation.NavigateTo($"/comments/{comment.TaskId}");
     }
+    
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/comments/{comment.TaskId}");    }
     
     private void HandleValidSubmit()
     {
