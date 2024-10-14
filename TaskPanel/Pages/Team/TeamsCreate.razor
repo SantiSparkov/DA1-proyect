@@ -1,0 +1,186 @@
+﻿@page "/teams/create"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject ITeamService TeamService
+@inject AuthService AuthService
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Create Team</h3>
+
+<EditForm Model="_newTeam" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label for="teamName">Team Name:</label>
+        <InputText id="teamName" @bind-Value="_newTeam.Name" class="form-control"/>
+        <ValidationMessage For="@(() => _newTeam.Name)"/>
+    </div>
+
+    <div class="form-group">
+        <label for="taskDescription">Task Description:</label>
+        <InputTextArea id="taskDescription" @bind-Value="_newTeam.TasksDescription" class="form-control"/>
+        <ValidationMessage For="@(() => _newTeam.TasksDescription)"/>
+    </div>
+
+    <div class="form-group">
+        <label for="maxMembers">Max Members:</label>
+        <InputNumber id="maxMembers" @bind-Value="_newTeam.MaxAmountOfMembers" class="form-control"/>
+        <ValidationMessage For="@(() => _newTeam.MaxAmountOfMembers)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Team Members:</label>
+        <button type="button" class="btn btn-info" @onclick="OpenUserSelectionModal">Select Team Members</button>
+        <ul class="list-group mt-2">
+            @if (_newTeam.Users != null && _newTeam.Users.Any())
+            {
+                @foreach (var user in _newTeam.Users)
+                {
+                    <li class="list-group-item">@user.Name (@user.Email)</li>
+                }
+            }
+            else
+            {
+                <li class="list-group-item">No users assigned</li>
+            }
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Create Team</button>
+        <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showUserModal ? "block" : "none");" aria-hidden="@(showUserModal ? "false" : "true")">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Team Members</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseUserModal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    @foreach (var user in _availableUsers)
+                    {
+                        if (user.Email != AuthService.GetCurrentUser().Email)
+                        {
+                            <li class="list-group-item">
+                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)"/> @user.Name (@user.Email)
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="ConfirmUserSelection">Confirm Selection</button>
+                <button type="button" class="btn btn-secondary" @onclick="CloseUserModal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private Team _newTeam = new()
+    {
+        CreationDate = DateTime.Now
+    };
+
+    private List<User> _availableUsers = new();
+    private List<User> _selectedUsers = new();
+    private string _errorMessage;
+    private bool showUserModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _availableUsers = UserService.GetAllUsers();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (_newTeam.Users == null || _newTeam.Users.Count < 1)
+        {
+            _errorMessage = "A team must have at least one user.";
+            return;
+        }
+
+        if (_newTeam.Users.Count > _newTeam.MaxAmountOfMembers)
+        {
+            _errorMessage = "The number of selected users exceeds the maximum number of members allowed.";
+            return;
+        }
+
+        try
+        {
+            TeamService.CreateTeam(_newTeam, AuthService.GetCurrentUser().Id);
+            NavigationManager.NavigateTo("/teams");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/teams");
+    }
+
+    private void OpenUserSelectionModal()
+    {
+        _selectedUsers = new List<User>(_newTeam.Users);
+        showUserModal = true;
+    }
+
+    private void CloseUserModal()
+    {
+        showUserModal = false;
+    }
+
+    private void OnUserCheckboxChange(ChangeEventArgs e, User user)
+    {
+        var isChecked = ((bool?)e.Value) ?? false;
+
+        if (isChecked)
+        {
+            if (!_selectedUsers.Contains(user))
+            {
+                _selectedUsers.Add(user);
+            }
+        }
+        else
+        {
+            _selectedUsers.Remove(user);
+        }
+    }
+
+    private void ConfirmUserSelection()
+    {
+        if (_selectedUsers.Count > _newTeam.MaxAmountOfMembers)
+        {
+            _errorMessage = "You cannot select more users than the maximum allowed members.";
+            return;
+        }
+
+        _newTeam.Users = new List<User>(_selectedUsers);
+        showUserModal = false;
+    }
+
+}
