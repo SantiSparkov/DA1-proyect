@@ -1,6 +1,6 @@
 namespace TaskPanelLibrary.Entity.Enum;
 
-public enum TaskPriority
+public enum ETaskPriority
 {
     HIGH,
     MEDIUM,

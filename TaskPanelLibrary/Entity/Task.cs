@@ -16,7 +16,7 @@ public class Task
     
     public DateTime DueDate { get; set; }
     
-    public EStatusComment Priority { get; set; }
+    public ETaskPriority Priority { get; set; }
     
     public Task()
     {

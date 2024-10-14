@@ -1,5 +1,6 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
@@ -47,7 +48,7 @@ public class Panels
             Task task = new Task()
             {
                 Id = 1,
-                Description = "desc task 1", Priority = EStatusComment.PENDING,
+                Description = "desc task 1", Priority = ETaskPriority.LOW,
                 Title = "Title task 1", PanelId = panel.Id
             };
             Comment comment = _commentService.CreateComment();

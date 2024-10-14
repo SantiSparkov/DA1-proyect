@@ -1,0 +1,67 @@
+@page "/updatepanel/{panelId:int}/{teamId:int}"
+
+
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+@using Task = TaskPanelLibrary.Entity.Task
+@using Microsoft.AspNetCore.Components
+
+@inject IPanelService PanelService;
+
+@inject Panels Panels;
+
+<h1>Update Panel</h1>
+
+<EditForm Model="@panel">
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <InputText @bind-Value="panel.Name" placeholder=@panel.Name />
+            </td>
+            <td>
+                <InputText @bind-Value="panel.Description" placeholder=@panel.Description />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdatePanel(panel)">Update</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int panelId { get; set; }
+    
+    [Parameter]
+    public int teamId { get; set; }
+
+    Panel panel;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        panel = PanelService.FindById(panelId);
+        Panels.createTeamAndPanel();
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationUpdatePanel(Panel Panel)
+    {
+        PanelService.UpdatePanel(panel);
+        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+
+    }
+}
