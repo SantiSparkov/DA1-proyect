@@ -51,12 +51,13 @@ public class Panels
                 Description = "desc task 1", Priority = ETaskPriority.LOW,
                 Title = "Title task 1", PanelId = panel.Id
             };
-            Comment comment = _commentService.CreateComment();
+            Comment comment = new Comment();
             comment.TaskId = task.Id;
             comment.Message = "Comentario de prueba!";
             comment.Status = EStatusComment.PENDING;
             comment.ResolvedBy = user;
             comment.ResolvedAt = DateTime.Now;
+            _commentService.CreateComment(comment);
             _taskService.AddTask(task);
             _taskService.AddComentToTask(task.Id, comment);
             _panelService.AddTask(panel.Id, task);
