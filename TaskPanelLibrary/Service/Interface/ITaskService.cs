@@ -9,7 +9,7 @@ public interface ITaskService
     
     List<Task> GetAllTasks(int panelId);
     
-    Task AddTask(Task task);
+    Task CreateTask(Task task);
     
     Task UpdateTask(Task task);
 

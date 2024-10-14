@@ -15,22 +15,23 @@ public class PanelService : IPanelService
         this._panelRepository = panelRepository;
     }
 
-    public Panel CreatePanel(User user)
+    public Panel CreatePanel(Panel panel)
     {
-        List<Task> tasks = new List<Task>();
-        Panel panel = new Panel()
-        {
-            Team = CreateTeamDefault(user),
-            Description = "Description panel 1",
-            Tasks = tasks,
-            Name = "Name panel 1"
-        };
+        panel.Id = _panelRepository.Count() + 1;
         return _panelRepository.AddPanel(panel);
     }
 
     public List<Panel> GetAllPanelForTeam(int idTeam)
     {
-        return _panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
+        try
+        {
+            return _panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
+        }
+        catch(ArgumentException e)
+        {
+            return new List<Panel>();
+        }
+
     }
     
 
@@ -57,7 +58,7 @@ public class PanelService : IPanelService
 
     public Task AddTask(int panelId, Task task)
     {
-        //IsValidTask(task);
+        IsValidTask(task);
         Panel panel = _panelRepository.FindById(panelId);
         panel.Tasks.Add(task);
         return task;

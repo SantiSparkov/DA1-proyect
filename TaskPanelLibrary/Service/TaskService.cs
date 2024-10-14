@@ -26,10 +26,10 @@ public class TaskService : ITaskService
         return _taskRepository.GetAllTasks();
     }
 
-    public Task AddTask(Task task)
+    public Task CreateTask(Task task)
     {
-       // if (!IsValidTask(task))
-         //   throw new TaskNotValidException(task.Id);
+       if (!IsValidTask(task))
+         throw new TaskNotValidException(task.Id);
 
         _taskRepository.AddTask(task);
         return task;

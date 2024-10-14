@@ -36,34 +36,36 @@ public class Panels
     {
         if (_panelService.GetAllPanels().Count == 0)
         {
-
             User user = _authService.GetCurrentUser();
             
-            Team team = _teamService.CreateTeam(new Team()
+            Team newTeam = new Team()
             {
-                Panels = new List<Panel>(), Id = 1, Name = "Name panel", TasksDescription = "description",
-                TeamLeader = user
-            }, user.Id);
-            Panel panel = _panelService.CreatePanel(user);
-            Task task = new Task()
-            {
-                Id = 1,
-                Description = "desc task 1", Priority = ETaskPriority.LOW,
-                Title = "Title task 1", PanelId = panel.Id
+                CreationDate = DateTime.Now, Name = "Team name", TasksDescription = "Description team", MaxAmountOfMembers = 20
             };
-            Comment comment = new Comment();
-            comment.TaskId = task.Id;
-            comment.Message = "Comentario de prueba!";
-            comment.Status = EStatusComment.PENDING;
-            comment.ResolvedBy = user;
-            comment.ResolvedAt = DateTime.Now;
-            _commentService.CreateComment(comment);
-            _taskService.AddTask(task);
-            _taskService.AddComentToTask(task.Id, comment);
-            _panelService.AddTask(panel.Id, task);
-            
-            Panel panel2 = _panelService.CreatePanel(user);
-            panel2.Name = "Panel 2";
+            Team team = _teamService.CreateTeam(newTeam, user.Id);
+
+            Panel newPanel = new Panel()
+            {
+                Name = "Panel test",
+                Description = "Task",
+                Team = team
+            };
+            _panelService.CreatePanel(newPanel);
+
+            Task newtask = new Task()
+            {
+                Title = "Title task",
+                Description = "description task",
+                PanelId = newPanel.Id,
+                Priority = ETaskPriority.LOW
+            };
+            _taskService.CreateTask(newtask);
+
+            Comment newComment = new Comment()
+            {
+                Message = "Comment test", Status = EStatusComment.PENDING, TaskId = newtask.Id
+            };
+            _commentService.CreateComment(newComment);
         }
     }
 }

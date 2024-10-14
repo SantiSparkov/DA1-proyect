@@ -1,0 +1,61 @@
+@page "/createpanel/{teamId:int}"
+
+
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService
+
+@inject Panels Panels;
+
+<title>CreatePanel</title>
+
+<h1>New panel</h1>
+
+<EditForm Model="_panel">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label>Name:</label>
+        <InputText @bind-Value="_panel.Name" class="form-control"/>
+        <ValidationMessage For="@(() => _panel.Name)"/>
+    </div>
+    
+    <div class="form-group">
+            <label>Description:</label>
+            <InputText @bind-Value="_panel.Description" class="form-control"/>
+            <ValidationMessage For="@(() => _panel.Description)"/>
+        </div>
+    
+    <button class="btn btn-primary" @onclick="() => SavePanel()" >Save </button>
+    <button class="btn btn-secondary" @onclick="() => NavigationGoBack()" >Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int teamId { get; set; }
+
+    Panel _panel;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _panel = new Panel();
+    }
+    
+    private async void SavePanel()
+    {
+        PanelService.CreatePanel(_panel);
+        NavigationGoBack();
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+
+    }
+}
