@@ -1,0 +1,75 @@
+@page "/updatetask/{taskId:int}"
+
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service.Interface
+@using System.Data
+@using Task = TaskPanelLibrary.Entity.Task
+
+@inject ITaskService TaskService;
+
+@inject Panels Panels;
+
+<title>Update Task</title>
+
+<h1>Update Task</h1>
+
+<EditForm Model="@task">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Description</th>
+                <th>Due date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <InputText @bind-Value="task.Title" placeholder="Enter task title" />
+                </td>
+                <td>
+                    <InputSelect @bind-Value="task.Priority">
+                        @foreach (var p in Enum.GetValues(typeof(ETaskPriority)))
+                        {
+                            <option value="@p">@p</option>
+                        }
+                    </InputSelect>
+                </td>
+
+                <td>
+                    <InputText @bind-Value="task.Description" placeholder=@task.Description />
+                </td>
+                <td>
+                    <InputDate @bind-Value="task.DueDate" placeholder=@task.DueDate />
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateTask(task)">Update</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int taskId { get; set; }
+
+    Task task;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        task = TaskService.GetTaskById(taskId);
+        Panels.createTeamAndPanel();
+    }
+
+    private void NavigationUpdateTask(Task task)
+    {
+        
+        TaskService.UpdateTask(task);
+    }
+}

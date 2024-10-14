@@ -28,8 +28,8 @@ public class TaskService : ITaskService
 
     public Task AddTask(Task task)
     {
-        if (!IsValidTask(task))
-            throw new TaskNotValidException(task.Id);
+       // if (!IsValidTask(task))
+         //   throw new TaskNotValidException(task.Id);
 
         _taskRepository.AddTask(task);
         return task;
@@ -44,8 +44,7 @@ public class TaskService : ITaskService
     public Task UpdateTask(Task task)
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
-        _taskRepository.UpdateTask(existingTask);
-
+        _taskRepository.UpdateTask(task);
         return existingTask;
     }
 
@@ -74,7 +73,7 @@ public class TaskService : ITaskService
         existingComment.ResolvedAt = DateTime.Now;
         existingComment.Status = EStatusComment.RESOLVED;
 
-        _commentService.UpdateComment(task, existingComment);
+        _commentService.UpdateComment(existingComment);
         _taskRepository.UpdateTask(task);
     }
 

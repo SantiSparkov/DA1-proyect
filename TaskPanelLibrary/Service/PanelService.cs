@@ -57,7 +57,7 @@ public class PanelService : IPanelService
 
     public Task AddTask(int panelId, Task task)
     {
-        IsValidTask(task);
+        //IsValidTask(task);
         Panel panel = _panelRepository.FindById(panelId);
         panel.Tasks.Add(task);
         return task;

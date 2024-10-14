@@ -34,7 +34,7 @@ public class CommentServiceTest
             Id = 1,
             PanelId = 1,
             Description = "Description test",
-            Priority = TaskPriority.LOW
+            Priority = ETaskPriority.LOW
 
         };
         _user = new User()
@@ -131,7 +131,7 @@ public class CommentServiceTest
     
         //Act
         _task.CommentList.Add(comment);
-        _commentService.UpdateComment(_task, commentToUpdate);
+        _commentService.UpdateComment(commentToUpdate);
         Comment comentUpdated = _commentService.FindById(comment.Id);
         
         //Assert

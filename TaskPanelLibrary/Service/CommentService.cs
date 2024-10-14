@@ -57,7 +57,7 @@ public class CommentService : ICommentService
         throw new TaskPanelException($"Not exist comment with id: {comment.Id}, not deleted");
     }
 
-    public Comment UpdateComment(Task task, Comment comment)
+    public Comment UpdateComment(Comment comment)
     {
         Comment commentSaved = FindById(comment.Id);
         commentSaved.Message = comment.Message ?? commentSaved.Message;

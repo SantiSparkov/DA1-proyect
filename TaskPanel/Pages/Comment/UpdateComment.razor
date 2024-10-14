@@ -3,9 +3,13 @@
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
 @using TaskPanelLibrary.Service.Interface
+@using System.Data
 
 @inject ICommentService CommentService
+
+@inject IUserService UserService;
 
 @inject Panels Panels;
 
@@ -13,28 +17,49 @@
 
 <h1>Update comment</h1>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Task Id</th>
-        <th>Comment Id</th>
-        <th>Message</th>
-        <th>Status</th>
-        <th>Resolved by</th>
-        <th>Resolved at</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>@comment.TaskId</td>
-        <td>@comment.Id</td>
-        <td>@comment.Message</td>
-        <td>@comment.Status</td>
-        <td>@comment.ResolvedBy.Email</td>
-        <td>@comment.ResolvedAt</td>
-    </tr>
-    </tbody>
-</table>
+
+
+<EditForm Model="@comment" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Resolved by</th>
+                <th>Resolved at</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@comment.Message</td>
+                <td>
+                    <InputSelect @bind-Value="comment.Status">
+                        @foreach (var status in Enum.GetValues(typeof(EStatusComment))) 
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputSelect>
+                </td>
+               <td>
+                   <InputSelect @bind-Value="comment.ResolvedBy">
+                       @foreach (User user in UserService.GetAllUsers())
+                       {
+                           <option value="@user">@user.Email</option>
+                       }
+                   
+                   </InputSelect>
+                   </td>
+                <td>@comment.ResolvedAt</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
+</EditForm>
+
 
 @code {
     
@@ -50,4 +75,17 @@
         Panels.createTeamAndPanel();
         
     }
+    
+    private void NavigationUpdateComment(Comment comment)
+    {
+        this.comment.ResolvedAt = DateTime.Now;
+        CommentService.UpdateComment(comment);
+        
+    }
+    
+    private void HandleValidSubmit()
+    {
+        
+    }
+
 }
