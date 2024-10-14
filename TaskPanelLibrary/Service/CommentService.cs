@@ -16,12 +16,9 @@ public class CommentService : ICommentService
         _commentRepository = commentRepository;
     }
 
-    public Comment CreateComment()
+    public Comment CreateComment(Comment comment)
     {
-        Comment comment = new Comment()
-        {
-            Id = _commentRepository.GetAll().Count + 1
-        };
+        comment.Id = _commentRepository.GetAll().Count + 1;
         _commentRepository.Add(comment);
         return comment;
     }

@@ -36,7 +36,7 @@ public class TeamService : ITeamService
         
         Team newTeam = new Team
         {
-            Name = "team 1",
+            Name = team.Name,
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers,
@@ -187,7 +187,7 @@ public class TeamService : ITeamService
 
     private bool IsValidTeam(Team team, User user)
     {
-      /*  if (!user.IsAdmin)
+        if (!user.IsAdmin)
             throw new UserNotValidException("User is not admin");
 
         if (string.IsNullOrEmpty(team.Name))
@@ -201,7 +201,7 @@ public class TeamService : ITeamService
 
         if (string.IsNullOrEmpty(team.TasksDescription))
             throw new TaskNotValidException("Tasks description is null");
-*/
+
         return true;
     }
 

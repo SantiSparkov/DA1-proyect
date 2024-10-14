@@ -5,7 +5,7 @@ namespace TaskPanelLibrary.Service.Interface;
 
 public interface ICommentService
 {
-    public Comment CreateComment();
+    public Comment CreateComment(Comment comment);
     
     public Comment FindById(int id);
 

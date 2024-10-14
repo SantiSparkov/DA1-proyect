@@ -25,7 +25,7 @@
     @foreach ( Comment comment in comments)
     {
         <tr>
-             <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Id </td>
+            <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Id </td>
             <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.TaskId </td>
             <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Message </td>
             <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Status </td>
@@ -36,6 +36,8 @@
     }
     </tbody>
 </table>
+<button class="btn btn-primary mt-3" @onclick="() => NavigationCreateComment()" style="cursor: pointer;">New comment</button>
+
 
 @code {
     
@@ -64,5 +66,10 @@
     private void NavigationUpdateComment(int commentId)
     {
         Navigation.NavigateTo($"/updatecomment/{commentId}");
+    }
+    
+    private void NavigationCreateComment()
+    {
+        Navigation.NavigateTo($"/newcomment/{taskId}");
     }
 }

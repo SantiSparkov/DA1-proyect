@@ -1,0 +1,64 @@
+@page "/newcomment/{taskId:int}"
+@using TaskPanelLibrary.Service.Interface
+@using Microsoft.AspNetCore.Components
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Exception.User
+@using Task = System.Threading.Tasks.Task
+
+@inject ICommentService CommentService
+
+<h3>Create Comment</h3>
+
+<EditForm Model="_newComment">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label>Message:</label>
+        <InputText @bind-Value="_newComment.Message" class="form-control"/>
+        <ValidationMessage For="@(() => _newComment.Message)"/>
+    </div>
+
+    <div class="form-group">
+        <label>Status:</label>
+        <InputSelect @bind-Value="_newComment.Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => _newComment.Status)" />
+    </div>
+    <button class="btn btn-primary" @onclick="() => SaveComment()" >Save </button>
+    <button class="btn btn-secondary" @onclick="() => NavigationGoBack()" >Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int taskId { get; set; }
+
+    Comment _newComment;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _newComment = new Comment()
+        {
+            TaskId = taskId
+        };
+    }
+    
+    private async Task SaveComment()
+    {
+        CommentService.CreateComment(_newComment);
+        NavigationGoBack();
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/comments/{taskId}");
+    }
+}
