@@ -31,6 +31,9 @@
     </tbody>
 </table>
 
+<button class="btn btn-primary mt-3" @onclick="() => NavigationCreateTeam()" style="cursor: pointer;">New Team</button>
+
+
 @code {
     
     [Parameter]
@@ -56,5 +59,9 @@
     private void NavigateUpdateTeam(int teamId)
     {
         Navigation.NavigateTo($"/updateteam/{teamId}");
+    }
+    private void NavigationCreateTeam()
+    {
+        Navigation.NavigateTo("/teams/create");
     }
 }

@@ -32,6 +32,8 @@
     }
     </tbody>
 </table>
+<button class="btn btn-primary mt-3" @onclick="() => NavigateCreatePanel(idTeam)" style="cursor: pointer;">New Panel</button>
+
 
 @code {
 
@@ -58,6 +60,11 @@
     private void NavigateUpdatePanel(int panelId)
     {
         Navigation.NavigateTo($"/updatepanel/{panelId}/{idTeam}");
+    }
+    
+    private void NavigateCreatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/createpanel/{idTeam}");
     }
     
     

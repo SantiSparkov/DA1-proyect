@@ -7,6 +7,8 @@
 
 @inject IPanelService PanelService
 
+@inject ITeamService TeamService
+
 @inject Panels Panels;
 
 <title>CreatePanel</title>
@@ -41,11 +43,15 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _panel = new Panel();
+        _panel = new Panel()
+        {
+            Team = TeamService.GetTeamById(teamId)
+        };
     }
     
     private async void SavePanel()
     {
+        
         PanelService.CreatePanel(_panel);
         NavigationGoBack();
     }

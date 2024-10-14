@@ -1,0 +1,69 @@
+@page "/taskcreate/{panelId:int}"
+@using TaskPanelLibrary.Service.Interface
+@using TaskPanelLibrary.Entity.Enum
+
+@inject ITaskService TaskService
+
+<h3>TaskCreate</h3>
+
+
+<EditForm Model="_task">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        <label>Title:</label>
+        <InputText @bind-Value="_task.Title" class="form-control"/>
+        <ValidationMessage For="@(() => _task.Title)"/>
+    </div>
+    <div class="form-group">
+        <label>Title:</label>
+        <InputText @bind-Value="_task.Description" class="form-control"/>
+        <ValidationMessage For="@(() => _task.Description)"/>
+    </div>
+    <div class="form-group">
+        <label>Priority:</label>
+        <InputSelect @bind-Value="_task.Priority" class="form-control">
+            @foreach (ETaskPriority priority in Enum.GetValues(typeof(ETaskPriority)))
+            {
+                <option value="@priority">@priority</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => _task.Priority)" />
+    </div>
+    <div>
+        <label for="ResolvedAt">Due Date:</label>
+        <input type="datetime-local" id="ResolvedAt" @bind="_task.DueDate" required />
+    </div>
+    
+    <button class="btn btn-primary" @onclick="() => SaveTask()" >Save </button>
+    <button class="btn btn-secondary" @onclick="() => NavigationGoBack()" >Cancel</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int panelId { get; set; }
+
+    TaskPanelLibrary.Entity.Task _task;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _task = new TaskPanelLibrary.Entity.Task();
+    }
+    
+    private async Task SaveTask()
+    {
+        _task.PanelId = panelId;
+        TaskService.CreateTask(_task);
+        NavigationGoBack();
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/taskforpanel/{panelId}");
+    }
+}
