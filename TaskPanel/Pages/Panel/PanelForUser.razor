@@ -1,0 +1,58 @@
+@page "/panels/user/{userId:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService;
+
+@inject Panels Panels;
+
+<PageTitle>Panels for teams</PageTitle>
+
+<h1>Panels for user</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Team id</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Panel panel in _panels)
+    {
+        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">
+            <td>@panel.Team.Id</td>
+            <td>@panel.Name</td>
+            <td>@panel.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+@code {
+
+    [Parameter]
+    public int userId { get; set; }
+
+    private List<Panel> _panels;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        _panels = PanelService.GetAllPanelForUser(userId);
+    }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    
+    private void NavigationPanel(int panelId)
+    {
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
+    }
+}

@@ -1,4 +1,6 @@
 ﻿@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Entity
+
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
@@ -20,15 +22,20 @@
         <li class="nav-item">
             <a class="nav-link" href="/teams">Teams Management</a>
         </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="/panels/user/@AuthService.GetCurrentUser().Id">Panels</a>
+            </li>
 
         <li class="nav-item">
             <button class="nav-link" @onclick="Logout">Log Out</button>
         </li>
+
     </ul>
 }
 
 @code {
-
+    
     private void Logout()
     {
         AuthService.Logout();

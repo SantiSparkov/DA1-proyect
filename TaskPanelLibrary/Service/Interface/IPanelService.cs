@@ -9,11 +9,11 @@ public interface IPanelService
 
     public List<Panel> GetAllPanelForTeam(int idTeam);
     
+    public List<Panel> GetAllPanelForUser(int idTeam);
+    
     public Panel UpdatePanel(Panel panelUpdated);
 
     public Panel DeletePanel(int panelId, User user);
-
-    public Task AddTask(int panelId, Task task);
     
     public void AddTeam(int panelId, Team team);
     
