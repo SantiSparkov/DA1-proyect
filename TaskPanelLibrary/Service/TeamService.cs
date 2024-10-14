@@ -37,7 +37,8 @@ public class TeamService : ITeamService
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers,
-            TeamLeader = user
+            TeamLeader = user,
+            Users = team.Users
         };
 
         newTeam.Users.Add(user);
@@ -230,7 +231,7 @@ public class TeamService : ITeamService
 
     private bool IsTeamNameUnique(string teamName)
     {
-        return _teamRepository.GetAllTeams().Any(t => t.Name != teamName);
+        return _teamRepository.GetAllTeams().All(t => t.Name != teamName);
     }
 
     private bool IsTeamFull(Team team)
