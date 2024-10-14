@@ -6,6 +6,8 @@
 
 @inject IPanelService PanelService;
 
+@inject ITeamService teamService;
+
 @inject Panels Panels;
 
 <PageTitle>Panels for teams</PageTitle>
@@ -32,6 +34,41 @@
     </tbody>
 </table>
 
+<button class="btn btn-primary mt-3" @onclick="ShowModal" style="cursor: pointer;">New Panel</button>
+
+
+@if (showModal)
+{
+    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog" aria-hidden="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Team</h5>
+                    <button type="button" class="close" @onclick="() => showModal = false">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@selectedTeamId">
+                                           <label for="teamSelect">Choose a team:</label>
+                                           <InputSelect @bind-Value="selectedTeamId" id="teamSelect">
+                                               <option value="">Select a team...</option>
+                                               @* Aquí debes agregar tus opciones de equipos *@
+                                               @foreach (var team in teams) // Suponiendo que tienes una lista de equipos
+                                               {
+                                                   <option value="@team.Id">@team.Name</option>
+                                               }
+                                           </InputSelect>
+                                       </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="() => showModal = false">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="ConfirmSelection">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
 
@@ -40,19 +77,37 @@
 
     private List<Panel> _panels;
 
+    private List<Team> teams;
+
+    private bool showModal = false;
+
+    private int selectedTeamId;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Panels.createTeamAndPanel();
         _panels = PanelService.GetAllPanelForUser(userId);
+        teams = teamService.TeamsForUser(userId);
+    }
+    
+    private void ShowModal()
+    {
+        showModal = true;
     }
     
     [Inject]
     private NavigationManager Navigation { get; set; }
-
+    
     
     private void NavigationPanel(int panelId)
     {
         Navigation.NavigateTo($"/tasks/panel/{panelId}");
+    }
+
+    
+    private void ConfirmSelection()
+    {
+        Navigation.NavigateTo($"/panel/create/{selectedTeamId}");
     }
 }
