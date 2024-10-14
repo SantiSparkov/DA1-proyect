@@ -1,3 +1,4 @@
+using TaskPanelLibrary.DataTest;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
@@ -7,8 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
+    
 // Repositories
+
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
 builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
@@ -23,6 +25,9 @@ builder.Services.AddSingleton<ITaskService, TaskService>();
 builder.Services.AddSingleton<ICommentService, CommentService>();
 builder.Services.AddSingleton<PasswordGeneratorService>();
 builder.Services.AddSingleton<AuthService>();
+
+//Data for test
+builder.Services.AddSingleton<Panels>();
 
 var app = builder.Build();
 

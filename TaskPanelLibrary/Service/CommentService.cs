@@ -74,6 +74,11 @@ public class CommentService : ICommentService
         return comment;
     }
 
+    public List<Comment> GetCommentForTask(int taskId)
+    {
+        return _commentRepository.GetAll().Where(i => i.TaskId == taskId).ToList();
+    }
+
     public void VerifyComment(Comment comment)
     {
         if (String.IsNullOrEmpty(comment.Message) || comment.Status == null)

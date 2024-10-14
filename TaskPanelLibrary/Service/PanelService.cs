@@ -7,12 +7,12 @@ using Task = TaskPanelLibrary.Entity.Task;
 namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
-{
+{ 
     private readonly IPanelRepository _panelRepository;
-
+    
     public PanelService(IPanelRepository panelRepository)
     {
-        _panelRepository = panelRepository;
+        this._panelRepository = panelRepository;
     }
 
     public Panel CreatePanel(User user)
@@ -32,6 +32,7 @@ public class PanelService : IPanelService
     {
         return _panelRepository.GetAll().FindAll(i => i.Team.Id == idTeam);
     }
+    
 
     public Panel UpdatePanel(Panel panelUpdated)
     {
@@ -61,7 +62,6 @@ public class PanelService : IPanelService
         panel.Tasks.Add(task);
         return task;
     }
-
 
     public void AddTeam(int panelId, Team team)
     {

@@ -25,7 +25,7 @@ public class TaskServiceTest
     {
         _commentService = new CommentService(_commentRepository);
         taskRepository = new TaskRepository();
-        _taskService = new TaskService(taskRepository, _panelService, _commentService);
+        _taskService = new TaskService(taskRepository, _commentService);
     }
 
     [TestCleanup]

@@ -17,6 +17,7 @@ public class TaskService : ITaskService
     public TaskService(ITaskRepository taskRepository, ICommentService commentService)
     {
         _taskRepository = taskRepository;
+
         _commentService = commentService;
     }
 
@@ -31,7 +32,6 @@ public class TaskService : ITaskService
             throw new TaskNotValidException(task.Id);
 
         _taskRepository.AddTask(task);
-
         return task;
     }
 
@@ -63,7 +63,6 @@ public class TaskService : ITaskService
         if (comment == null)
             throw new CommentNotValidException();
         task.CommentList.Add(comment);
-        _commentService.AddComment(comment);
         _taskRepository.UpdateTask(task);
     }
 

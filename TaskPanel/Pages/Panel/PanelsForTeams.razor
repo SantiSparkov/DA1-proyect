@@ -1,0 +1,64 @@
+@page "/panelsforteams/{idTeam:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService;
+
+@inject Panels Panels;
+
+<PageTitle>Panels for teams</PageTitle>
+
+<h1>Panels for team</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Panel panel in _panels)
+    {
+        <tr>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Name</td>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Description</td>
+            <td>
+                <button  class="btn btn-primary mt-3" @onclick="() => NavigateUpdatePanel(panel.Id)" style="cursor: pointer;">Update</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+
+    [Parameter]
+    public int idTeam { get; set; }
+
+    private List<Panel> _panels;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Panels.createTeamAndPanel();
+        _panels = PanelService.GetAllPanelForTeam(idTeam);
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationPanel(int panelId)
+    {
+        Navigation.NavigateTo($"/taskforpanel/{panelId}");
+    }
+    
+    private void NavigateUpdatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/updatepanel/{panelId}");
+    }
+    
+    
+}

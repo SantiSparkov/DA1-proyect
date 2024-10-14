@@ -1,14 +1,15 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelLibrary.Service;
 
 public class TrashService : ITrashService
 {
-    private TrashRepository _trashRepository;
+    private readonly ITrashRepository _trashRepository;
 
-    public TrashService(TrashRepository trashRepository)
+    public TrashService(ITrashRepository trashRepository)
     {
         _trashRepository = trashRepository;
     }

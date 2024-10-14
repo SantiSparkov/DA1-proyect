@@ -3,6 +3,7 @@ using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
+using DateTime = System.DateTime;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Team = TaskPanelLibrary.Entity.Team;
@@ -12,9 +13,11 @@ namespace TaskPanelLibrary.Service;
 public class TeamService : ITeamService
 {
     private readonly ITeamRepository _teamRepository;
-    private readonly IUserService _userService;
-    private readonly IPanelService _panelService;
 
+    private readonly IUserService _userService;
+    
+    private readonly IPanelService _panelService;
+    
     public TeamService(ITeamRepository teamRepository, IUserService userService, IPanelService panelService)
     {
         _teamRepository = teamRepository;
@@ -25,15 +28,15 @@ public class TeamService : ITeamService
     public Team CreateTeam(Team team, int userId)
     {
         var user = _userService.GetUserById(userId);
-
+        
         if (!IsValidTeam(team, user))
         {
             throw new UserNotValidException("User is not admin");
         }
-
+        
         Team newTeam = new Team
         {
-            Name = team.Name,
+            Name = "team 1",
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers,
@@ -129,6 +132,22 @@ public class TeamService : ITeamService
 
         team.Panels.Remove(panel);
         _teamRepository.UpdateTeam(team);
+    }
+    
+    public List<Team> TeamsForUser(int userId)
+    {
+        List<Team> result = new List<Team>();
+        List<Team> teams = _teamRepository.GetAllTeams();
+        foreach (Team team in teams)
+        {
+            List<User> users = team.Users;
+            users.Where(i => i.Id == userId).ToList();
+            if (users.Count > 0)
+            {
+                result.Add(team);
+            }
+        }
+        return result;
     }
 
     private bool CanUpdateTeam(User updater, Team updatedTeam)

@@ -22,4 +22,6 @@ public interface ITeamService
     public void AddPanelToTeam(int panelId, Team team);
     
     public void RemovePanelFromTeam(int panelId, Team team);
+
+    public List<Team> TeamsForUser(int userId);
 }

@@ -1,0 +1,53 @@
+@page "/updatecomment/{commentId:int}"
+
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+
+@inject ICommentService CommentService
+
+@inject Panels Panels;
+
+<title>UpdateComment</title>
+
+<h1>Update comment</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task Id</th>
+        <th>Comment Id</th>
+        <th>Message</th>
+        <th>Status</th>
+        <th>Resolved by</th>
+        <th>Resolved at</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@comment.TaskId</td>
+        <td>@comment.Id</td>
+        <td>@comment.Message</td>
+        <td>@comment.Status</td>
+        <td>@comment.ResolvedBy.Email</td>
+        <td>@comment.ResolvedAt</td>
+    </tr>
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public int commentId { get; set; }
+
+    Comment comment;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        comment = CommentService.FindById(commentId);
+        Panels.createTeamAndPanel();
+        
+    }
+}
