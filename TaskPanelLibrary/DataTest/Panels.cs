@@ -18,27 +18,26 @@ public class Panels
     private ITaskService _taskService;
 
     private ICommentService _commentService;
+
+    private AuthService _authService;
     
-    public Panels(IUserService userService, IPanelService panelService, ITeamService teamService, ITaskService taskService, ICommentService commentService)
+    public Panels(IUserService userService, IPanelService panelService, ITeamService teamService, ITaskService taskService, ICommentService commentService, AuthService authService)
     {
         _userService = userService;
         _panelService = panelService;
         _teamService = teamService;
         _taskService = taskService;
         _commentService = commentService;
+        _authService = authService;
     }
 
     public void createTeamAndPanel()
     {
-        if (_userService.GetAllUsers().Count == 0)
+        if (_panelService.GetAllPanels().Count == 0)
         {
 
-            User user = new User()
-            {
-                Id = 1, Email = "test@mail.com", Name = "Fran", LastName = "Sosa", Trash = new Trash(), IsAdmin = true,
-                Password = "password"
-            };
-            _userService.AddUser(user);
+            User user = _authService.GetCurrentUser();
+            
             Team team = _teamService.CreateTeam(new Team()
             {
                 Panels = new List<Panel>(), Id = 1, Name = "Name panel", TasksDescription = "description",
@@ -53,6 +52,10 @@ public class Panels
             };
             Comment comment = _commentService.CreateComment();
             comment.TaskId = task.Id;
+            comment.Message = "Comentario de prueba!";
+            comment.Status = EStatusComment.PENDING;
+            comment.ResolvedBy = user;
+            comment.ResolvedAt = DateTime.Now;
             _taskService.AddTask(task);
             _taskService.AddComentToTask(task.Id, comment);
             _panelService.AddTask(panel.Id, task);

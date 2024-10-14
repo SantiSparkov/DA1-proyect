@@ -63,7 +63,6 @@ public class TaskService : ITaskService
         if (comment == null)
             throw new CommentNotValidException();
         task.CommentList.Add(comment);
-        _commentService.AddComment(comment);
         _taskRepository.UpdateTask(task);
     }
 

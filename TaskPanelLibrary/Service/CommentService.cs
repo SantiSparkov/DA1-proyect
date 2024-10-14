@@ -69,7 +69,7 @@ public class CommentService : ICommentService
 
     public Comment AddComment(Comment comment)
     {
-        //VerifyComment(comment);
+        VerifyComment(comment);
         _commentRepository.Add(comment);
         return comment;
     }

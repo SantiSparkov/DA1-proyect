@@ -25,12 +25,15 @@
     <tbody>
     @foreach ( Task task in tasks)
     {
-        <tr @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">
-            <td>@task.Id</td>
-            <td>@task.Title</td>
-            <td>@task.Description</td>
-            <td>@task.Priority</td>
-            <td>@task.DueDate</td>
+        <tr>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Title</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate</td>
+            <td>
+                <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateTask(task.Id)" style="cursor: pointer;">Update</button>
+            </td>
         </tr>
     }
     </tbody>
@@ -56,5 +59,10 @@
     private void NavigationComments(int taskId)
     {
         Navigation.NavigateTo($"/comments/{taskId}");
+    }
+    
+    private void NavigationUpdateTask(int taskId)
+    {
+        Navigation.NavigateTo($"/updatetask/{taskId}");
     }
 }

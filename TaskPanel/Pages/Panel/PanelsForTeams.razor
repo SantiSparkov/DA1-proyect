@@ -22,9 +22,12 @@
     <tbody>
     @foreach (Panel panel in _panels)
     {
-        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">
-            <td>@panel.Name</td>
-            <td>@panel.Description</td>
+        <tr>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Name</td>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Description</td>
+            <td>
+                <button  class="btn btn-primary mt-3" @onclick="() => NavigateUpdatePanel(panel.Id)" style="cursor: pointer;">Update</button>
+            </td>
         </tr>
     }
     </tbody>
@@ -51,4 +54,11 @@
     {
         Navigation.NavigateTo($"/taskforpanel/{panelId}");
     }
+    
+    private void NavigateUpdatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/updatepanel/{panelId}");
+    }
+    
+    
 }

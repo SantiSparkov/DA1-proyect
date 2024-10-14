@@ -1,35 +1,38 @@
-@page "/editcomment/{commentId:int}"
+@page "/updatecomment/{commentId:int}"
 
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
 
-@inject CommentService CommentService
+@inject ICommentService CommentService
 
 @inject Panels Panels;
 
-<title>TaskForPanel</title>
+<title>UpdateComment</title>
 
-<h1>Task for Panel</h1>
+<h1>Update comment</h1>
 
 <table class="table">
     <thead>
     <tr>
         <th>Task Id</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Priority</th>
-        <th>Description</th>
+        <th>Comment Id</th>
+        <th>Message</th>
+        <th>Status</th>
+        <th>Resolved by</th>
+        <th>Resolved at</th>
     </tr>
     </thead>
     <tbody>
     <tr>
+        <td>@comment.TaskId</td>
         <td>@comment.Id</td>
         <td>@comment.Message</td>
         <td>@comment.Status</td>
+        <td>@comment.ResolvedBy.Email</td>
         <td>@comment.ResolvedAt</td>
-        <td>@comment.ResolvedBy.Id</td>
-        </tr>
+    </tr>
     </tbody>
 </table>
 

@@ -1,5 +1,4 @@
 @page "/teamsforuser/{idUser:int}"
-@using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Service.Interface
 
@@ -21,9 +20,12 @@
     <tbody>
     @foreach ( TaskPanelLibrary.Entity.Team team in teams)
     {
-        <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">
-            <td>@team.Name</td>
-            <td>@team.TasksDescription</td>
+        <tr>
+            <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.Name</td>
+            <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.TasksDescription</td>
+            <td>
+                <button class="btn btn-primary mt-3" @onclick="() => NavigateUpdateTeam(team.Id)" style="cursor: pointer;">Update</button>
+            </td>
         </tr>
     }
     </tbody>
@@ -49,5 +51,10 @@
     private void NavigateToPanelsForTeams(int teamId)
     {
         Navigation.NavigateTo($"/panelsforteams/{teamId}");
+    }
+    
+    private void NavigateUpdateTeam(int teamId)
+    {
+        Navigation.NavigateTo($"/updateteam/{teamId}");
     }
 }
