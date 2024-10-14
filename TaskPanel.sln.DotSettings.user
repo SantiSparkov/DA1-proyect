@@ -10,6 +10,11 @@
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002ECodeDom_002ECompiler_002EGeneratedCodeAttribute/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002EDiagnostics_002ECodeAnalysis_002EExcludeFromCodeCoverageAttribute/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002EDiagnostics_002ECodeAnalysis_002EExcludeFromCodeCoverageAttribute/@EntryIndexRemoved">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=28c25ee0_002D7b2c_002D4169_002D96da_002D16a868f58c2f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ImportCsvServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelLibrary.Tests.ImportCsvServiceTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	

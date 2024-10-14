@@ -14,11 +14,14 @@ public class TaskService : ITaskService
 
     private readonly ICommentService _commentService;
 
-    public TaskService(ITaskRepository taskRepository, ICommentService commentService)
+    private readonly IPanelService _panelService;
+
+    public TaskService(ITaskRepository taskRepository, ICommentService commentService, IPanelService panelService)
     {
         _taskRepository = taskRepository;
 
         _commentService = commentService;
+        _panelService = panelService;
     }
 
     public List<Task> GetAllTasks(int panelId)
@@ -35,8 +38,8 @@ public class TaskService : ITaskService
 
     public Task CreateTask(Task task)
     {
-       if (!IsValidTask(task))
-         throw new TaskNotValidException(task.Id);
+        if (!IsValidTask(task))
+            throw new TaskNotValidException(task.Id);
 
         _taskRepository.AddTask(task);
         return task;
