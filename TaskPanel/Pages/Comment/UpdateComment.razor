@@ -76,11 +76,14 @@
         
     }
     
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
     private void NavigationUpdateComment(Comment comment)
     {
         this.comment.ResolvedAt = DateTime.Now;
         CommentService.UpdateComment(comment);
-        
+        Navigation.NavigateTo($"/comments/{comment.TaskId}");
     }
     
     private void HandleValidSubmit()

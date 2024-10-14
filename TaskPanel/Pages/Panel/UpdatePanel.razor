@@ -1,4 +1,4 @@
-@page "/updatepanel/{panelId:int}"
+@page "/updatepanel/{panelId:int}/{teamId:int}"
 
 
 @using TaskPanelLibrary.DataTest
@@ -13,9 +13,7 @@
 
 @inject Panels Panels;
 
-<title>Update Task</title>
-
-<h1>Update Task</h1>
+<h1>Update Panel</h1>
 
 <EditForm Model="@panel">
 
@@ -44,6 +42,9 @@
 @code {
     [Parameter]
     public int panelId { get; set; }
+    
+    [Parameter]
+    public int teamId { get; set; }
 
     Panel panel;
 
@@ -54,9 +55,13 @@
         Panels.createTeamAndPanel();
     }
 
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
     private void NavigationUpdatePanel(Panel Panel)
     {
-        
         PanelService.UpdatePanel(panel);
+        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+
     }
 }

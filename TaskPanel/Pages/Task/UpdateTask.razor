@@ -20,34 +20,32 @@
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Description</th>
-                <th>Due date</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Description</th>
+            <th>Due date</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    <InputText @bind-Value="task.Title" placeholder="Enter task title" />
-                </td>
-                <td>
-                    <InputSelect @bind-Value="task.Priority">
-                        @foreach (var p in Enum.GetValues(typeof(ETaskPriority)))
-                        {
-                            <option value="@p">@p</option>
-                        }
-                    </InputSelect>
-                </td>
-
-                <td>
-                    <InputText @bind-Value="task.Description" placeholder=@task.Description />
-                </td>
-                <td>
-                    <InputDate @bind-Value="task.DueDate" placeholder=@task.DueDate />
-                    </td>
-            </tr>
+        <tr>
+            <td>
+                <label for="floatingInput"> @task.Id </label>
+            </td>
+            <td>
+                <InputText @bind-Value="task.Title" placeholder=@task.Title />
+            </td>
+            <td>
+                <label for="floatingInput">@task.Priority </label>
+            </td>
+            <td>
+                <InputText @bind-Value="task.Description" placeholder=@task.Description />
+            </td>
+            <td>
+                <label for="floatingInput">@task.DueDate </label>
+            </td>
+        </tr>
         </tbody>
     </table>
 
@@ -66,10 +64,15 @@
         task = TaskService.GetTaskById(taskId);
         Panels.createTeamAndPanel();
     }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
 
     private void NavigationUpdateTask(Task task)
     {
-        
         TaskService.UpdateTask(task);
+        Navigation.NavigateTo($"/taskforpanel/{@task.PanelId}");
     }
+    
 }
