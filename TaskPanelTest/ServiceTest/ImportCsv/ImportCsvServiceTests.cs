@@ -5,7 +5,7 @@ using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 using Task = System.Threading.Tasks.Task;
 
-namespace TaskPanelLibrary.Tests
+namespace TaskPanelTest.ServiceTest.ImportCsv
 {
     [TestClass]
     public class ImportCsvServiceTests
@@ -37,13 +37,13 @@ namespace TaskPanelLibrary.Tests
             var mockFile = GetCsvFileFromResources("test.csv");
 
             _mockPanelService.Setup(service => service.FindById(It.IsAny<int>())).Returns(new Panel());
-            _mockTaskService.Setup(service => service.CreateTask(It.IsAny<Entity.Task>()));
+            _mockTaskService.Setup(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()));
 
             // Act
             await _importCsvService.ImportTasksFromFile(mockFile, "testUser");
 
             // Assert
-            _mockTaskService.Verify(service => service.CreateTask(It.IsAny<Entity.Task>()), Times.Once);
+            _mockTaskService.Verify(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()), Times.Once);
         }
     }
 }

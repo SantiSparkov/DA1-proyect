@@ -11,6 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Components.Web">
+        <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.35\Microsoft.AspNetCore.Components.Web.dll</HintPath>
+      </Reference>
       <Reference Include="Microsoft.AspNetCore.Mvc.ViewFeatures">
         <HintPath>..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\6.0.33\Microsoft.AspNetCore.Mvc.ViewFeatures.dll</HintPath>
       </Reference>

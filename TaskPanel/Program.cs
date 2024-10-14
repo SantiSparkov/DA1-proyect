@@ -25,6 +25,7 @@ builder.Services.AddSingleton<ITaskService, TaskService>();
 builder.Services.AddSingleton<ICommentService, CommentService>();
 builder.Services.AddSingleton<PasswordGeneratorService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<ImportCsvService>();
 
 //Data for test
 builder.Services.AddSingleton<Panels>();
