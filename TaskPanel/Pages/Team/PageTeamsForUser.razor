@@ -1,4 +1,4 @@
-@page "/teamsforuser/{idUser:int}"
+@page "/teams/user/{idUser:int}"
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Service.Interface
 
@@ -24,15 +24,11 @@
             <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.Name</td>
             <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.TasksDescription</td>
             <td>
-                <button class="btn btn-primary mt-3" @onclick="() => NavigateUpdateTeam(team.Id)" style="cursor: pointer;">Update</button>
             </td>
         </tr>
     }
     </tbody>
 </table>
-
-<button class="btn btn-primary mt-3" @onclick="() => NavigationCreateTeam()" style="cursor: pointer;">New Team</button>
-
 
 @code {
     
@@ -53,15 +49,6 @@
 
     private void NavigateToPanelsForTeams(int teamId)
     {
-        Navigation.NavigateTo($"/panelsforteams/{teamId}");
-    }
-    
-    private void NavigateUpdateTeam(int teamId)
-    {
-        Navigation.NavigateTo($"/updateteam/{teamId}");
-    }
-    private void NavigationCreateTeam()
-    {
-        Navigation.NavigateTo("/teams/create");
+        Navigation.NavigateTo($"/panels/teams/{teamId}");
     }
 }

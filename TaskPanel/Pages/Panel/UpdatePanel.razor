@@ -1,4 +1,4 @@
-@page "/updatepanel/{panelId:int}/{teamId:int}"
+@page "/panel/updated/{panelId:int}/{teamId:int}"
 
 
 @using TaskPanelLibrary.DataTest
@@ -37,6 +37,8 @@
     </table>
 
     <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdatePanel(panel)">Update</button>
+    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()">Cancel</button>
+
 </EditForm>
 
 @code {
@@ -61,6 +63,11 @@
     private void NavigationUpdatePanel(Panel Panel)
     {
         PanelService.UpdatePanel(panel);
-        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+        Navigation.NavigateTo($"/panels/teams/{teamId}");
+    }
+    
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/panels/teams/{teamId}");
     }
 }

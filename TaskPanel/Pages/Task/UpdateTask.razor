@@ -1,4 +1,4 @@
-@page "/updatetask/{taskId:int}"
+@page "/task/updated/{taskId:int}/{panelId:int}"
 
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.DataTest
@@ -50,11 +50,16 @@
     </table>
 
     <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateTask(task)">Update</button>
+    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()" >Cancel</button>
+
 </EditForm>
 
 @code {
     [Parameter]
     public int taskId { get; set; }
+
+    [Parameter]
+    public int panelId { get; set; }
 
     Task task;
 
@@ -72,7 +77,12 @@
     private void NavigationUpdateTask(Task task)
     {
         TaskService.UpdateTask(task);
-        Navigation.NavigateTo($"/taskforpanel/{@task.PanelId}");
+        Navigation.NavigateTo($"/tasks/panel/{@task.PanelId}");
+    }
+    
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
     }
     
 }
