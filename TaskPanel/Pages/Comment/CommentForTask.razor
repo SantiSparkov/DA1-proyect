@@ -60,16 +60,16 @@
 
     private void NavigationViewComment(int commentId)
     {
-       Navigation.NavigateTo($"/viewcomment/{commentId}");
+       Navigation.NavigateTo($"/comment/view/{commentId}");
     }
     
     private void NavigationUpdateComment(int commentId)
     {
-        Navigation.NavigateTo($"/updatecomment/{commentId}");
+        Navigation.NavigateTo($"/comment/update/{commentId}");
     }
     
     private void NavigationCreateComment()
     {
-        Navigation.NavigateTo($"/newcomment/{taskId}");
+        Navigation.NavigateTo($"/comment/new/{taskId}");
     }
 }

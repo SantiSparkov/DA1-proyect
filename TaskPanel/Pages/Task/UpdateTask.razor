@@ -1,4 +1,4 @@
-@page "/updatetask/{taskId:int}/{panelId:int}"
+@page "/task/updated/{taskId:int}/{panelId:int}"
 
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.DataTest
@@ -77,12 +77,12 @@
     private void NavigationUpdateTask(Task task)
     {
         TaskService.UpdateTask(task);
-        Navigation.NavigateTo($"/taskforpanel/{@task.PanelId}");
+        Navigation.NavigateTo($"/tasks/panel/{@task.PanelId}");
     }
     
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/taskforpanel/{panelId}");
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
     }
     
 }

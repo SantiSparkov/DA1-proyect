@@ -1,4 +1,4 @@
-@page "/panelsforteams/{idTeam:int}"
+@page "/panels/teams/{idTeam:int}"
 
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.DataTest
@@ -54,17 +54,17 @@
 
     private void NavigationPanel(int panelId)
     {
-        Navigation.NavigateTo($"/taskforpanel/{panelId}");
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
     }
     
     private void NavigateUpdatePanel(int panelId)
     {
-        Navigation.NavigateTo($"/updatepanel/{panelId}/{idTeam}");
+        Navigation.NavigateTo($"/panel/updated/{panelId}/{idTeam}");
     }
     
     private void NavigateCreatePanel(int panelId)
     {
-        Navigation.NavigateTo($"/createpanel/{idTeam}");
+        Navigation.NavigateTo($"/panel/create/{idTeam}");
     }
     
     

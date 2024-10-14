@@ -1,4 +1,4 @@
-@page "/teamsforuser/{idUser:int}"
+@page "/teams/user/{idUser:int}"
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Service.Interface
 
@@ -53,7 +53,7 @@
 
     private void NavigateToPanelsForTeams(int teamId)
     {
-        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+        Navigation.NavigateTo($"/panels/teams/{teamId}");
     }
     
     private void NavigateUpdateTeam(int teamId)

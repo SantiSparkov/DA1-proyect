@@ -123,6 +123,6 @@
     private void NavigateToTeamsForUser()
     {
         TaskPanelLibrary.Entity.User user = AuthService.GetCurrentUser();
-        NavigationManager.NavigateTo( $"/teamsforuser/{user.Id}");
+        NavigationManager.NavigateTo( $"/teams/user/{user.Id}");
     }
 }

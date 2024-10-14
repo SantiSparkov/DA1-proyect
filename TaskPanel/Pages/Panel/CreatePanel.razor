@@ -1,4 +1,4 @@
-@page "/createpanel/{teamId:int}"
+@page "/panel/create/{teamId:int}"
 
 
 @using TaskPanelLibrary.DataTest
@@ -61,7 +61,7 @@
 
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/panelsforteams/{teamId}");
+        Navigation.NavigateTo($"/panels/teams/{teamId}");
 
     }
 }
