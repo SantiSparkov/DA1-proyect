@@ -6,4 +6,10 @@ public class UserNotValidException : SystemException
         : base(message)
     {
     }
+    
+    public UserNotValidException(int id)
+        : base($"User with id {id} not found")
+    {
+    }
+    
 }
