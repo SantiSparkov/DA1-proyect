@@ -21,4 +21,11 @@
       <ProjectReference Include="..\TaskPanel\TaskPanel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="resources\taskImport.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+
 </Project>
