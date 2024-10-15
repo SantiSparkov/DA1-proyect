@@ -1,0 +1,72 @@
+@page "/panels/user/{userId:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<h1>Panels for User</h1>
+
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>Team Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-center">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var panel in _panels)
+    {
+        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
+            <td>@panel.Team.Id</td>
+            <td>@panel.Name</td>
+            <td>@panel.Description</td>
+            <td class="text-center">
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<button class="btn btn-primary mt-3" @onclick="CreateNewPanel">New Panel</button>
+
+@code {
+
+    [Parameter] public int userId { get; set; }
+
+    private List<Panel> _panels;
+
+    protected override void OnInitialized()
+    {
+        _panels = PanelService.GetAllPanelForUser(userId);
+    }
+
+    private void NavigationPanel(int panelId)
+    {
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
+    }
+
+    private void CreateNewPanel()
+    {
+        Navigation.NavigateTo("/panel/create");
+    }
+
+    private void NavigateUpdatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/panel/update/{panelId}");
+    }
+
+    private void ConfirmDeletePanel(int panelId)
+    {
+        PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+        _panels = PanelService.GetAllPanelForUser(userId);
+    }
+
+}

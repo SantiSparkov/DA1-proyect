@@ -1,9 +1,128 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using TaskPanelLibrary.Service
 
-<h1>Hello, world!</h1>
+@inject NavigationManager NavigationManager
 
-Welcome to your new app.
+@inject AuthService AuthService
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+
+<PageTitle>Task Panel</PageTitle>
+
+<div class="text-center my-5">
+    <h1 class="display-4">Task Panel</h1>
+    <p class="lead">Your collaborative task management platform</p>
+    <p class="mb-5">Effortlessly organize tasks, manage teams, and stay on top of your projects in real-time.</p>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-3 feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-tasks fa-3x text-primary"></i>
+            </div>
+            <h4>Task Management</h4>
+            <p>Create, prioritize, and track tasks with ease.</p>
+        </div>
+        
+      <div class="col-md-3 feature-box" @onclick="NavigateToTeamsForUser" style="cursor: pointer;">
+          <div class="feature-icon">
+              <i class="fas fa-users fa-3x text-success"></i>
+          </div>
+          <h4>Team Collaboration</h4>
+          <p>Work together with your team on shared projects in real-time.</p>
+      </div>
+
+        
+        
+      <div class="col-md-3 feature-box" @onclick="NavigateToTeamsForUser" style="cursor: pointer;">
+            <div class="feature-icon">
+                <i class="fas fa-chalkboard fa-3x text-info"></i>
+            </div>
+            <h4>Task Boards</h4>
+            <p>Organize tasks into boards and assign them to teams for better workflow management.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-3 feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-comment fa-3x text-warning"></i>
+            </div>
+            <h4>Comments & Feedback</h4>
+            <p>Add comments to tasks to keep communication clear and focused.</p>
+        </div>
+        <div class="col-md-3 feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-history fa-3x text-danger"></i>
+            </div>
+            <h4>Task History</h4>
+            <p>Review task history, reactivate expired tasks, and maintain progress.</p>
+        </div>
+        <div class="col-md-3 feature-box">
+            <div class="feature-icon">
+                <i class="fas fa-file-import fa-3x text-secondary"></i>
+            </div>
+            <h4>Import Tasks</h4>
+            <p>Quickly import task lists from CSV files and streamline your workflow.</p>
+        </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg mt-4" @onclick="NavigateToTasks">Get Started</button>
+</div>
+
+<style>
+    h1.display-4 {
+        font-size: 3.5rem;
+        font-weight: 300;
+    }
+
+    .feature-box {
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+        margin-bottom: 15px;
+    }
+
+    p.lead {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+
+    .btn-primary {
+        padding: 10px 30px;
+        font-size: 1.2rem;
+    }
+
+    .text-center {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+</style>
+
+@code {
+
+    private void NavigateToTasks()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private void NavigateToTeamsForUser()
+    {
+        TaskPanelLibrary.Entity.User user = AuthService.GetCurrentUser();
+        NavigationManager.NavigateTo( $"/teams/user/{user.Id}");
+    }
+}

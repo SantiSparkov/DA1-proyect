@@ -1,0 +1,53 @@
+@page "/panel/update/{panelId:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+@inject IPanelService PanelService
+@inject NavigationManager Navigation
+
+<h1>Update Panel</h1>
+
+<EditForm Model="@panel" OnValidSubmit="NavigationUpdatePanel">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label for="panelName">Name:</label>
+        <InputText id="panelName" @bind-Value="panel.Name" class="form-control" placeholder="Panel Name"/>
+        <ValidationMessage For="@(() => panel.Name)"/>
+    </div>
+
+    <div class="form-group">
+        <label for="panelDescription">Description:</label>
+        <InputTextArea id="panelDescription" @bind-Value="panel.Description" class="form-control" placeholder="Panel Description"/>
+        <ValidationMessage For="@(() => panel.Description)"/>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Update</button>
+        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public int panelId { get; set; }
+
+    Panel panel;
+
+    protected override void OnInitialized()
+    {
+        panel = PanelService.FindById(panelId);
+    }
+
+    private void NavigationUpdatePanel()
+    {
+        PanelService.UpdatePanel(panel);
+        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
+    }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
+    }
+
+}

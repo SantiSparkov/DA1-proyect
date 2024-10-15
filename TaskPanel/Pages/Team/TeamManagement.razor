@@ -1,0 +1,141 @@
+﻿@page "/teams"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+
+<h3>Teams</h3>
+
+@if (_teams != null && _teams.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Creation Date</th>
+            <th>Task Description</th>
+            <th>Max Members</th>
+            <th>Actions</th>
+            <th>Members</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var team in _teams)
+        {
+            <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;" class="selectable-row">
+                <td>@team.Id</td>
+                <td>@team.Name</td>
+                <td>@team.CreationDate.ToShortDateString()</td>
+                <td>@team.TasksDescription</td>
+                <td>@team.MaxAmountOfMembers</td>
+                <td>
+                    <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-info" @onclick="() => ShowMembers(team)" @onclick:stopPropagation>View Members</button>
+                </td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No teams available. Please create one.</p>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+<button class="btn btn-primary mt-3" @onclick="NavigateToCreateTeam">Create New Team</button>
+
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showModal ? "block" : "none");" aria-hidden="@(showModal ? "false" : "true")">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Team Members</h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+            </div>
+            <div class="modal-body">
+                @if (selectedTeam != null && selectedTeam.Users != null && selectedTeam.Users.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var user in selectedTeam.Users)
+                        {
+                            <li class="list-group-item">@user.Name (@user.Email)</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No users assigned to this team.</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .selectable-row:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+    }
+</style>
+
+@code {
+    private List<Team> _teams;
+    private string _errorMessage;
+    private bool showModal = false;
+    private Team selectedTeam = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _teams = TeamService.GetAllTeams();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private void NavigateToCreateTeam()
+    {
+        NavigationManager.NavigateTo("/teams/create");
+    }
+
+    private void EditTeam(int id)
+    {
+        NavigationManager.NavigateTo($"/teams/edit/{id}");
+    }
+
+    private void ShowMembers(Team team)
+    {
+        if (team.Users != null)
+        {
+            selectedTeam = team;
+            showModal = true;
+        }
+    }
+
+    private void NavigateToPanelsForTeams(int teamId)
+    {
+        NavigationManager.NavigateTo($"/panels/teams/{teamId}");
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        selectedTeam = null;
+    }
+
+}

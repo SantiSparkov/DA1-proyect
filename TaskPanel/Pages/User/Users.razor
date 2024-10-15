@@ -1,0 +1,106 @@
+﻿@page "/users"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@layout MainLayout
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<h3>User Management</h3>
+
+@if (_currentUser == null)
+{
+    NavigationManager.NavigateTo("/error");
+}
+else if (_currentUser.IsAdmin)
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Birth Date</th>
+            <th>Admin</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.BirthDate.ToShortDateString()</td>
+                <td>@(user.IsAdmin ? "Yes" : "No")</td>
+                <td>
+                    @if (_currentUser.Id != user.Id && !user.IsAdmin)
+                    {
+                        <button class="btn btn-warning" @onclick="() => EditUser(user.Id)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteUser(user.Id)">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    NavigationManager.NavigateTo("/error");
+}
+
+<button class="btn btn-primary" @onclick="NavigateToAddUser">Create</button>
+
+@code {
+    private List<User> users;
+
+    private User _currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AuthService.IsLoggedIn())
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        _currentUser = AuthService.GetCurrentUser();
+
+        if (_currentUser == null || !_currentUser.IsAdmin)
+        {
+            NavigationManager.NavigateTo("/Error/NotAuthorized");
+            return;
+        }
+
+        users = UserService.GetAllUsers();
+    }
+
+    private void NavigateToAddUser()
+    {
+        NavigationManager.NavigateTo("/users/create");
+    }
+
+    private User DeleteUser(int id)
+    {
+        if (!_currentUser.IsAdmin)
+        {
+            NavigationManager.NavigateTo("/error");
+        }
+
+        var user = UserService.DeleteUser(id);
+        users = UserService.GetAllUsers();
+        return user;
+    }
+
+    private void EditUser(int id)
+    {
+        NavigationManager.NavigateTo(!_currentUser.IsAdmin ? "/error" : $"/users/edit/{id}");
+    }
+
+}

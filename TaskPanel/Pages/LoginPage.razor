@@ -1,0 +1,54 @@
+﻿@page "/login"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@layout LoginLayout
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="login-container">
+    <div class="login-box">
+        <h3 class="text-center">Sign In</h3>
+
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator/>
+            @* <ValidationSummary class="text-danger"/> *@
+
+            <div class="form-group">
+                <label>Email</label>
+                <InputText @bind-Value="loginModel.Email" class="form-control" placeholder="Enter your email"/>
+                <ValidationMessage For="@(() => loginModel.Email)"/>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <InputText @bind-Value="loginModel.Password" class="form-control" type="password" placeholder="Enter your password"/>
+                <ValidationMessage For="@(() => loginModel.Password)"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-3">Log In</button>
+        </EditForm>
+
+        @if (!string.IsNullOrEmpty(loginError))
+        {
+            <div class="alert alert-danger mt-3 text-center">@loginError</div>
+        }
+    </div>
+</div>
+
+@code {
+    private Login loginModel = new();
+    private string loginError;
+
+    private void HandleLogin()
+    {
+        if (AuthService.Login(loginModel.Email, loginModel.Password))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            loginError = "Invalid credentials.";
+        }
+    }
+
+}

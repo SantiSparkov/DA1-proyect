@@ -1,0 +1,67 @@
+﻿@page "/import-tasks"
+@using TaskPanelLibrary.Service
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+@inject ImportCsvService ImportCsvService
+
+<h3>Import Tasks</h3>
+
+<form @onsubmit="HandleFileUpload">
+    <div class="form-group">
+        <label for="taskFile">Upload CSV file:</label>
+        <InputFile OnChange="HandleFileSelected" />
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Import Tasks</button>
+        <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(_successMessage))
+{
+    <div class="alert alert-success">@_successMessage</div>
+}
+
+@code {
+    private IBrowserFile _selectedFile;
+    private string _errorMessage;
+    private string _successMessage;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _selectedFile = e.File;
+    }
+
+    private async Task HandleFileUpload()
+    {
+        if (_selectedFile == null)
+        {
+            _errorMessage = "Please select a CSV file to upload.";
+            return;
+        }
+
+        try
+        {
+            var user = AuthService.GetCurrentUser();
+            await ImportCsvService.ImportTasksFromFile(_selectedFile, user.Name);
+            _successMessage = "Tasks imported successfully!";
+            _errorMessage = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error during import: {ex.Message}";
+            _successMessage = string.Empty;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

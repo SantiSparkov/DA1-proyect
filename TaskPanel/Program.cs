@@ -1,26 +1,44 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using TaskPanel.Data;
+using TaskPanelLibrary.DataTest;
+using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
+using TaskPanelLibrary.Service;
+using TaskPanelLibrary.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+    
+// Repositories
+
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
+builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
+builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+
+// Services
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<ITeamService, TeamService>();
+builder.Services.AddSingleton<IPanelService, PanelService>();
+builder.Services.AddSingleton<ITaskService, TaskService>();
+builder.Services.AddSingleton<ICommentService, CommentService>();
+builder.Services.AddSingleton<PasswordGeneratorService>();
+builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<ImportCsvService>();
+
+//Data for test
+builder.Services.AddSingleton<Panels>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 app.UseRouting();

@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@inject AuthService AuthService
+@using TaskPanelLibrary.Service
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <PageTitle>TaskPanel</PageTitle>
 
@@ -9,7 +12,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="https://github.com/IngSoft-DA1/291719_270092_251817" target="_blank">About</a>
         </div>
 
         <article class="content px-4">
@@ -17,3 +20,15 @@
         </article>
     </main>
 </div>
+
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && !AuthService.IsLoggedIn())
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+}

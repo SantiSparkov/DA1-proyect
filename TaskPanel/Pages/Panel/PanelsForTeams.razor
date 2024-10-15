@@ -1,0 +1,74 @@
+@page "/panels/teams/{idTeam:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+
+@inject IPanelService PanelService;
+@inject AuthService AuthService;
+@inject NavigationManager Navigation;
+
+<PageTitle>Panels for teams</PageTitle>
+
+<h1 class="mb-4">Panels for Team</h1>
+
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-center">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Panel panel in _panels)
+    {
+        <tr>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Name</td>
+            <td @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">@panel.Description</td>
+            <td class="text-center">
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-start mt-3">
+    <button class="btn btn-primary" @onclick="() => NavigateCreatePanel(idTeam)" style="cursor: pointer;">New Panel</button>
+</div>
+
+@code {
+
+    [Parameter] public int idTeam { get; set; }
+
+    private List<Panel> _panels;
+
+    protected override void OnInitialized()
+    {
+        _panels = PanelService.GetAllPanelForTeam(idTeam);
+    }
+
+    private void NavigationPanel(int panelId)
+    {
+        Navigation.NavigateTo($"/tasks/panel/{panelId}");
+    }
+
+    private void NavigateUpdatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/panel/update/{panelId}");
+    }
+
+    private void NavigateCreatePanel(int idTeam)
+    {
+        Navigation.NavigateTo($"/panel/create/{idTeam}");
+    }
+
+    private void ConfirmDeletePanel(int panelId)
+    {
+        PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+        _panels = PanelService.GetAllPanelForTeam(idTeam);
+    }
+
+}
