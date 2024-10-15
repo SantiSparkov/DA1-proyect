@@ -73,27 +73,10 @@ public class PanelService : IPanelService
         user.Trash.AddPanel(panel);
         return panel;
     }
-    
-    public void AddTeam(int panelId, Team team)
-    {
-        Panel panel = _panelRepository.FindById(panelId);
-        foreach (var user in team.Users)
-        {
-            if (!ContainsInGroup(panel, user))
-            {
-                panel.Team.Users.Add(user);
-            }
-        }
-    }
 
     public Panel FindById(int panelId)
     {
         return _panelRepository.FindById(panelId);
-    }
-
-    private Boolean ContainsInGroup(Panel panel, User user)
-    {
-        return panel.Team.Users.Contains(user);
     }
     
     public List<Panel> GetAllPanels()

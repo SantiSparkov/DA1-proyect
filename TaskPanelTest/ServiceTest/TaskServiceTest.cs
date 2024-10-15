@@ -167,10 +167,11 @@ public class TaskServiceTest
             TaskId = createdTask.Id,
             Message = "Comment test"
         };
+        
         var createdComment = _commentService.CreateComment(comment);
-        _taskService.AddComentToTask(createdTask.Id, createdComment);
         
         // Act
+        _taskService.AddComentToTask(createdTask.Id, createdComment);
         _taskService.MarkCommentAsDone(createdTask.Id, createdComment.Id);
         
         // Assert
@@ -178,7 +179,34 @@ public class TaskServiceTest
         Assert.AreEqual(1, task.CommentList.Count);
         Assert.AreEqual(EStatusComment.RESOLVED, task.CommentList.First().Status);
     }
-    
+
+    [TestMethod]
+    public void GetAllTasks()
+    {
+        // Arrange   
+        var panel = new Panel()
+        {
+            Id = 1,
+            Name = "Panel test",
+            Description = "Description test",
+            Team = new Team()
+            {
+                Id = 1,
+            },
+            Tasks = new List<Task>()
+        };
+        
+        _taskService.CreateTask(_task);
+        panel.Tasks.Add(_task);
+        var createdPanel = _panelService.CreatePanel(panel);
+        
+        // Act
+        var tasks = _taskService.GetAllTasks(panel.Id);
+        
+        // Assert
+        Assert.IsNotNull(tasks, "The tasks are not found");
+    }
+
     [TestMethod]
     public void GetTaskById()
     {
