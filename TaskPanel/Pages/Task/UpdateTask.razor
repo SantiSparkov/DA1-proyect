@@ -1,88 +1,78 @@
-@page "/task/updated/{taskId:int}/{panelId:int}"
-
-@using TaskPanelLibrary.Service
-@using TaskPanelLibrary.DataTest
-@using TaskPanelLibrary.Entity
+@page "/task/update/{taskId:int}"
 @using TaskPanelLibrary.Entity.Enum
 @using TaskPanelLibrary.Service.Interface
-@using System.Data
 @using Task = TaskPanelLibrary.Entity.Task
 
-@inject ITaskService TaskService;
-
-@inject Panels Panels;
+@inject ITaskService TaskService
+@inject NavigationManager Navigation
 
 <title>Update Task</title>
 
 <h1>Update Task</h1>
 
-<EditForm Model="@task">
+<EditForm Model="@task" OnValidSubmit="NavigationUpdateTask">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Priority</th>
-            <th>Description</th>
-            <th>Due date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <label for="floatingInput"> @task.Id </label>
-            </td>
-            <td>
-                <InputText @bind-Value="task.Title" placeholder=@task.Title />
-            </td>
-            <td>
-                <label for="floatingInput">@task.Priority </label>
-            </td>
-            <td>
-                <InputText @bind-Value="task.Description" placeholder=@task.Description />
-            </td>
-            <td>
-                <label for="floatingInput">@task.DueDate </label>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="form-group">
+        <label for="taskId">Task Id:</label>
+        <p>@task.Id</p>
+    </div>
 
-    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateTask(task)">Update</button>
-    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()" >Cancel</button>
+    <div class="form-group">
+        <label for="taskTitle">Title:</label>
+        <InputText id="taskTitle" @bind-Value="task.Title" class="form-control" placeholder="Task Title"/>
+        <ValidationMessage For="@(() => task.Title)"/>
+    </div>
 
+    <div class="form-group">
+        <label for="taskPriority">Priority:</label>
+        <InputSelect id="taskPriority" @bind-Value="task.Priority" class="form-control">
+            @foreach (var priority in Enum.GetValues(typeof(ETaskPriority)))
+            {
+                <option value="@priority">@priority</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => task.Priority)"/>
+    </div>
+
+    <div class="form-group">
+        <label for="taskDescription">Description:</label>
+        <InputTextArea id="taskDescription" @bind-Value="task.Description" class="form-control" placeholder="Task Description"/>
+        <ValidationMessage For="@(() => task.Description)"/>
+    </div>
+
+    <div class="form-group">
+        <label for="taskDueDate">Due Date:</label>
+        <InputDate id="taskDueDate" @bind-Value="task.DueDate" class="form-control"/>
+        <ValidationMessage For="@(() => task.DueDate)"/>
+    </div>
+
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Update</button>
+        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+    </div>
 </EditForm>
 
 @code {
-    [Parameter]
-    public int taskId { get; set; }
-
-    [Parameter]
-    public int panelId { get; set; }
+    [Parameter] public int taskId { get; set; }
 
     Task task;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         task = TaskService.GetTaskById(taskId);
-        Panels.createTeamAndPanel();
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
 
-
-    private void NavigationUpdateTask(Task task)
+    private void NavigationUpdateTask()
     {
         TaskService.UpdateTask(task);
-        Navigation.NavigateTo($"/tasks/panel/{@task.PanelId}");
+        Navigation.NavigateTo($"/tasks/panel/{task.PanelId}");
     }
-    
+
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/tasks/panel/{panelId}");
+        Navigation.NavigateTo($"/tasks/panel/{task.PanelId}");
     }
-    
+
 }

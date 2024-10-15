@@ -1,73 +1,53 @@
-@page "/panel/updated/{panelId:int}/{teamId:int}"
+@page "/panel/update/{panelId:int}"
 
-
-@using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
-@using TaskPanelLibrary.Entity.Enum
-@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
-@using Task = TaskPanelLibrary.Entity.Task
-@using Microsoft.AspNetCore.Components
-
-@inject IPanelService PanelService;
-
-@inject Panels Panels;
+@inject IPanelService PanelService
+@inject NavigationManager Navigation
 
 <h1>Update Panel</h1>
 
-<EditForm Model="@panel">
+<EditForm Model="@panel" OnValidSubmit="NavigationUpdatePanel">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-                <InputText @bind-Value="panel.Name" placeholder=@panel.Name />
-            </td>
-            <td>
-                <InputText @bind-Value="panel.Description" placeholder=@panel.Description />
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="form-group">
+        <label for="panelName">Name:</label>
+        <InputText id="panelName" @bind-Value="panel.Name" class="form-control" placeholder="Panel Name"/>
+        <ValidationMessage For="@(() => panel.Name)"/>
+    </div>
 
-    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdatePanel(panel)">Update</button>
-    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()">Cancel</button>
+    <div class="form-group">
+        <label for="panelDescription">Description:</label>
+        <InputTextArea id="panelDescription" @bind-Value="panel.Description" class="form-control" placeholder="Panel Description"/>
+        <ValidationMessage For="@(() => panel.Description)"/>
+    </div>
 
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Update</button>
+        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+    </div>
 </EditForm>
 
 @code {
-    [Parameter]
-    public int panelId { get; set; }
-    
-    [Parameter]
-    public int teamId { get; set; }
+    [Parameter] public int panelId { get; set; }
 
     Panel panel;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         panel = PanelService.FindById(panelId);
-        Panels.createTeamAndPanel();
     }
 
-    [Inject]
-    private NavigationManager Navigation { get; set; }
-
-    private void NavigationUpdatePanel(Panel Panel)
+    private void NavigationUpdatePanel()
     {
         PanelService.UpdatePanel(panel);
-        Navigation.NavigateTo($"/panels/teams/{teamId}");
+        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
     }
-    
+
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/panels/teams/{teamId}");
+        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
     }
+
 }

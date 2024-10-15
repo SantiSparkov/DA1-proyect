@@ -24,20 +24,21 @@
         <tbody>
         @foreach (var team in _teams)
         {
-            <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">
+            <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;" class="selectable-row">
                 <td>@team.Id</td>
                 <td>@team.Name</td>
                 <td>@team.CreationDate.ToShortDateString()</td>
                 <td>@team.TasksDescription</td>
                 <td>@team.MaxAmountOfMembers</td>
                 <td>
-                    <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)">Edit</button>
+                    <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
                 </td>
                 <td>
-                    <button class="btn btn-info" @onclick="() => ShowMembers(team)">View Members</button>
+                    <button class="btn btn-info" @onclick="() => ShowMembers(team)" @onclick:stopPropagation>View Members</button>
                 </td>
             </tr>
         }
+
         </tbody>
     </table>
 }
@@ -82,6 +83,13 @@ else
     </div>
 </div>
 
+<style>
+    .selectable-row:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+    }
+</style>
+
 @code {
     private List<Team> _teams;
     private string _errorMessage;
@@ -118,7 +126,7 @@ else
             showModal = true;
         }
     }
-    
+
     private void NavigateToPanelsForTeams(int teamId)
     {
         NavigationManager.NavigateTo($"/panels/teams/{teamId}");
