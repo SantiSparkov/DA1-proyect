@@ -60,7 +60,7 @@ public class CommentServiceTest
     }
 
     [TestMethod]
-    public void AddComment()
+    public void CreateComment()
     {
         //Arrange
         Comment createdComment = _commentService.CreateComment(_comment);
@@ -92,17 +92,18 @@ public class CommentServiceTest
     public void FindById()
     {
         //Arrange
-        Comment comment1 = _commentService.CreateComment(_comment);
-        Comment comment2 = _commentService.CreateComment(_comment);
-        comment2.Message = "test";
-        comment2.Status = EStatusComment.PENDING;
+        Comment comment = _commentService.CreateComment(_comment);
+        comment.Message = "Comment test";
+        comment.Status = EStatusComment.PENDING;
+        
         //Act
-        Comment commentSaved = _commentService.FindById(comment2.Id);
-
+        _task.CommentList.Add(comment);
+        Comment commentSaved = _commentService.FindById(comment.Id);
+        
         //Assert
-        Assert.AreEqual(commentSaved.Id, comment2.Id);
-        Assert.AreEqual(commentSaved.Message, comment2.Message);
-        Assert.AreEqual(commentSaved.Status, comment2.Status);
+        Assert.AreEqual(comment.Message, commentSaved.Message);
+        Assert.AreEqual(comment.Id, commentSaved.Id);
+        Assert.AreEqual(comment.Status, commentSaved.Status);
     }
     
     [TestMethod]
@@ -153,6 +154,5 @@ public class CommentServiceTest
         Assert.AreEqual(comentUpdated.Status, commentToUpdate.Status);
         Assert.AreEqual(comentUpdated.ResolvedAt, commentToUpdate.ResolvedAt);
         Assert.AreEqual(comentUpdated.ResolvedBy, commentToUpdate.ResolvedBy);
-
     }
 }

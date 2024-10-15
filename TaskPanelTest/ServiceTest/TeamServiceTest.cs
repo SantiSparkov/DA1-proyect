@@ -128,10 +128,13 @@ namespace TaskPanelTest.ServiceTest
                 Panels = new List<Panel>()
             };
 
-            _teamRepository.AddTeam(team);
+            var createdTeam = _teamService.CreateTeam(team, adminUser.Id);
 
             // Act
-            _teamService.DeleteTeam(team, nonAdminUser.Id);
+            _teamService.DeleteTeam(createdTeam, nonAdminUser.Id);
+            
+            // Assert
+            Assert.AreEqual(1, _teamRepository.GetAllTeams().Count);
         }
 
         [TestMethod]

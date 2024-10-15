@@ -1,6 +1,7 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 
@@ -11,7 +12,7 @@ public class TrashServiceTest
 {
     private ITrashService _trashService;
 
-    private TrashRepository _trashRepository;
+    private ITrashRepository _trashRepository;
 
     
     [TestInitialize]
