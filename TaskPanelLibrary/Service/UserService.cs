@@ -80,6 +80,10 @@ public class UserService : IUserService
             throw new UserNotValidException("Name is null or empty");
         if (string.IsNullOrEmpty(user.LastName))
             throw new UserNotValidException("LastName is null or empty");
+        if (user.BirthDate > DateTime.Now)
+            throw new UserNotValidException("BirthDate can't be in the future");
+        if (user.BirthDate < new DateTime(1900, 1, 1))
+            throw new UserNotValidException("BirthDate can't be before 1900");
         
         return true;
     }

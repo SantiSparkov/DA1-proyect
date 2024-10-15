@@ -30,9 +30,9 @@
         </InputSelect>
         <ValidationMessage For="@(() => _task.Priority)" />
     </div>
-    <div>
+    <div class="form-group">
         <label for="ResolvedAt">Due Date:</label>
-        <input type="datetime-local" id="ResolvedAt" @bind="_task.DueDate" required />
+        <input type="datetime-local" id="ResolvedAt" @bind="_task.DueDate" required/>
     </div>
     
     <button class="btn btn-primary" @onclick="() => SaveTask()" >Save </button>

@@ -39,7 +39,7 @@ public class TeamService : ITeamService
             Name = team.Name,
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
-            MaxAmountOfMembers = team.MaxAmountOfMembers,
+            MaxAmountOfMembers = team.MaxAmountOfMembers == 1 ? 2 : team.MaxAmountOfMembers,
             TeamLeader = user,
             Users = team.Users
         };
