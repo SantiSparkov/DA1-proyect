@@ -159,13 +159,13 @@ public class TeamService : ITeamService
             throw new UserNotValidException("User is not admin or team leader.");
 
         if (string.IsNullOrEmpty(updatedTeam.Name) && updatedTeam.Name != existingTeam.Name)
-            throw new ArgumentException("Invalid or duplicate team name.");
+            throw new TeamNotValidException("Invalid or duplicate team name.");
 
         if (updatedTeam.MaxAmountOfMembers <= 0)
-            throw new ArgumentException("Invalid maximum number of users. Must be greater than zero.");
+            throw new TeamNotValidException("Invalid maximum number of users. Must be greater than zero.");
 
         if (updatedTeam.MaxAmountOfMembers < existingTeam.Users.Count)
-            throw new InvalidOperationException(
+            throw new TeamNotValidException(
                 "Cannot set the maximum number of users lower than the current number of users.");
 
         if (string.IsNullOrEmpty(updatedTeam.TasksDescription))
@@ -177,10 +177,10 @@ public class TeamService : ITeamService
     private bool CanDeleteTeam(Team team, User user)
     {
         if (team.Panels.Count > 0)
-            throw new InvalidOperationException("Team cannot be deleted because it has associated panels.");
+            throw new TeamNotValidException("Team cannot be deleted because it has associated panels.");
 
         if (!user.IsAdmin)
-            throw new UnauthorizedAccessException("Only an administrator can delete this team.");
+            throw new UserNotValidException("Only an administrator can delete this team.");
 
         return true;
     }
@@ -235,7 +235,7 @@ public class TeamService : ITeamService
             throw new PanelNotValidException("Panel is already in team");
 
         if (team.Panels.Any(p => p.Name.Equals(panel.Name)))
-            throw new ArgumentException("A panel with the same name already exists in the team.");
+            throw new PanelNotValidException("A panel with the same name already exists in the team.");
 
         return true;
     }

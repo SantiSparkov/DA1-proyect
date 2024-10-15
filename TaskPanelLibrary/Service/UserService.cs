@@ -41,7 +41,7 @@ public class UserService : IUserService
     {
         var users = GetAllUsers();
         bool exists = users.Exists(actualUser => actualUser.Email == user.Email);
-        if (exists)
+        if (exists || !IsUserValid(user))
         {
             throw new UserNotValidException("User already exists");
         }
@@ -68,5 +68,19 @@ public class UserService : IUserService
         }
 
         return _userRepository.DeleteUser(id);
+    }
+    
+    private bool IsUserValid(User? user)
+    {
+        if (user == null)
+            throw new UserNotValidException("User is null");
+        if (string.IsNullOrEmpty(user.Email))
+            throw new UserNotValidException("Email is null or empty");
+        if (string.IsNullOrEmpty(user.Name))
+            throw new UserNotValidException("Name is null or empty");
+        if (string.IsNullOrEmpty(user.LastName))
+            throw new UserNotValidException("LastName is null or empty");
+        
+        return true;
     }
 }
