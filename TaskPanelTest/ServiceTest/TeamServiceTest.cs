@@ -39,7 +39,7 @@ namespace TaskPanelTest.ServiceTest
             _panelService = new PanelService(_panelRepository, _userService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
             
-            _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "userAdministrator@gmail.com"};
+            _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "userAdministrator@gmail.com", LastName = "LasatMan"};
         }
 
         [TestMethod]
@@ -69,7 +69,7 @@ namespace TaskPanelTest.ServiceTest
         public void CreateTeam_NonAdminUser_ThrowsException()
         {
             // Arrange
-            var nonAdminUser = new User { Id = 2, Name = "Non-admin User", IsAdmin = false };
+            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
             _userService.AddUser(nonAdminUser);
 
             var team = new Team
@@ -84,64 +84,61 @@ namespace TaskPanelTest.ServiceTest
         }
 
         [TestMethod]
-        public void DeleteTeam_ValidTeam_DeletesTeamSuccessfully()
+        public void DeleteTeam_AdminUser_DeletesTeamSuccessfully()
         {
             // Arrange
-            var user = new User { Id = 1, Name = "Admin User", IsAdmin = true };
-            _userService.AddUser(user);
+            _userService.AddUser(_adminUser);
 
             var team = new Team
             {
                 Id = 1,
                 Name = "Team C",
-                TeamLeader = user,
+                TeamLeader = _adminUser,
                 MaxAmountOfMembers = 5,
                 TasksDescription = "Task description for Team C",
                 Panels = new List<Panel>()
             };
 
-            var createdTeam = _teamService.CreateTeam(team, user.Id);
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
 
             // Act
-            _teamService.DeleteTeam(createdTeam, user.Id);
+            _teamService.DeleteTeam(createdTeam, _adminUser.Id);
             
             // Assert
             Assert.AreEqual(0, _teamRepository.GetAllTeams().Count);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UserNotValidException))]
         public void DeleteTeam_NonAdminUser_ThrowsException()
         {
             // Arrange
-            var adminUser = new User { Id = 1, Name = "Admin User", IsAdmin = true };
-            var nonAdminUser = new User { Id = 2, Name = "Non-admin User", IsAdmin = false };
-            _userService.AddUser(adminUser);
+            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
+            _userService.AddUser(_adminUser);
             _userService.AddUser(nonAdminUser);
 
             var team = new Team
             {
                 Id = 1,
                 Name = "Team D",
-                TeamLeader = adminUser,
+                TeamLeader = _adminUser,
+                TasksDescription = "Task description for Team D",
                 MaxAmountOfMembers = 5,
                 Panels = new List<Panel>()
             };
 
-            var createdTeam = _teamService.CreateTeam(team, adminUser.Id);
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
 
-            // Act
-            _teamService.DeleteTeam(createdTeam, nonAdminUser.Id);
-            
-            // Assert
-            Assert.AreEqual(1, _teamRepository.GetAllTeams().Count);
+            // Act && Assert
+            Assert.ThrowsException<UserNotValidException>(() => _teamService.DeleteTeam(createdTeam, nonAdminUser.Id));
         }
+        
+        
 
         [TestMethod]
         public void AddUserToTeam_ValidUser_AddsUserSuccessfully()
         {
             // Arrange
-            var newUser = new User { Id = 2, Name = "New User", IsAdmin = false };
+            var newUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
             _userService.AddUser(_adminUser);
             _userService.AddUser(newUser);
 
@@ -168,7 +165,7 @@ namespace TaskPanelTest.ServiceTest
         public void AddUserToTeam_TeamIsFull_ThrowsException()
         {
             // Arrange
-            var newUser = new User { Id = 2, Name = "New User", IsAdmin = false };
+            var newUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
             _userService.AddUser(_adminUser);
             _userService.AddUser(newUser);
             

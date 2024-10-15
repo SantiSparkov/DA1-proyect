@@ -16,6 +16,8 @@ public interface ICommentService
     public Comment AddComment(Comment comment);
 
     public List<Comment> GetCommentForTask(int panelId);
+    
+    public List<Comment> GetAllComments();
 
 
 }

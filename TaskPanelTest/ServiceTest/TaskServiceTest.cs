@@ -31,8 +31,6 @@ public class TaskServiceTest
     private PasswordGeneratorService _passwordGeneratorService;
     
     private Task _task;
-    
-    private User _adminUser;
 
     [TestInitialize]
     public void Initialize()
@@ -56,28 +54,32 @@ public class TaskServiceTest
             Description = "Description test",
             Priority = ETaskPriority.LOW
         };
-        
-        _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "adminUser@gmail.com"};
-        
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-        var panels = _panelService.GetAllPanels().ToList();
+        var panels = _panelRepository.GetAll().ToList();
+        var comments = _commentRepository.GetAll().ToList();
+        var tasks = taskRepository.GetAllTasks().ToList();
+        var users = _userRepository.GetAllUsers().ToList();
+        _passwordGeneratorService = null;
+
         foreach (var panel in panels)
         {
-            var tasks = _taskService.GetAllTasks(panel.Id).ToList();
-            foreach (var task in tasks)
-            {
-                _taskService.DeleteTask(task);
-            }
-            _panelService.DeletePanel(panel.Id, _adminUser);
+            _panelRepository.Delete(panel.Id);
         }
-        var users = _userService.GetAllUsers().ToList();
+        foreach (var comment in comments)
+        {
+            _commentRepository.Delete(comment.Id);
+        }
+        foreach (var task in tasks)
+        {
+            taskRepository.DeleteTask(task.Id);
+        }
         foreach (var user in users)
         {
-            _userService.DeleteUser(user.Id);
+            _userRepository.DeleteUser(user.Id);
         }
     }
 

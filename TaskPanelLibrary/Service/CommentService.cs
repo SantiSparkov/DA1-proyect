@@ -74,6 +74,11 @@ public class CommentService : ICommentService
         _commentRepository.Add(comment);
         return comment;
     }
+    
+    public List<Comment> GetAllComments()
+    {
+        return _commentRepository.GetAll();
+    }
 
     public List<Comment> GetCommentForTask(int taskId)
     {
