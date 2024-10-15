@@ -1,6 +1,7 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 
@@ -11,7 +12,7 @@ public class TrashServiceTest
 {
     private ITrashService _trashService;
 
-    private TrashRepository _trashRepository;
+    private ITrashRepository _trashRepository;
 
     
     [TestInitialize]
@@ -56,14 +57,11 @@ public class TrashServiceTest
 
         //Act
         _trashService.DeleteTrash(trash.Id);
-        var exception = Assert.ThrowsException<TaskPanelException>(() => _trashService.GetTrashById(trash.Id));
+        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashService.GetTrashById(trash.Id));
         
         // Assert
-        Assert.AreEqual($"Trash with id: {trash.Id} do no exist", exception.Message);
+        Assert.AreEqual($"Trash with id 1 not found", exception.Message);
     }
-    
-    
-    
     
     [TestCleanup]
     public void Cleanup()

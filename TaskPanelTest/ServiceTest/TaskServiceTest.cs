@@ -1,4 +1,6 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
+using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
@@ -12,105 +14,180 @@ public class TaskServiceTest
 {
     private ITaskService _taskService;
 
-    private TaskRepository taskRepository;
+    private ITaskRepository taskRepository;
 
-    private PanelService _panelService;
+    private IPanelService _panelService;
     
-    private CommentService _commentService;
+    private IPanelRepository _panelRepository;
     
-    private CommentRepository _commentRepository;
+    private IUserRepository _userRepository;
+    
+    private IUserService _userService;
+    
+    private ICommentService _commentService;
+    
+    private ICommentRepository _commentRepository;
+    
+    private PasswordGeneratorService _passwordGeneratorService;
+    
+    private Task _task;
+    
+    private User _adminUser;
 
     [TestInitialize]
     public void Initialize()
     {
-        _commentService = new CommentService(_commentRepository);
+        _commentRepository = new CommentRepository();
+        _userRepository = new UserRepository();
+        _panelRepository = new PanelRepository();
         taskRepository = new TaskRepository();
-        _taskService = new TaskService(taskRepository, _commentService);
+        _passwordGeneratorService = new PasswordGeneratorService();
+        
+        _userService = new UserService(_userRepository, _passwordGeneratorService);
+        _commentService = new CommentService(_commentRepository, _userService);
+        _panelService = new PanelService(_panelRepository, _userService);
+        _taskService = new TaskService(taskRepository, _commentService, _panelService);
+        
+        _task = new Task()
+        {
+            Id = 1,
+            PanelId = 1,
+            Title = "Title test",
+            Description = "Description test",
+            Priority = ETaskPriority.LOW
+        };
+        
+        _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "adminUser@gmail.com"};
+        
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-        var panels = _panelService.GetAllPanels();
-        var panelsToDelete = panels.ToList();
-        foreach (var panel in panelsToDelete)
+        var panels = _panelService.GetAllPanels().ToList();
+        foreach (var panel in panels)
         {
-            foreach (var task in panel.Tasks)
+            var tasks = _taskService.GetAllTasks(panel.Id).ToList();
+            foreach (var task in tasks)
             {
                 _taskService.DeleteTask(task);
             }
+            _panelService.DeletePanel(panel.Id, _adminUser);
+        }
+        var users = _userService.GetAllUsers().ToList();
+        foreach (var user in users)
+        {
+            _userService.DeleteUser(user.Id);
         }
     }
 
     [TestMethod]
-    public void AddTask()
+    public void CreateTask()
     {
         // Arrange
-        var user = new User
-        {
-            Id = 1,
-            Email = "lalo@gmail.com",
-            Name = "Lalo",
-            LastName = "Landa",
-        };
-
-        var newPanel = new Panel
-        {
-            Name = "Panel 1",
-            Description = "Panel 1 description",
-        };
-
-        var panel = _panelService.CreatePanel(user);
-
-        var newTask = new Task
-        {
-            Title = "Task 1",
-            Description = "Task 1 description",
-            DueDate = DateTime.Now,
-        };
-
+        var createdTask = _taskService.CreateTask(_task);
+        
         // Act
-        var addedTask = _taskService.AddTask(newTask);
-
+        createdTask.Description = "Description test";
+        createdTask.Priority = ETaskPriority.LOW;
+        createdTask.Title = "Title test";
+        
         // Assert
-        Assert.IsNotNull(addedTask);
-        Assert.AreEqual("Task 1", addedTask.Title);
+        Assert.IsNotNull(createdTask, "The task is not created");
+        Assert.AreEqual("Description test", createdTask.Description, "The task description is not stored correctly");
+        Assert.AreEqual(ETaskPriority.LOW, createdTask.Priority, "The task priority is not stored correctly");
+        Assert.AreEqual("Title test", createdTask.Title, "The task title is not stored correctly");
     }
 
     [TestMethod]
     public void DeleteTask()
     {
-        var user = new User
-        {
-            Id = 1,
-            Email = "lalo@gmail.com",
-            Name = "Lalo",
-            LastName = "Landa",
-        };
-
-        var newPanel = new Panel
-        {
-            Name = "Panel 1",
-            Description = "Panel 1 description",
-        };
-
-        var panel = _panelService.CreatePanel(user);
-
-        var newTask = new Task
-        {
-            Title = "Task 1",
-            Description = "Task 1 description",
-            DueDate = DateTime.Now,
-        };
-
-        var task = _taskService.AddTask(newTask);
-
+        // Arrange
+        var createdTask = _taskService.CreateTask(_task);
+        
         // Act
-        _taskService.DeleteTask(newTask);
+        _taskService.DeleteTask(createdTask);
         
         // Assert
-        var deletedTask = _taskService.GetTaskById(task.Id);
-        Assert.IsNull(deletedTask);
+        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.GetTaskById(createdTask.Id));
+        Assert.AreEqual(exception.Message, $"Task with id {createdTask.Id} not found");
+    }
 
+    [TestMethod]
+    public void UpdateTask()
+    {
+        // Arrange
+        var createdTask = _taskService.CreateTask(_task);
+        
+        // Act
+        createdTask.Description = "Description test updated";
+        createdTask.Priority = ETaskPriority.HIGH;
+        createdTask.Title = "Title test updated";
+        var updatedTask = _taskService.UpdateTask(createdTask);
+        
+        // Assert
+        Assert.IsNotNull(updatedTask, "The task is not updated");
+        Assert.AreEqual("Description test updated", updatedTask.Description, "The task description is not updated correctly");
+        Assert.AreEqual(ETaskPriority.HIGH, updatedTask.Priority, "The task priority is not updated correctly");
+        Assert.AreEqual("Title test updated", updatedTask.Title, "The task title is not updated correctly");
+    }
+    
+    [TestMethod]
+    public void AddCommentToTask()
+    {
+        // Arrange
+        var createdTask = _taskService.CreateTask(_task);
+        var comment = new Comment()
+        {
+            Id = 1,
+            TaskId = createdTask.Id,
+            Message = "Comment test"
+        };
+        var createdComment = _commentService.CreateComment(comment);
+        
+        // Act
+        _taskService.AddComentToTask(createdTask.Id, createdComment);
+        
+        // Assert
+        var task = _taskService.GetTaskById(createdTask.Id);
+        Assert.AreEqual(1, task.CommentList.Count);
+        Assert.AreEqual("Comment test", task.CommentList.First().Message);
+    }
+    
+    [TestMethod]
+    public void MarkCommentAsDone()
+    {
+        // Arrange
+        var createdTask = _taskService.CreateTask(_task);
+        var comment = new Comment()
+        {
+            Id = 1,
+            TaskId = createdTask.Id,
+            Message = "Comment test"
+        };
+        var createdComment = _commentService.CreateComment(comment);
+        _taskService.AddComentToTask(createdTask.Id, createdComment);
+        
+        // Act
+        _taskService.MarkCommentAsDone(createdTask.Id, createdComment.Id);
+        
+        // Assert
+        var task = _taskService.GetTaskById(createdTask.Id);
+        Assert.AreEqual(1, task.CommentList.Count);
+        Assert.AreEqual(EStatusComment.RESOLVED, task.CommentList.First().Status);
+    }
+    
+    [TestMethod]
+    public void GetTaskById()
+    {
+        // Arrange
+        var createdTask = _taskService.CreateTask(_task);
+        
+        // Act
+        var task = _taskService.GetTaskById(createdTask.Id);
+        
+        // Assert
+        Assert.IsNotNull(task, "The task is not found");
+        Assert.AreEqual(createdTask.Id, task.Id, "The task id is not found correctly");
     }
 }

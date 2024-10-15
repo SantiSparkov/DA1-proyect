@@ -33,7 +33,7 @@ public class Trash
         int count = QuantityElemnt();
         if (count >= 10)
         {
-            throw new TaskPanelException("Papelera llena");
+            throw new TrashNotValidException("Papelera llena");
         }
     }
 

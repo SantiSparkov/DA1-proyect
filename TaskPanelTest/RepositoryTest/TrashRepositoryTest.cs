@@ -68,10 +68,10 @@ public class TrashRepositoryTest
 
         //Act
         _trashRepository.DeleteTrashForId(trash.Id);
-        var exception = Assert.ThrowsException<TaskPanelException>(() => _trashRepository.GetTrashById(trash.Id));
+        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashRepository.GetTrashById(trash.Id));
         
         // Assert
-        Assert.AreEqual($"Trash with id: {trash.Id} do no exist", exception.Message);
+        Assert.AreEqual($"Trash with id {trash.Id} not found", exception.Message);
     }
     
     [TestMethod]
@@ -85,10 +85,10 @@ public class TrashRepositoryTest
 
         //Act
         _trashRepository.AddTrash(trash);
-        var exception = Assert.ThrowsException<TaskPanelException>(() => _trashRepository.DeleteTrashForId(2));
+        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashRepository.DeleteTrashForId(2));
         
         // Assert
-        Assert.AreEqual("Trash with id: 2 do no exist", exception.Message);
+        Assert.AreEqual("Trash with id 2 not found", exception.Message);
     }
     
     

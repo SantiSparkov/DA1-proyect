@@ -31,7 +31,7 @@ public class UserService : IUserService
 
         if (foundUser == null)
         {
-            throw new UserNotFoundException(id);
+            throw new UserNotValidException(id);
         }
 
         return foundUser;
@@ -43,7 +43,7 @@ public class UserService : IUserService
         bool exists = users.Exists(actualUser => actualUser.Email == user.Email);
         if (exists)
         {
-            throw new UserAlreadyExistsException(user.Email);
+            throw new UserNotValidException("User already exists");
         }
         return _userRepository.AddUser(user);
     }
@@ -53,7 +53,7 @@ public class UserService : IUserService
         var existingUser = _userRepository.GetUserById(user.Id);
         if (existingUser == null)
         {
-            throw new UserNotFoundException(user.Id);
+            throw new UserNotValidException(user.Id);
         }
 
         return _userRepository.UpdateUser(user);
@@ -64,7 +64,7 @@ public class UserService : IUserService
         var existingUser = _userRepository.GetUserById(id);
         if (existingUser == null)
         {
-            throw new UserNotFoundException(id);
+            throw new UserNotValidException(id);
         }
 
         return _userRepository.DeleteUser(id);

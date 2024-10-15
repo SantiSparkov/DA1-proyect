@@ -27,7 +27,7 @@ public class TrashRepository : ITrashRepository
                 return trash;
             }
         }
-        throw new TaskPanelException($"Trash with id: {id} do no exist");
+        throw new TrashNotValidException(id);
     }
 
     public Trash DeleteTrashForId(int id)
@@ -41,7 +41,7 @@ public class TrashRepository : ITrashRepository
                 return trash;
             }
         }
-        throw new TaskPanelException($"Trash with id: {id} do no exist");
+        throw new TrashNotValidException(id);
     }
 
     public int Count()

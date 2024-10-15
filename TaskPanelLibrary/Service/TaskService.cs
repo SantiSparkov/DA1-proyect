@@ -70,7 +70,7 @@ public class TaskService : ITaskService
     {
         var task = _taskRepository.GetTaskById(taskId);
         if (comment == null)
-            throw new CommentNotValidException();
+            throw new CommentNotValidException("Comment is null");
         task.CommentList.Add(comment);
         _taskRepository.UpdateTask(task);
     }

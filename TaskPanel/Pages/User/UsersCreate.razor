@@ -79,7 +79,7 @@
             userService.AddUser(_newUser);
             NavigationManager.NavigateTo("/users");
         }
-        catch (UserAlreadyExistsException ex)
+        catch (UserNotValidException ex)
         {
             _errorMessage = ex.Message;
         }

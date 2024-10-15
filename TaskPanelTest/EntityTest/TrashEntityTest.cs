@@ -2,7 +2,7 @@ using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using Task = TaskPanelLibrary.Entity.Task;
 
-namespace TaskPanelTest.EntityTest.TashEntityTest;
+namespace TaskPanelTest.EntityTest;
 
 [TestClass]
 public class TrashEntityTest
@@ -87,7 +87,7 @@ public class TrashEntityTest
         
         
         // Assert
-        var ex = Assert.ThrowsException<TaskPanelException>(() => trash.AddPanel(panel11));
+        var ex = Assert.ThrowsException<TrashNotValidException>(() => trash.AddPanel(panel11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
     
@@ -123,7 +123,7 @@ public class TrashEntityTest
         
         
         // Assert
-        var ex = Assert.ThrowsException<TaskPanelException>(() => trash.AddTask(task11));
+        var ex = Assert.ThrowsException<TrashNotValidException>(() => trash.AddTask(task11));
         Assert.AreEqual("Papelera llena", ex.Message);
     }
 

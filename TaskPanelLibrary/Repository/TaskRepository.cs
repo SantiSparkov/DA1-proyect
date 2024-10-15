@@ -18,7 +18,7 @@ public class TaskRepository : ITaskRepository
     public Task DeleteTask(int id)
     {
         var task = _tasks.FirstOrDefault(t => t.Id == id)
-                   ?? throw new TaskNotFoundException(id);
+                   ?? throw new TaskNotValidException(id);
         _tasks.Remove(task);
         return task;
     }
@@ -26,7 +26,7 @@ public class TaskRepository : ITaskRepository
     public Task GetTaskById(int id)
     {
         var task = _tasks.FirstOrDefault(t => t.Id == id)
-                   ?? throw new TaskNotFoundException(id);
+                   ?? throw new TaskNotValidException(id);
         return task;
     }
 
@@ -38,7 +38,7 @@ public class TaskRepository : ITaskRepository
     public Task UpdateTask(Task task)
     {
         var existingTask = _tasks.FirstOrDefault(t => t.Id == task.Id)
-                           ?? throw new TaskNotFoundException(task.Id);
+                           ?? throw new TaskNotValidException(task.Id);
 
         existingTask.Title = task.Title ?? existingTask.Title;
         existingTask.Description = task.Description ?? existingTask.Description;

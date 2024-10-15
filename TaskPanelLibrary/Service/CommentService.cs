@@ -1,5 +1,6 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
+using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
@@ -37,7 +38,7 @@ public class CommentService : ICommentService
             }   
         }
 
-        throw new TaskPanelException($"Comment with id: {id} do not exist");
+        throw new CommentNotValidException($"Comment with id: {id} do not exist");
     }
 
     public Comment DeleteComment(Task task, Comment comment)
@@ -54,7 +55,7 @@ public class CommentService : ICommentService
             
         }
 
-        throw new TaskPanelException($"Not exist comment with id: {comment.Id}, not deleted");
+        throw new CommentNotValidException($"Not exist comment with id: {comment.Id}, not deleted");
     }
 
     public Comment UpdateComment(Comment comment)
@@ -83,7 +84,7 @@ public class CommentService : ICommentService
     {
         if (String.IsNullOrEmpty(comment.Message) || comment.Status == null)
         {
-            throw new TaskPanelException("Comment not valid");
+            throw new CommentNotValidException("Comment not valid");
         }
     }
 }

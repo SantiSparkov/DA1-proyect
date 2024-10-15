@@ -2,7 +2,7 @@ using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using Task = TaskPanelLibrary.Entity.Task;
 
-namespace TaskPanelTest.EntityTest.TaskEntityTest;
+namespace TaskPanelTest.EntityTest;
 
 [TestClass]
 public class TaskEntityTest
