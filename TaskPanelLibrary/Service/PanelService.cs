@@ -21,6 +21,8 @@ public class PanelService : IPanelService
 
     public Panel CreatePanel(Panel panel)
     {
+        if (!IsValidPanel(panel))
+            throw new PanelNotValidException("Panel is not valid");
         panel.Id = _panelRepository.Count() + 1;
         return _panelRepository.AddPanel(panel);
     }
@@ -82,4 +84,15 @@ public class PanelService : IPanelService
         return _panelRepository.GetAll();
     }
     
+    private bool IsValidPanel(Panel panel)
+    {
+        if (panel == null)
+            throw new PanelNotValidException("Panel is null");
+        if (string.IsNullOrEmpty(panel.Name))
+            throw new PanelNotValidException("Panel name is null or empty");
+        if (string.IsNullOrEmpty(panel.Description))
+            throw new PanelNotValidException("Panel description is null or empty");
+        
+        return true;
+    }
 }

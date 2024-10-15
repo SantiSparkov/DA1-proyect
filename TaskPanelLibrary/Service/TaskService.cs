@@ -87,8 +87,17 @@ public class TaskService : ITaskService
         _taskRepository.UpdateTask(task);
     }
 
-    private bool IsValidTask(Task task)
+    private bool IsValidTask(Task? task)
     {
-        return task != null && !string.IsNullOrEmpty(task.Title) && !string.IsNullOrEmpty(task.Description);
+        if(task == null)
+            throw new TaskNotValidException("Task is null");
+        if (string.IsNullOrEmpty(task.Title))
+            throw new TaskNotValidException("Title is null or empty");
+        if (string.IsNullOrEmpty(task.Description))
+            throw new TaskNotValidException("Description is null or empty");
+        if (task.DueDate < DateTime.Now)
+            throw new TaskNotValidException("DueDate is less than current date");
+        
+        return true;
     }
 }
