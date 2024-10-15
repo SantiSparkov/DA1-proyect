@@ -11,9 +11,12 @@ public class CommentService : ICommentService
 {
     private readonly ICommentRepository _commentRepository;
 
-    public CommentService(ICommentRepository commentRepository)
+    private IUserService _userService;
+
+    public CommentService(ICommentRepository commentRepository, IUserService userService)
     {
         _commentRepository = commentRepository;
+        _userService = userService;
     }
 
     public Comment CreateComment(Comment comment)

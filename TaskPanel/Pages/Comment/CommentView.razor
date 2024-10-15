@@ -1,0 +1,70 @@
+@page "/comment/view/{commentId:int}/{taskId:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+
+@inject ICommentService CommentService
+
+<PageTitle> View Comment Content</PageTitle>
+
+<h1> Comment Details</h1>
+
+@if (comment != null)
+{
+    <div class="card">
+        <div class="card-header">
+            <h3>@comment.Message</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Comment ID</dt>
+                <dd class="col-sm-9">@comment.Id</dd>
+
+                <dt class="col-sm-3">Message</dt>
+                <dd class="col-sm-9">@comment.Message</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">@comment.Status</dd>
+
+                @if (comment.Status == EStatusComment.RESOLVED)
+                {
+                    <dt class="col-sm-3">Resolved At</dt>
+                    <dd class="col-sm-9">@comment.ResolvedAt.ToString("g")</dd>
+
+                    <dt class="col-sm-3">Resolved By</dt>
+                    <dd class="col-sm-9">@comment.ResolvedBy.Name</dd>
+                }
+            </dl>
+        </div>
+    </div>
+}
+
+<button class="btn btn-primary mt-3" @onclick="() => NavigationGoBack()">Back</button>
+
+
+@code {
+    [Parameter] 
+    public int commentId { get; set; }
+    
+    [Parameter] 
+    public int taskId { get; set; }
+
+    Comment comment;
+
+    protected override Task OnInitializedAsync()
+    {
+        comment = CommentService.FindById(commentId);
+        return base.OnInitializedAsync();
+    }
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/comments/{taskId}");
+    }
+
+}
