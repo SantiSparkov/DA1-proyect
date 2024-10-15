@@ -20,11 +20,9 @@
     <tbody>
     @foreach ( TaskPanelLibrary.Entity.Team team in teams)
     {
-        <tr>
-            <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.Name</td>
-            <td @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">@team.TasksDescription</td>
-            <td>
-            </td>
+        <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;">
+            <td>@team.Name</td>
+            <td>@team.TasksDescription</td>
         </tr>
     }
     </tbody>

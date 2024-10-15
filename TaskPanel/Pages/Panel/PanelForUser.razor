@@ -1,113 +1,72 @@
 @page "/panels/user/{userId:int}"
 
 @using TaskPanelLibrary.Entity
-@using TaskPanelLibrary.DataTest
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 
-@inject IPanelService PanelService;
+@inject IPanelService PanelService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
-@inject ITeamService teamService;
+<h1>Panels for User</h1>
 
-@inject Panels Panels;
-
-<PageTitle>Panels for teams</PageTitle>
-
-<h1>Panels for user</h1>
-
-<table class="table">
+<table class="table table-hover table-striped">
     <thead>
     <tr>
-        <th>Team id</th>
+        <th>Team Id</th>
         <th>Name</th>
         <th>Description</th>
+        <th class="text-center">Actions</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (Panel panel in _panels)
+    @foreach (var panel in _panels)
     {
-        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;">
+        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
             <td>@panel.Team.Id</td>
             <td>@panel.Name</td>
             <td>@panel.Description</td>
+            <td class="text-center">
+                <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+            </td>
         </tr>
     }
     </tbody>
 </table>
 
-<button class="btn btn-primary mt-3" @onclick="ShowModal" style="cursor: pointer;">New Panel</button>
-
-
-@if (showModal)
-{
-    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog" aria-hidden="false">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Select Team</h5>
-                    <button type="button" class="close" @onclick="() => showModal = false">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <EditForm Model="@selectedTeamId">
-                                           <label for="teamSelect">Choose a team:</label>
-                                           <InputSelect @bind-Value="selectedTeamId" id="teamSelect">
-                                               <option value="">Select a team...</option>
-                                               @* Aquí debes agregar tus opciones de equipos *@
-                                               @foreach (var team in teams) // Suponiendo que tienes una lista de equipos
-                                               {
-                                                   <option value="@team.Id">@team.Id</option>
-                                               }
-                                           </InputSelect>
-                                       </EditForm>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => showModal = false">Close</button>
-                    <button type="button" class="btn btn-primary" @onclick="ConfirmSelection">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+<button class="btn btn-primary mt-3" @onclick="CreateNewPanel">New Panel</button>
 
 @code {
 
-    [Parameter]
-    public int userId { get; set; }
+    [Parameter] public int userId { get; set; }
 
     private List<Panel> _panels;
 
-    private List<Team> teams;
-
-    private bool showModal = false;
-
-    private int selectedTeamId;
-
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-        Panels.createTeamAndPanel();
         _panels = PanelService.GetAllPanelForUser(userId);
-        teams = teamService.TeamsForUser(userId);
     }
-    
-    private void ShowModal()
-    {
-        showModal = true;
-    }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
-    
-    
+
     private void NavigationPanel(int panelId)
     {
         Navigation.NavigateTo($"/tasks/panel/{panelId}");
     }
 
-    
-    private void ConfirmSelection()
+    private void CreateNewPanel()
     {
-        Navigation.NavigateTo($"/panel/create/{selectedTeamId}");
+        Navigation.NavigateTo("/panel/create");
     }
+
+    private void NavigateUpdatePanel(int panelId)
+    {
+        Navigation.NavigateTo($"/panel/update/{panelId}");
+    }
+
+    private void ConfirmDeletePanel(int panelId)
+    {
+        PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+        _panels = PanelService.GetAllPanelForUser(userId);
+    }
+
 }

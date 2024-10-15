@@ -12,32 +12,33 @@
 
 <EditForm Model="_newTeam" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
+    <ValidationSummary class="text-danger"/>
 
     <div class="form-group">
         <label for="teamName">Team Name:</label>
-        <InputText id="teamName" @bind-Value="_newTeam.Name" class="form-control"/>
-        <ValidationMessage For="@(() => _newTeam.Name)"/>
+        <InputText id="teamName" @bind-Value="_newTeam.Name" class="form-control" placeholder="Enter team name"/>
+        <ValidationMessage For="@(() => _newTeam.Name)" class="validation-message"/>
     </div>
 
     <div class="form-group">
         <label for="taskDescription">Task Description:</label>
-        <InputTextArea id="taskDescription" @bind-Value="_newTeam.TasksDescription" class="form-control"/>
-        <ValidationMessage For="@(() => _newTeam.TasksDescription)"/>
+        <InputTextArea id="taskDescription" @bind-Value="_newTeam.TasksDescription" class="form-control" placeholder="Enter task description"/>
+        <ValidationMessage For="@(() => _newTeam.TasksDescription)" class="validation-message"/>
     </div>
 
     <div class="form-group">
         <label for="maxMembers">Max Members:</label>
-        <InputNumber id="maxMembers" @bind-Value="_newTeam.MaxAmountOfMembers" class="form-control"/>
-        <ValidationMessage For="@(() => _newTeam.MaxAmountOfMembers)"/>
+        <InputNumber id="maxMembers" @bind-Value="_newTeam.MaxAmountOfMembers" class="form-control" placeholder="Enter max members"/>
+        <ValidationMessage For="@(() => _newTeam.MaxAmountOfMembers)" class="validation-message"/>
     </div>
 
-    <div class="form-group">
+    <div class="form-group mt-4">
         <label>Team Members:</label>
-        <button type="button" class="btn btn-info" @onclick="OpenUserSelectionModal">Select Team Members</button>
+        <button type="button" class="btn btn-info" style="margin-top: 10px;" @onclick="OpenUserSelectionModal">Select Team Members</button>
         <ul class="list-group mt-2">
             @if (_newTeam.Users != null && _newTeam.Users.Any())
             {
+                <li class="list-group-item">@AuthService.GetCurrentUser().Name (@AuthService.GetCurrentUser().Email)</li>
                 @foreach (var user in _newTeam.Users)
                 {
                     <li class="list-group-item">@user.Name (@user.Email)</li>
@@ -50,7 +51,7 @@
         </ul>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Create Team</button>
         <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
     </div>
@@ -58,7 +59,7 @@
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <div class="alert alert-danger">@_errorMessage</div>
+    <div class="alert alert-danger mt-3">@_errorMessage</div>
 }
 
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showUserModal ? "block" : "none");" aria-hidden="@(showUserModal ? "false" : "true")">
