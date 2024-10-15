@@ -1,22 +1,21 @@
 @page "/comment/new/{taskId:int}"
 @using TaskPanelLibrary.Service.Interface
-@using Microsoft.AspNetCore.Components
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
-@using TaskPanelLibrary.Exception.User
 @using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
+@inject NavigationManager Navigation
 
 <h3>Create Comment</h3>
 
-<EditForm Model="_newComment">
+<EditForm Model="_newComment" OnValidSubmit="SaveComment">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
+
     <div class="form-group">
         <label>Message:</label>
         <InputText @bind-Value="_newComment.Message" class="form-control"/>
-        <ValidationMessage For="@(() => _newComment.Message)"/>
+        <ValidationMessage For="@(() => _newComment.Message)" class="text-danger validation-message"/>
     </div>
 
     <div class="form-group">
@@ -27,38 +26,50 @@
                 <option value="@status">@status</option>
             }
         </InputSelect>
-        <ValidationMessage For="@(() => _newComment.Status)" />
+        <ValidationMessage For="@(() => _newComment.Status)" class="text-danger validation-message"/>
     </div>
-    <button class="btn btn-primary" @onclick="() => SaveComment()" >Save </button>
-    <button class="btn btn-secondary" @onclick="() => NavigationGoBack()" >Cancel</button>
+
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+    </div>
 </EditForm>
 
-@code {
-    [Parameter]
-    public int taskId { get; set; }
+<style>
+    .validation-message {
+        font-size: 0.875rem;
+        color: #dc3545;
+        margin-top: 5px;
+    }
 
-    Comment _newComment;
-    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+
+@code {
+    [Parameter] public int taskId { get; set; }
+
+    private Comment _newComment;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _newComment = new Comment()
+        _newComment = new Comment
         {
             TaskId = taskId
         };
     }
-    
+
     private async Task SaveComment()
     {
         CommentService.CreateComment(_newComment);
         NavigationGoBack();
     }
 
-    [Inject]
-    private NavigationManager Navigation { get; set; }
-
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/comments/{taskId}");
     }
+
 }

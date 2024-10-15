@@ -1,10 +1,11 @@
 @page "/panel/create/{teamId:int?}"
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
-
 @inject IPanelService PanelService
 @inject ITeamService TeamService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
 
 <title>CreatePanel</title>
 
@@ -12,40 +13,50 @@
 
 <EditForm Model="_panel" OnValidSubmit="SavePanel">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
 
     <div class="form-group">
         <label>Name:</label>
         <InputText @bind-Value="_panel.Name" class="form-control"/>
-        <ValidationMessage For="@(() => _panel.Name)"/>
+        <ValidationMessage For="@(() => _panel.Name)" class="text-danger validation-message"/>
     </div>
 
     <div class="form-group">
         <label>Description:</label>
         <InputText @bind-Value="_panel.Description" class="form-control"/>
-        <ValidationMessage For="@(() => _panel.Description)"/>
+        <ValidationMessage For="@(() => _panel.Description)" class="text-danger validation-message"/>
     </div>
 
     @if (teamId == null || teamId == 0)
     {
-    <div class="form-group">
-        <label for="teamSelect">Select Team:</label>
-        <InputSelect @bind-Value="selectedTeamId" class="form-control">
-            <option value="" disabled selected>Select a team...</option>
-            @foreach (var team in _availableTeams)
-            {
-            <option value="@team.Id">@team.Name</option>
-            }
-        </InputSelect>
-
-    </div>
+        <div class="form-group">
+            <label for="teamSelect">Select Team:</label>
+            <InputSelect @bind-Value="selectedTeamId" class="form-control">
+                <option value="" disabled selected>Select a team...</option>
+                @foreach (var team in _availableTeams)
+                {
+                    <option value="@team.Id">@team.Name</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => selectedTeamId)" class="text-danger validation-message"/>
+        </div>
     }
 
     <div class="mt-4">
-        <button class="btn btn-primary" type="submit" @onclick="NavigationGoBack">Save</button>
+        <button class="btn btn-primary" type="submit">Save</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
+
+<style>
+    .validation-message {
+        font-size: 0.875rem;
+        color: #dc3545;
+        margin-top: 5px;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
 
 @code {
     [Parameter] public int? teamId { get; set; }
@@ -83,7 +94,7 @@
 
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/panels/teams/{teamId}");
+        Navigation.NavigateTo($"/panels/user/{AuthService.GetCurrentUser().Id}");
     }
 
 }

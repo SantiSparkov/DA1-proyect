@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using TaskPanelLibrary.Entity.Enum;
 
 namespace TaskPanelLibrary.Entity;
@@ -10,12 +11,16 @@ public class Task
 
     public int PanelId { get; set;}
     
+    [Required(ErrorMessage = "The title is required")]
     public string Title { get; set; }
     
+    [Required(ErrorMessage = "Description is required")]
     public string Description { get; set; }
     
+    [Required(ErrorMessage = "Due Date is required")]
     public DateTime DueDate { get; set; }
     
+    [Required(ErrorMessage = "Priority is required")]
     public ETaskPriority Priority { get; set; }
     
     public Task()

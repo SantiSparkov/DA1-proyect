@@ -3,7 +3,7 @@
 @using TaskPanelLibrary.Exception.User
 @using TaskPanelLibrary.Service.Interface
 @using Task = System.Threading.Tasks.Task
-@inject IUserService userService
+@inject IUserService UserService
 @inject NavigationManager NavigationManager
 @inject PasswordGeneratorService PasswordGenerator
 
@@ -40,14 +40,14 @@
     <div class="form-group">
         <label>Password:</label>
         <div class="input-group">
-            <InputText @bind-Value="_newUser.Password" class="form-control" type="@PasswordInputType" readonly />
+            <InputText @bind-Value="_newUser.Password" class="form-control" type="@PasswordInputType" readonly/>
             <button type="button" class="btn btn-secondary" @onclick="GeneratePassword">Generate Password</button>
         </div>
         <div class="form-check">
-            <input type="checkbox" class="form-check-input" @bind="_showPassword" id="showPasswordCheckbox" />
+            <input type="checkbox" class="form-check-input" @bind="_showPassword" id="showPasswordCheckbox"/>
             <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
         </div>
-        <ValidationMessage For="@(() => _newUser.Password)" />
+        <ValidationMessage For="@(() => _newUser.Password)"/>
     </div>
 
     <div class="form-group">
@@ -56,8 +56,15 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+
+    <button type="button" class="btn btn-secondary" @onclick="GoBack">Cancel</button>
 </EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" style="margin-top: 10px">@_errorMessage</div>
+}
+
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
@@ -76,7 +83,7 @@
     {
         try
         {
-            userService.AddUser(_newUser);
+            UserService.AddUser(_newUser);
             NavigationManager.NavigateTo("/users");
         }
         catch (UserNotValidException ex)
@@ -99,4 +106,5 @@
     {
         return PasswordGenerator.GeneratePassword(PasswordLength);
     }
+
 }
