@@ -16,10 +16,6 @@ public interface IPanelService
     public Panel DeletePanel(int panelId, User user);
     
     public void AddTeam(int panelId, Team team);
-    
-    public void AddUser(int panelId, User user);
-
-    public User RemoveUser(int panelId, User user);
 
     public Panel FindById(int panelId);
     

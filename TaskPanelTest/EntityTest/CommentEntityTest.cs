@@ -1,7 +1,7 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 
-namespace TaskPanelTest.EntityTest.CommentEntityTest;
+namespace TaskPanelTest.EntityTest;
 
 
 [TestClass]

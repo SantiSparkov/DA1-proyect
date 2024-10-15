@@ -133,7 +133,7 @@ public class UserRepositoryTests
         var allUsers = _userRepository.GetAllUsers();
 
         // Assert
-        Assert.AreEqual(2, allUsers.Count, "The number of users in the repository does not match.");
+        Assert.AreEqual(3, allUsers.Count, "The number of users in the repository does not match.");
     }
 
     [TestMethod]
@@ -144,7 +144,7 @@ public class UserRepositoryTests
 
         // Act & Assert
         var exception =
-            Assert.ThrowsException<UserNotFoundException>(new Action(() => _userRepository.UpdateUser(user)));
-        Assert.AreEqual("User with email non.existent@example.com was not found.", exception.Message);
+            Assert.ThrowsException<UserNotValidException>(new Action(() => _userRepository.UpdateUser(user)));
+        Assert.AreEqual("non.existent@example.com", exception.Message);
     }
 }

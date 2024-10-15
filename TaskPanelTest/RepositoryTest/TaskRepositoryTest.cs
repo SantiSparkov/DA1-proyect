@@ -63,7 +63,7 @@ public class TaskRepositoryTests
         _taskRepository.DeleteTask(task.Id);
         
         // Assert
-        var exception = Assert.ThrowsException<TaskNotFoundException>(() => _taskRepository.GetTaskById(task.Id));
+        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskRepository.GetTaskById(task.Id));
         Assert.AreEqual(exception.Message, $"Task with id {task.Id} not found");
     }
 
@@ -175,7 +175,7 @@ public class TaskRepositoryTests
         };
         
         // Act & Assert
-        var exception = Assert.ThrowsException<TaskNotFoundException>
+        var exception = Assert.ThrowsException<TaskNotValidException>
             ((new Action(() => _taskRepository.UpdateTask(task))));
         Assert.AreEqual("Task with id 1 not found", exception.Message);
     }

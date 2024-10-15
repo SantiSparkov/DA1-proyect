@@ -100,7 +100,7 @@ public class UserServiceTest
         // Assert
         Assert.IsNotNull(deletedUser);
         Assert.AreEqual(addedUser.Id, deletedUser.Id);
-        Assert.ThrowsException<UserNotFoundException>(new Action(() => _userService.GetUserById(addedUser.Id)));
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.GetUserById(addedUser.Id)));
     }
 
 
@@ -121,6 +121,6 @@ public class UserServiceTest
         };
 
         // Act & Assert
-        Assert.ThrowsException<UserAlreadyExistsException>(new Action(() => _userService.AddUser(newUser)));
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
     }
 }

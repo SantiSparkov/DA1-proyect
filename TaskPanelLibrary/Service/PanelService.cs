@@ -1,5 +1,6 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
+using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
@@ -63,7 +64,7 @@ public class PanelService : IPanelService
     {
         if (!user.IsAdmin)
         {
-            throw new TaskPanelException($"User is not admin, userId: {user.Id}");
+            throw new PanelNotValidException($"User is not admin, userId: {user.Id}");
         }
 
         Panel panel = _panelRepository.Delete(panelId);
@@ -83,30 +84,6 @@ public class PanelService : IPanelService
         }
     }
 
-    public void AddUser(int panelId, User user)
-    {
-        Panel panel = _panelRepository.FindById(panelId);
-        if (!ContainsInGroup(panel, user))
-        {
-            panel.Team.Users.Add(user);
-        }
-    }
-
-    public User RemoveUser(int panelId, User user)
-    {
-        Panel panel = _panelRepository.FindById(panelId);
-
-        if (ContainsInGroup(panel, user))
-        {
-            panel.Team.Users.Remove(user);
-            return user;
-        }
-        else
-        {
-            throw new TaskPanelException($"User does not belong to the group, userId: {user.Id}");
-        }
-    }
-
     public Panel FindById(int panelId)
     {
         return _panelRepository.FindById(panelId);
@@ -115,23 +92,6 @@ public class PanelService : IPanelService
     private Boolean ContainsInGroup(Panel panel, User user)
     {
         return panel.Team.Users.Contains(user);
-    }
-    
-    //Verificar si ya existe en team service
-    private Team CreateTeamDefault(User user)
-    {
-        List<User> users = new List<User>();
-        users.Add(user);
-        Team team = new Team()
-        {
-            CreationDate = DateTime.Now,
-            Id = 1,
-            MaxAmountOfMembers = 20,
-            Name = "Panel 1",
-            TasksDescription = "Description",
-            Users = users
-        };
-        return team;
     }
     
     public List<Panel> GetAllPanels()

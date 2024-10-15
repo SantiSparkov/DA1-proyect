@@ -1,6 +1,7 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception;
+using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
@@ -121,7 +122,7 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        var exception = Assert.ThrowsException<TaskPanelException>(() => _commentRepository.Delete(comment.Id));
+        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.Delete(comment.Id));
 
         // Assert
         Assert.AreEqual($"Comment with id: {comment.Id} does not exist", exception.Message);

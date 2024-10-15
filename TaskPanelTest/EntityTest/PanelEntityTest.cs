@@ -1,7 +1,7 @@
 using TaskPanelLibrary.Entity;
 using Task = TaskPanelLibrary.Entity.Task;
 
-namespace TaskPanelTest.EntityTest.PanelEntityTest;
+namespace TaskPanelTest.EntityTest;
 
 [TestClass]
 public class PanelEntityTest

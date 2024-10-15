@@ -211,7 +211,7 @@ public class TeamService : ITeamService
             throw new TeamNotValidException("Team is full");
 
         if (team.Users.Contains(user))
-            throw new UserNotFoundException(user.Email);
+            throw new UserNotValidException("User is already in team");
 
         return true;
     }
@@ -219,7 +219,7 @@ public class TeamService : ITeamService
     private bool CanRemoveUserFromTeam(User user, Team team)
     {
         if (!team.Users.Contains(user))
-            throw new UserNotFoundException(user.Email);
+            throw new UserNotValidException("User is not in team");
 
         if (team.TeamLeader == user)
             throw new UserNotValidException("User is team leader");

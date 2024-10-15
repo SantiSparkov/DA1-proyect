@@ -1,37 +1,52 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
 using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
+using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelTest.ServiceTest
 {
     [TestClass]
     public class TeamServiceTest
     {
-        private TeamService _teamService;
-        private UserService _userService;
-        private PanelService _panelService;
-        private PanelRepository _panelRepository;
-        private TaskService _taskService;
-        private TeamRepository _teamRepository;
-        private UserRepository _userRepository;
-        private PasswordGeneratorService _passwordGenerator;
+        private ITeamService _teamService;
+        
+        private ITeamRepository _teamRepository;
+        
+        private IUserRepository _userRepository;
+        
+        private IPanelRepository _panelRepository;
+        
+        private IPanelService _panelService;
+        
+        private IUserService _userService;
+        
+        private PasswordGeneratorService _passwordGeneratorService;
+        
+        private User _adminUser;
 
         [TestInitialize]
         public void Initialize()
         {
             _teamRepository = new TeamRepository();
-            _userService = new UserService(_userRepository, _passwordGenerator);
-            _panelService = new PanelService(_panelRepository);
+            _userRepository = new UserRepository();
+            _panelRepository = new PanelRepository();
+            
+            _passwordGeneratorService = new PasswordGeneratorService();
+            _userService = new UserService(_userRepository, _passwordGeneratorService);
+            _panelService = new PanelService(_panelRepository, _userService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
+            
+            _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "userAdministrator@gmail.com"};
         }
 
         [TestMethod]
         public void CreateTeam_ValidTeam_CreatesTeamSuccessfully()
         {
             // Arrange
-            var user = new User { Id = 1, Name = "Admin User", IsAdmin = true };
-            _userService.AddUser(user);
+            _userService.AddUser(_adminUser);
 
             var team = new Team
             {
@@ -41,34 +56,31 @@ namespace TaskPanelTest.ServiceTest
             };
 
             // Act
-            var createdTeam = _teamService.CreateTeam(team, user.Id);
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
 
             // Assert
             Assert.IsNotNull(createdTeam);
             Assert.AreEqual(team.Name, createdTeam.Name);
-            Assert.AreEqual(user.Id, createdTeam.TeamLeader.Id);
+            Assert.AreEqual(_adminUser.Id, createdTeam.TeamLeader.Id);
             Assert.AreEqual(1, createdTeam.Users.Count);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UserNotValidException))]
         public void CreateTeam_NonAdminUser_ThrowsException()
         {
             // Arrange
-            var user = new User { Id = 2, Name = "Non-admin User", IsAdmin = false };
-            _userService.AddUser(user);
+            var nonAdminUser = new User { Id = 2, Name = "Non-admin User", IsAdmin = false };
+            _userService.AddUser(nonAdminUser);
 
             var team = new Team
             {
                 Name = "Team B",
                 TasksDescription = "Task description for Team B",
-                MaxAmountOfMembers = 3
+                MaxAmountOfMembers = 5
             };
 
-            // Act
-            _teamService.CreateTeam(team, user.Id);
-
-            // Assert is handled by the ExpectedException
+            // Act & Assert
+            Assert.ThrowsException<UserNotValidException>(() => _teamService.CreateTeam(team, nonAdminUser.Id));
         }
 
         [TestMethod]
@@ -84,17 +96,17 @@ namespace TaskPanelTest.ServiceTest
                 Name = "Team C",
                 TeamLeader = user,
                 MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team C",
                 Panels = new List<Panel>()
             };
 
-            _teamRepository.AddTeam(team); // Simulate team already existing in the system
+            var createdTeam = _teamService.CreateTeam(team, user.Id);
 
             // Act
-            var deletedTeam = _teamService.DeleteTeam(team, user.Id);
-
+            _teamService.DeleteTeam(createdTeam, user.Id);
+            
             // Assert
-            Assert.AreEqual(team.Id, deletedTeam.Id);
-            Assert.IsNull(_teamRepository.GetTeamById(team.Id)); // Ensure the team was deleted
+            Assert.AreEqual(0, _teamRepository.GetAllTeams().Count);
         }
 
         [TestMethod]
@@ -126,59 +138,50 @@ namespace TaskPanelTest.ServiceTest
         public void AddUserToTeam_ValidUser_AddsUserSuccessfully()
         {
             // Arrange
-            var adminUser = new User { Id = 1, Name = "Admin User", IsAdmin = true };
             var newUser = new User { Id = 2, Name = "New User", IsAdmin = false };
-            _userService.AddUser(adminUser);
+            _userService.AddUser(_adminUser);
             _userService.AddUser(newUser);
 
             var team = new Team
             {
                 Id = 1,
                 Name = "Team E",
-                TeamLeader = adminUser,
+                TeamLeader = _adminUser,
                 MaxAmountOfMembers = 5,
-                Users = new List<User> { adminUser }
+                TasksDescription = "Task description for Team E",
             };
 
-            _teamRepository.AddTeam(team);
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
 
-            // Act
-            _teamService.AddUserToTeam(newUser.Id, team);
-
+            // Act 
+            _teamService.AddUserToTeam(newUser.Id, createdTeam);
+            
             // Assert
-            Assert.AreEqual(2, team.Users.Count);
-            Assert.IsTrue(team.Users.Contains(newUser));
+            Assert.AreEqual(2, createdTeam.Users.Count);
+            Assert.IsTrue(createdTeam.Users.Contains(newUser));
         }
 
         [TestMethod]
         public void AddUserToTeam_TeamIsFull_ThrowsException()
         {
             // Arrange
-            var adminUser = new User { Id = 1, Name = "Admin User", IsAdmin = true };
-            _userService.AddUser(adminUser);
-
+            var newUser = new User { Id = 2, Name = "New User", IsAdmin = false };
+            _userService.AddUser(_adminUser);
+            _userService.AddUser(newUser);
+            
             var team = new Team
             {
                 Id = 1,
                 Name = "Team F",
-                TeamLeader = adminUser,
+                TeamLeader = _adminUser,
                 MaxAmountOfMembers = 1,
-                Users = new List<User> { adminUser }
+                TasksDescription = "Task description for Team F"
             };
 
-            _teamService.CreateTeam(team, adminUser.Id);
-            _teamRepository.AddTeam(team);
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
 
-            var newUser = new User { Id = 2, Name = "New User", IsAdmin = false };
-            _userService.AddUser(newUser);
-
-            // Act
-            _teamService.AddUserToTeam(newUser.Id, team);
-            
-            // Assert
-            Assert.AreEqual(2, team.Users.Count);
-            Assert.IsTrue(team.Users.Contains(newUser));
-            
+            // Act & Assert
+            Assert.ThrowsException<TeamNotValidException>(() => _teamService.AddUserToTeam(newUser.Id, createdTeam));
         }
     }
 }
