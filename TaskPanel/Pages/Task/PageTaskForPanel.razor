@@ -10,6 +10,7 @@
 
 <h1>Tasks for Panel</h1>
 
+<h3>Active Tasks</h3>
 <table class="table">
     <thead>
     <tr>
@@ -22,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks)
+    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now))
     {
         <tr>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
@@ -39,15 +40,74 @@
     </tbody>
 </table>
 
+<h3 class="mt-5">Expired Tasks</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now))
+    {
+        <tr>
+            <td>@task.Id</td>
+            <td>@task.Title</td>
+            <td>@task.Description</td>
+            <td>@task.Priority</td>
+            <td>@task.DueDate</td>
+            <td>
+                <button class="btn btn-warning btn-sm" @onclick="() => OpenReactivateTaskModal(task.Id)">Reactivate</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
 <div class="d-flex justify-content-start mt-3">
     <button class="btn btn-primary" @onclick="() => NavigateCreateTask(panelId)">New Task</button>
 </div>
 
-@code {
+@if (showModal)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reactivate Task</h5>
+                    <button type="button" class="close" @onclick="CloseModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="@this">
+                        <p>Update the due date for task:</p>
+                        <label for="dueDate">New Due Date:</label>
+                        <InputDate id="dueDate" @bind-Value="newDueDate" class="form-control"/>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+                    <button class="btn btn-primary" @onclick="ReactivateTask">Reactivate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
+
+@code {
     [Parameter] public int panelId { get; set; }
 
-    List<Task> tasks;
+    private List<Task> tasks;
+    private bool showModal = false;
+    private int selectedTaskId;
+    private DateTime newDueDate;
 
     protected override void OnInitialized()
     {
@@ -72,6 +132,26 @@
     private void ConfirmDeleteTask(Task task)
     {
         TaskService.DeleteTask(task);
+        tasks = TaskService.GetAllTasks(panelId);
+    }
+
+    private void OpenReactivateTaskModal(int taskId)
+    {
+        selectedTaskId = taskId;
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private void ReactivateTask()
+    {
+        var task = TaskService.GetTaskById(selectedTaskId);
+        task.DueDate = newDueDate;
+        TaskService.UpdateTask(task);
+        showModal = false;
         tasks = TaskService.GetAllTasks(panelId);
     }
 
