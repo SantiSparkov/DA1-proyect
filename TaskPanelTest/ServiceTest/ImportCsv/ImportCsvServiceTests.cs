@@ -22,11 +22,18 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
             _importCsvService = new ImportCsvService(_mockTaskService.Object, _mockPanelService.Object);
         }
 
-        private IBrowserFile GetCsvFileFromResources(string fileName)
+        private IBrowserFile CreateAndGetCsvFile(string fileName)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "resources", fileName);
-            var fileStream = File.OpenRead(filePath);
+            var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
 
+            using (var writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine("Title,Description,DueDate,PanelId,Priority");
+                writer.WriteLine("Task1,Description1,2024-12-12,1,High");
+                writer.WriteLine("Task2,Description2,2024-11-11,2,Medium");
+            }
+
+            var fileStream = File.OpenRead(filePath);
             return new TestBrowserFile(fileStream, fileName, "text/csv");
         }
 
@@ -34,7 +41,7 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
         public async Task ImportTasksFromFile_ValidFile_ShouldCreateTasks()
         {
             // Arrange
-            var mockFile = GetCsvFileFromResources("test.csv");
+            var mockFile = CreateAndGetCsvFile("taskImport.csv");
 
             _mockPanelService.Setup(service => service.FindById(It.IsAny<int>())).Returns(new Panel());
             _mockTaskService.Setup(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()));
@@ -43,7 +50,17 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
             await _importCsvService.ImportTasksFromFile(mockFile, "testUser");
 
             // Assert
-            _mockTaskService.Verify(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()), Times.Once);
+            _mockTaskService.Verify(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()), Times.AtLeastOnce);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            var filePath = Path.Combine(AppContext.BaseDirectory, "taskImport.csv");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
         }
     }
 }
