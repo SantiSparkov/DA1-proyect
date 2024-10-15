@@ -64,7 +64,7 @@ public class UserRepository : IUserRepository
         }
         else
         {
-            throw new UserNotFoundException(user.Email);
+            throw new UserNotValidException(user.Email);
         }
     }
 }
