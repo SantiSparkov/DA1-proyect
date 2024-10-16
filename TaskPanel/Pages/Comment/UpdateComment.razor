@@ -78,7 +78,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        comment = CommentService.FindById(commentId);
+        comment = CommentService.GetCommentById(commentId);
         Panels.createTeamAndPanel();
         
     }

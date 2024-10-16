@@ -55,7 +55,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        comment = CommentService.FindById(commentId);
+        comment = CommentService.GetCommentById(commentId);
         return base.OnInitializedAsync();
     }
     

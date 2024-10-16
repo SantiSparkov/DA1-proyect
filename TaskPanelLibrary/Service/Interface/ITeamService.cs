@@ -14,14 +14,6 @@ public interface ITeamService
     public Team GetTeamById(int id);
     
     public List<Team> GetAllTeams();
-    
-    public void AddUserToTeam(int userId, Team team);
-
-    public void RemoveUserFromTeam(int userId, Team team);
-    
-    public void AddPanelToTeam(int panelId, Team team);
-    
-    public void RemovePanelFromTeam(int panelId, Team team);
 
     public List<Team> TeamsForUser(int userId);
 }

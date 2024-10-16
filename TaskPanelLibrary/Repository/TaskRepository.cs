@@ -32,7 +32,7 @@ public class TaskRepository : ITaskRepository
 
     public List<Task> GetAllTasks()
     {
-        return new List<Task>(_tasks);
+        return _tasks;
     }
 
     public Task UpdateTask(Task task)

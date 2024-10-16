@@ -6,6 +6,7 @@ public class User
 {
     public int Id { get; set; }
     
+    [Required(ErrorMessage = "Name must not be empty.")]
     public string Name { get; set; }
     
     [Required(ErrorMessage = "Email must not be empty.")]
@@ -15,6 +16,7 @@ public class User
     
     public string Password { get; set; }
     
+    [Required(ErrorMessage = "First name must not be empty.")]
     public string LastName { get; set; }
     
     public DateTime BirthDate { get; set; }

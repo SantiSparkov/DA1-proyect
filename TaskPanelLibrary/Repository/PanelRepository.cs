@@ -15,46 +15,39 @@ public class PanelRepository : IPanelRepository
 
     public Panel AddPanel(Panel panel)
     {
-        int count = _panels.Count;
-        panel.Id = count++;
-        this._panels.Add(panel);
+        panel.Id = _panels.Count > 0 ? _panels.Max(t => t.Id) + 1 : 1;
+        _panels.Add(panel);
         return panel;
     }
     
-    public Panel Delete(int id)
+    public Panel DeletePanel(int id)
     {
-        foreach (var panel in _panels)
-        {
-            if (panel.Id == id)
-            {
-                _panels.Remove(panel);
-                return panel;
-            }
-        }
-        throw new ArgumentException("Panel does not exist");
+        var panel = _panels.FirstOrDefault(t => t.Id == id)
+                    ?? throw new ArgumentException("Panel does not exist");
+        
+        _panels.Remove(panel);
+        return panel;
     }
 
-    public Panel FindById(int id)
+    public Panel GetPanelById(int id)
     {
-        List<Panel> panels = _panels.Where(p => p.Id == id).ToList();
-
-        if (panels == null || panels.Count == 0)
-        {
-            throw new ArgumentException("Panel does not exist");
-        }
-
-        return panels[0];
+        var panel = _panels.FirstOrDefault(t => t.Id == id)
+                   ?? throw new ArgumentException("Panel does not exist");
+        return panel;
     }
 
-    public Panel Update(Panel panel)
+    public Panel UpdatePanel(Panel panel)
     {
-        Panel panelSaved = FindById(panel.Id);
+        Panel panelSaved = GetPanelById(panel.Id);
+        
         panelSaved.Description = panel.Description;
         panelSaved.Name = panel.Name;
+        panelSaved.Team = panel.Team;
+        
         return panelSaved;
     }
 
-    public List<Panel> GetAll()
+    public List<Panel> GetAllPanels()
     {
         return _panels;
     }

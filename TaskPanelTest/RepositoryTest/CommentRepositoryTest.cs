@@ -51,8 +51,8 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        _commentRepository.Add(comment);
-        Comment commentSaved = _commentRepository.FindById(comment.Id);
+        _commentRepository.AddComment(comment);
+        Comment commentSaved = _commentRepository.GetCommentById(comment.Id);
         User user = comment.ResolvedBy;
         
         // Assert
@@ -87,15 +87,15 @@ public class CommentRepositoryTest
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
             Status = EStatusComment.RESOLVED
         };
-        _commentRepository.Add(comment);
+        _commentRepository.AddComment(comment);
         
         //Act 
-        Comment commentDelete = _commentRepository.Delete(comment.Id);
+        Comment commentDelete = _commentRepository.DeleteComment(comment.Id);
 
         // Assert
         Assert.AreEqual(comment.Id, commentDelete.Id);
         Assert.AreEqual(comment.Message, commentDelete.Message);
-        Assert.AreEqual(0, _commentRepository.GetAll().Count);
+        Assert.AreEqual(0, _commentRepository.GetAllComments().Count);
     }
     
     [TestMethod]
@@ -122,7 +122,7 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.Delete(comment.Id));
+        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.DeleteComment(comment.Id));
 
         // Assert
         Assert.AreEqual($"Comment with id: {comment.Id} does not exist", exception.Message);
@@ -143,8 +143,8 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        _commentRepository.Add(comment);
-        List<Comment> comments = _commentRepository.GetAll();
+        _commentRepository.AddComment(comment);
+        List<Comment> comments = _commentRepository.GetAllComments();
 
         // Assert
         Assert.AreEqual(1, comments.Count);
@@ -165,11 +165,11 @@ public class CommentRepositoryTest
         };
         
         //Act 
-        _commentRepository.Add(comment);
+        _commentRepository.AddComment(comment);
 
         comment.Message = "New message";
         comment.Status = EStatusComment.RESOLVED;
-        Comment commentUpdated = _commentRepository.Update(comment);
+        Comment commentUpdated = _commentRepository.UpdateComment(comment);
         
 
         // Assert
@@ -181,7 +181,7 @@ public class CommentRepositoryTest
     [TestCleanup]
     public void Cleanup()
     {
-        _commentRepository.GetAll().Clear();
+        _commentRepository.GetAllComments().Clear();
     }
     
 }

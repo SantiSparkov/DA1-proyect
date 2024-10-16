@@ -59,19 +59,19 @@ public class TaskServiceTest
     [TestCleanup]
     public void Cleanup()
     {
-        var panels = _panelRepository.GetAll().ToList();
-        var comments = _commentRepository.GetAll().ToList();
+        var panels = _panelRepository.GetAllPanels().ToList();
+        var comments = _commentRepository.GetAllComments().ToList();
         var tasks = taskRepository.GetAllTasks().ToList();
         var users = _userRepository.GetAllUsers().ToList();
         _passwordGeneratorService = null;
 
         foreach (var panel in panels)
         {
-            _panelRepository.Delete(panel.Id);
+            _panelRepository.DeletePanel(panel.Id);
         }
         foreach (var comment in comments)
         {
-            _commentRepository.Delete(comment.Id);
+            _commentRepository.DeleteComment(comment.Id);
         }
         foreach (var task in tasks)
         {

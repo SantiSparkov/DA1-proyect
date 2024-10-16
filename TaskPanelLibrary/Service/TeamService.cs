@@ -82,58 +82,6 @@ public class TeamService : ITeamService
         var teams = _teamRepository.GetAllTeams();
         return teams;
     }
-
-    public void AddUserToTeam(int userId, Team team)
-    {
-        var user = _userService.GetUserById(userId);
-
-        if (!CanAddUserToTeam(user, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Users.Add(user);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void RemoveUserFromTeam(int userId, Team team)
-    {
-        var user = _userService.GetUserById(userId);
-
-        if (!CanRemoveUserFromTeam(user, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Users.Remove(user);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void AddPanelToTeam(int panelId, Team team)
-    {
-        var panel = _panelService.FindById(panelId);
-
-        if (!CanAddPanelToTeam(panel, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Panels.Add(panel);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void RemovePanelFromTeam(int panelId, Team team)
-    {
-        var panel = _panelService.FindById(panelId);
-
-        if (!CanRemovePanelFromTeam(panel, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Panels.Remove(panel);
-        _teamRepository.UpdateTeam(team);
-    }
     
     public List<Team> TeamsForUser(int userId)
     {
