@@ -95,7 +95,7 @@ public class TaskService : ITaskService
         if (string.IsNullOrEmpty(task.Description))
             throw new TaskNotValidException("Description is null or empty");
         if (task.DueDate < DateTime.Now)
-            throw new TaskNotValidException("DueDate is less than current date");
+            throw new TaskNotValidException("Due date is before today");
         
         return true;
     }

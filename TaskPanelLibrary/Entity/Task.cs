@@ -17,7 +17,7 @@ public class Task
     [Required(ErrorMessage = "Description is required")]
     public string Description { get; set; }
     
-    [Required(ErrorMessage = "Due Date is required")]
+    [Required(ErrorMessage = "Due date is required")]
     public DateTime DueDate { get; set; }
     
     [Required(ErrorMessage = "Priority is required")]
