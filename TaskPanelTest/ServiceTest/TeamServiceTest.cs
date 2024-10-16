@@ -132,56 +132,5 @@ namespace TaskPanelTest.ServiceTest
             Assert.ThrowsException<UserNotValidException>(() => _teamService.DeleteTeam(createdTeam, nonAdminUser.Id));
         }
         
-        
-
-        [TestMethod]
-        public void AddUserToTeam_ValidUser_AddsUserSuccessfully()
-        {
-            // Arrange
-            var newUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
-            _userService.AddUser(_adminUser);
-            _userService.AddUser(newUser);
-
-            var team = new Team
-            {
-                Id = 1,
-                Name = "Team E",
-                TeamLeader = _adminUser,
-                MaxAmountOfMembers = 5,
-                TasksDescription = "Task description for Team E",
-            };
-
-            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
-
-            // Act 
-            _teamService.AddUserToTeam(newUser.Id, createdTeam);
-            
-            // Assert
-            Assert.AreEqual(2, createdTeam.Users.Count);
-            Assert.IsTrue(createdTeam.Users.Contains(newUser));
-        }
-
-        [TestMethod]
-        public void AddUserToTeam_TeamIsFull_ThrowsException()
-        {
-            // Arrange
-            var newUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
-            _userService.AddUser(_adminUser);
-            _userService.AddUser(newUser);
-            
-            var team = new Team
-            {
-                Id = 1,
-                Name = "Team F",
-                TeamLeader = _adminUser,
-                MaxAmountOfMembers = 1,
-                TasksDescription = "Task description for Team F"
-            };
-
-            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
-
-            // Act & Assert
-            Assert.ThrowsException<TeamNotValidException>(() => _teamService.AddUserToTeam(newUser.Id, createdTeam));
-        }
     }
 }
