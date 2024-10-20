@@ -17,6 +17,7 @@ public class PanelRepository : IPanelRepository
     {
         panel.Id = _panels.Count > 0 ? _panels.Max(t => t.Id) + 1 : 1;
         _panels.Add(panel);
+        Console.WriteLine($"Panel {panel.Name} added successfully");
         return panel;
     }
     

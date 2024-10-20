@@ -20,8 +20,20 @@ public class UserRepository : IUserRepository
             IsAdmin = true,
             BirthDate = new DateTime(1990, 1, 1)
         };
-
+        
+        var randomUser = new User
+        {
+            Id = 2,
+            Name = "Random",
+            LastName = "User",
+            Email = "randomUser@gmail.com",
+            Password = "random",
+            IsAdmin = false,
+            BirthDate = new DateTime(1990, 1, 1)
+        };
+        
         _users.Add(adminUser);
+        _users.Add(randomUser);
     }
 
     public User AddUser(User user)

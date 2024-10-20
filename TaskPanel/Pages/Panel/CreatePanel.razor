@@ -2,6 +2,7 @@
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
 @inject IPanelService PanelService
 @inject ITeamService TeamService
 @inject NavigationManager Navigation
@@ -11,7 +12,7 @@
 
 <h1>New panel</h1>
 
-<EditForm Model="_panel" OnValidSubmit="SavePanel">
+<EditForm Model="_panel" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
 
     <div class="form-group">
@@ -26,7 +27,7 @@
         <ValidationMessage For="@(() => _panel.Description)" class="text-danger validation-message"/>
     </div>
 
-    @if (teamId == null || teamId == 0)
+    @if (!HasTeamSelected())
     {
         <div class="form-group">
             <label for="teamSelect">Select Team:</label>
@@ -42,59 +43,78 @@
     }
 
     <div class="mt-4">
-        <button class="btn btn-primary" type="submit" @onclick="SavePanel">Save</button>
+        <button class="btn btn-primary" type="submit" @onclick="SavePanel">Create Panel</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
 
-<style>
-    .validation-message {
-        font-size: 0.875rem;
-        color: #dc3545;
-        margin-top: 5px;
-    }
-    .form-group {
-        margin-bottom: 1rem;
-    }
-</style>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        @_errorMessage
+    </div>
+}
 
 @code {
     [Parameter] public int? teamId { get; set; }
 
     private Panel _panel = new Panel();
-    private List<Team> _availableTeams;
+    private List<Team> _availableTeams = new();
     private int selectedTeamId;
+    private string _errorMessage;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-
-        _availableTeams = TeamService.GetAllTeams();
-
-        if (teamId != null && teamId > 0)
+        try
         {
-            _panel.Team = TeamService.GetTeamById(teamId.Value);
+            base.OnInitialized();
+            _availableTeams = TeamService.GetAllTeams();
+
+            if (teamId.HasValue && teamId.Value > 0)
+            {
+                _panel.Team = TeamService.GetTeamById(teamId.Value);
+            }
         }
-        else
+        catch (Exception e)
         {
-            selectedTeamId = 0;
+            _errorMessage = "Error loading teams: " + e.Message;
         }
     }
 
+    private bool HasTeamSelected() => _panel.Team != null || teamId.HasValue;
+
     private void SavePanel()
     {
-        if (teamId == null || teamId == 0)
+        try
         {
-            _panel.Team = TeamService.GetTeamById(selectedTeamId);
-        }
+            if (!HasTeamSelected() && selectedTeamId == 0)
+            {
+                _errorMessage = "Please select a team";
+                return;
+            }
+            
+            if (!HasTeamSelected())
+            {
+                _panel.Team = TeamService.GetTeamById(selectedTeamId);
+            }
 
-        PanelService.CreatePanel(_panel);
-        NavigationGoBack();
+            PanelService.CreatePanel(_panel);
+            NavigationGoBack();
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error creating panel: " + e.Message;
+        }
     }
 
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/panels/user/{AuthService.GetCurrentUser().Id}");
+    }
+
+    private Task HandleValidSubmit(EditContext arg)
+    {   
+        return Task.CompletedTask;
     }
 
 }

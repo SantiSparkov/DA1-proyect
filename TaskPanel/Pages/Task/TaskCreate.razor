@@ -7,21 +7,21 @@
 
 <h3>Create Task</h3>
 
-<EditForm Model="_task" OnValidSubmit="SaveTask">
+<EditForm Model="_task" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
-    
+
     <div class="form-group">
         <label>Title:</label>
         <InputText @bind-Value="_task.Title" class="form-control"/>
         <ValidationMessage For="@(() => _task.Title)" class="text-danger validation-message"/>
     </div>
-    
-    <div class="form-group">    
+
+    <div class="form-group">
         <label>Description:</label>
         <InputText @bind-Value="_task.Description" class="form-control"/>
         <ValidationMessage For="@(() => _task.Description)" class="text-danger validation-message"/>
     </div>
-    
+
     <div class="form-group">
         <label>Priority:</label>
         <InputSelect @bind-Value="_task.Priority" class="form-control">
@@ -32,18 +32,25 @@
         </InputSelect>
         <ValidationMessage For="@(() => _task.Priority)" class="text-danger validation-message"/>
     </div>
-    
+
     <div class="form-group">
         <label for="ResolvedAt">Due Date:</label>
-        <input type="datetime-local" id="ResolvedAt" @bind="_task.DueDate" class="form-control" required />
+        <InputDate @bind-Value="_task.DueDate" class="form-control"/>
         <ValidationMessage For="@(() => _task.DueDate)" class="text-danger validation-message"/>
     </div>
-    
+
     <div class="mt-4">
-        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="submit" @onclick="SaveTask">Save</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        @_errorMessage
+    </div>
+}
 
 <style>
     .validation-message {
@@ -57,26 +64,41 @@
 </style>
 
 @code {
-    [Parameter]
-    public int panelId { get; set; }
+    [Parameter] public int panelId { get; set; }
 
     TaskPanelLibrary.Entity.Task _task;
-    
+    private string _errorMessage;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         _task = new TaskPanelLibrary.Entity.Task();
+
+        _task.DueDate = DateTime.Now.AddDays(1).Date;
     }
-    
+
     private async Task SaveTask()
     {
-        _task.PanelId = panelId;
-        TaskService.CreateTask(_task);
-        NavigationGoBack();
+        try
+        {
+            _task.PanelId = panelId;
+            TaskService.CreateTask(_task);
+            NavigationGoBack();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
     }
 
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/tasks/panel/{panelId}");
     }
+
+    private Task HandleValidSubmit(EditContext arg)
+    {
+        return Task.CompletedTask;
+    }
+
 }

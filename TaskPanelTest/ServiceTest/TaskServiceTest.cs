@@ -157,29 +157,6 @@ public class TaskServiceTest
     }
     
     [TestMethod]
-    public void MarkCommentAsDone()
-    {
-        // Arrange
-        var createdTask = _taskService.CreateTask(_task);
-        var comment = new Comment()
-        {
-            Id = 1,
-            TaskId = createdTask.Id,
-            Message = "Comment test"
-        };
-        var createdComment = _commentService.CreateComment(comment);
-        _taskService.AddComentToTask(createdTask.Id, createdComment);
-        
-        // Act
-        _taskService.MarkCommentAsDone(createdTask.Id, createdComment.Id);
-        
-        // Assert
-        var task = _taskService.GetTaskById(createdTask.Id);
-        Assert.AreEqual(1, task.CommentList.Count);
-        Assert.AreEqual(EStatusComment.RESOLVED, task.CommentList.First().Status);
-    }
-    
-    [TestMethod]
     public void GetTaskById()
     {
         // Arrange

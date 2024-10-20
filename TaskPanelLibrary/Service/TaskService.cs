@@ -74,18 +74,6 @@ public class TaskService : ITaskService
         _taskRepository.UpdateTask(task);
     }
 
-    public void MarkCommentAsDone(int taskId, int commentId)
-    {
-        var task = _taskRepository.GetTaskById(taskId);
-        var existingComment = _commentService.GetCommentById(commentId);
-
-        existingComment.ResolvedAt = DateTime.Now;
-        existingComment.Status = EStatusComment.RESOLVED;
-
-        _commentService.UpdateComment(existingComment);
-        _taskRepository.UpdateTask(task);
-    }
-
     private bool IsValidTask(Task? task)
     {
         if(task == null)
