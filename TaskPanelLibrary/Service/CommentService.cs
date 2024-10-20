@@ -55,7 +55,6 @@ public class CommentService : ICommentService
                 comments.Remove(c);
                 return c;
             }
-            
         }
 
         throw new CommentNotValidException($"Not exist comment with id: {comment.Id}, not deleted");

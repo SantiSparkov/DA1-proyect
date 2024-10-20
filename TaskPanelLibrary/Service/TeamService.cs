@@ -153,56 +153,8 @@ public class TeamService : ITeamService
         return true;
     }
 
-    private bool CanAddUserToTeam(User user, Team team)
-    {
-        if (IsTeamFull(team))
-            throw new TeamNotValidException("Team is full");
-
-        if (team.Users.Contains(user))
-            throw new UserNotValidException("User is already in team");
-
-        return true;
-    }
-
-    private bool CanRemoveUserFromTeam(User user, Team team)
-    {
-        if (!team.Users.Contains(user))
-            throw new UserNotValidException("User is not in team");
-
-        if (team.TeamLeader == user)
-            throw new UserNotValidException("User is team leader");
-
-        if (team.Users.Count == 1)
-            throw new TeamNotValidException("Team cannot be empty");
-        return true;
-    }
-
-    private bool CanAddPanelToTeam(Panel panel, Team team)
-    {
-        if (team.Panels.Contains(panel))
-            throw new PanelNotValidException("Panel is already in team");
-
-        if (team.Panels.Any(p => p.Name.Equals(panel.Name)))
-            throw new PanelNotValidException("A panel with the same name already exists in the team.");
-
-        return true;
-    }
-
-    private bool CanRemovePanelFromTeam(Panel panel, Team team)
-    {
-        if (!team.Panels.Contains(panel))
-            throw new PanelNotValidException("Panel is not in team");
-
-        return true;
-    }
-
     private bool IsTeamNameUnique(string teamName)
     {
         return _teamRepository.GetAllTeams().All(t => t.Name != teamName);
-    }
-
-    private bool IsTeamFull(Team team)
-    {
-        return team.Users.Count >= team.MaxAmountOfMembers;
     }
 }

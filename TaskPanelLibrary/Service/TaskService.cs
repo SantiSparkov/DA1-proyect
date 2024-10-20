@@ -65,15 +65,6 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public void AddComentToTask(int taskId, Comment comment)
-    {
-        var task = _taskRepository.GetTaskById(taskId);
-        if (comment == null)
-            throw new CommentNotValidException("Comment is null");
-        task.CommentList.Add(comment);
-        _taskRepository.UpdateTask(task);
-    }
-
     private bool IsValidTask(Task? task)
     {
         if(task == null)
