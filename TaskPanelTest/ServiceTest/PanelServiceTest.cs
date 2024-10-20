@@ -49,6 +49,7 @@ public class PanelServiceTest
         _panel = new Panel()
         {
             Name = "Panel Test",
+            Team = new Team(){Id = 1, Name = "Team Test"},
             Description = "Description Test",
         };
     }

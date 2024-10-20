@@ -52,7 +52,8 @@ public class TaskServiceTest
             PanelId = 1,
             Title = "Title test",
             Description = "Description test",
-            Priority = ETaskPriority.LOW
+            Priority = ETaskPriority.LOW,
+            DueDate = new DateTime(DateTime.Now.Year+1, DateTime.Now.Month, DateTime.Now.Day)
         };
     }
 

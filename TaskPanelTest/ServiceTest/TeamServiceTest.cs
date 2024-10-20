@@ -39,7 +39,8 @@ namespace TaskPanelTest.ServiceTest
             _panelService = new PanelService(_panelRepository, _userService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
             
-            _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "userAdministrator@gmail.com", LastName = "LasatMan"};
+            _adminUser = new User {Name = "Admin User", IsAdmin = true, Email = "userAdministrator@gmail.com", 
+                LastName = "LasatMan", BirthDate = new System.DateTime(1990, 1, 1)};
         }
 
         [TestMethod]
@@ -69,7 +70,8 @@ namespace TaskPanelTest.ServiceTest
         public void CreateTeam_NonAdminUser_ThrowsException()
         {
             // Arrange
-            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
+            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , 
+                Email = "user2@gmail.com", BirthDate = new System.DateTime(1991, 1, 1)};
             _userService.AddUser(nonAdminUser);
 
             var team = new Team
@@ -112,7 +114,9 @@ namespace TaskPanelTest.ServiceTest
         public void DeleteTeam_NonAdminUser_ThrowsException()
         {
             // Arrange
-            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , Email = "user2@gmail.com"};
+            var nonAdminUser = new User { Id = 2, Name = "New User", LastName = "User LastName",IsAdmin = false , 
+                Email = "user2@gmail.com", BirthDate = new System.DateTime(1991, 1, 1)};
+            
             _userService.AddUser(_adminUser);
             _userService.AddUser(nonAdminUser);
 
