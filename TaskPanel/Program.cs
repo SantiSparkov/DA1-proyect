@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using TaskPanelLibrary.Config;
 using TaskPanelLibrary.DataTest;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
@@ -30,6 +32,13 @@ builder.Services.AddSingleton<ImportCsvService>();
 //Data for test
 builder.Services.AddSingleton<Panels>();
 
+// Database configuration
+builder.Services.AddDbContextFactory<SqlContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+        )
+);
+    
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
