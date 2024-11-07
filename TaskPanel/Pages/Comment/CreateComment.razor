@@ -9,7 +9,7 @@
 
 <h3>Create Comment</h3>
 
-<EditForm Model="_newComment" OnValidSubmit="SaveComment">
+<EditForm Model="_newComment" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
 
     <div class="form-group">
@@ -20,20 +20,23 @@
 
     <div class="form-group">
         <label>Status:</label>
-        <InputSelect @bind-Value="_newComment.Status" class="form-control">
-            @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
-            {
-                <option value="@status">@status</option>
-            }
-        </InputSelect>
+        <span class="form-control-plaintext">PENDING</span>
+        <input type="hidden" value="PENDING" />
         <ValidationMessage For="@(() => _newComment.Status)" class="text-danger validation-message"/>
     </div>
 
     <div class="mt-4">
-        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="submit" @onclick="SaveComment">Save</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        <strong>Error!</strong> @_errorMessage
+    </div>
+}
 
 <style>
     .validation-message {
@@ -51,25 +54,36 @@
     [Parameter] public int taskId { get; set; }
 
     private Comment _newComment;
+    private string _errorMessage;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         _newComment = new Comment
         {
-            TaskId = taskId
+            TaskId = taskId,
+            Status = EStatusComment.PENDING
         };
     }
 
     private async Task SaveComment()
     {
-        CommentService.CreateComment(_newComment);
-        NavigationGoBack();
+        try {
+            CommentService.CreateComment(_newComment);
+            NavigationGoBack();
+        } catch (Exception e) {
+            _errorMessage = e.Message;
+        }
     }
 
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/comments/{taskId}");
+    }
+    
+    private Task HandleValidSubmit(EditContext arg)
+    {
+        return Task.CompletedTask;
     }
 
 }

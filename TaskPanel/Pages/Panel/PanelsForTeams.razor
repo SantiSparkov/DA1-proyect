@@ -47,7 +47,15 @@
 
     protected override void OnInitialized()
     {
-        _panels = PanelService.GetAllPanelForTeam(idTeam);
+        try
+        {
+            _panels = PanelService.GetAllPanelForTeam(idTeam);
+            _panels = _panels.DistinctBy(p => p.Id).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error loading panels: " + ex.Message);
+        }
     }
 
     private void NavigationPanel(int panelId)

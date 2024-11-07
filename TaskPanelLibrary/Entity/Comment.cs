@@ -14,7 +14,7 @@ public class Comment
     
     public User ResolvedBy { get; set; }
     
-    public DateTime ResolvedAt { get; set; }
+    public DateTime? ResolvedAt { get; set; }
     
     [Required(ErrorMessage = "Status is required")]
     public EStatusComment Status { get; set; }

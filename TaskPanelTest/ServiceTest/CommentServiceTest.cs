@@ -69,7 +69,7 @@ public class CommentServiceTest
 
         //Act
         _task.CommentList.Add(createdComment);
-        Comment commentSaved = _commentService.FindById(createdComment.Id);
+        Comment commentSaved = _commentService.GetCommentById(createdComment.Id);
 
         //Assert
         Assert.AreEqual(createdComment.Id, commentSaved.Id);
@@ -82,7 +82,7 @@ public class CommentServiceTest
     {
         //Arrange
         //Act
-        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.FindById(12));
+        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.GetCommentById(12));
 
         //Assert
         Assert.AreEqual("Comment with id: 12 do not exist", exception.Message);
@@ -98,7 +98,7 @@ public class CommentServiceTest
         
         //Act
         _task.CommentList.Add(comment);
-        Comment commentSaved = _commentService.FindById(comment.Id);
+        Comment commentSaved = _commentService.GetCommentById(comment.Id);
         
         //Assert
         Assert.AreEqual(comment.Message, commentSaved.Message);
@@ -117,7 +117,7 @@ public class CommentServiceTest
         //Act
         _task.CommentList.Add(comment);
         Comment commentDeleted = _commentService.DeleteComment(_task, comment);
-        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.FindById(commentDeleted.Id));
+        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.GetCommentById(commentDeleted.Id));
         
         //Assert
         Assert.AreEqual(comment.Message, commentDeleted.Message);
@@ -146,7 +146,7 @@ public class CommentServiceTest
         //Act
         _task.CommentList.Add(comment);
         _commentService.UpdateComment(commentToUpdate);
-        Comment comentUpdated = _commentService.FindById(comment.Id);
+        Comment comentUpdated = _commentService.GetCommentById(comment.Id);
         
         //Assert
         Assert.AreEqual(comentUpdated.Message, commentToUpdate.Message);

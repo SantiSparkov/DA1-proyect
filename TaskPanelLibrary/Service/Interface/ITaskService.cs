@@ -14,8 +14,4 @@ public interface ITaskService
     Task UpdateTask(Task task);
 
     Task DeleteTask(Task task);
-    
-    void AddComentToTask(int taskId, Comment comment);
-    
-    void MarkCommentAsDone(int taskId, int commentId);
 }

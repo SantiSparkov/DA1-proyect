@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository
             IsAdmin = true,
             BirthDate = new DateTime(1990, 1, 1)
         };
-
+        
         _users.Add(adminUser);
     }
 

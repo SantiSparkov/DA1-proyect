@@ -53,7 +53,7 @@ public class ImportCsvService
 
             try
             {
-                _panelService.FindById(panelId);
+                _panelService.GetPanelById(panelId);
             }
             catch (System.Exception ex)
             {

@@ -82,58 +82,6 @@ public class TeamService : ITeamService
         var teams = _teamRepository.GetAllTeams();
         return teams;
     }
-
-    public void AddUserToTeam(int userId, Team team)
-    {
-        var user = _userService.GetUserById(userId);
-
-        if (!CanAddUserToTeam(user, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Users.Add(user);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void RemoveUserFromTeam(int userId, Team team)
-    {
-        var user = _userService.GetUserById(userId);
-
-        if (!CanRemoveUserFromTeam(user, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Users.Remove(user);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void AddPanelToTeam(int panelId, Team team)
-    {
-        var panel = _panelService.FindById(panelId);
-
-        if (!CanAddPanelToTeam(panel, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Panels.Add(panel);
-        _teamRepository.UpdateTeam(team);
-    }
-
-    public void RemovePanelFromTeam(int panelId, Team team)
-    {
-        var panel = _panelService.FindById(panelId);
-
-        if (!CanRemovePanelFromTeam(panel, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Panels.Remove(panel);
-        _teamRepository.UpdateTeam(team);
-    }
     
     public List<Team> TeamsForUser(int userId)
     {
@@ -205,56 +153,8 @@ public class TeamService : ITeamService
         return true;
     }
 
-    private bool CanAddUserToTeam(User user, Team team)
-    {
-        if (IsTeamFull(team))
-            throw new TeamNotValidException("Team is full");
-
-        if (team.Users.Contains(user))
-            throw new UserNotValidException("User is already in team");
-
-        return true;
-    }
-
-    private bool CanRemoveUserFromTeam(User user, Team team)
-    {
-        if (!team.Users.Contains(user))
-            throw new UserNotValidException("User is not in team");
-
-        if (team.TeamLeader == user)
-            throw new UserNotValidException("User is team leader");
-
-        if (team.Users.Count == 1)
-            throw new TeamNotValidException("Team cannot be empty");
-        return true;
-    }
-
-    private bool CanAddPanelToTeam(Panel panel, Team team)
-    {
-        if (team.Panels.Contains(panel))
-            throw new PanelNotValidException("Panel is already in team");
-
-        if (team.Panels.Any(p => p.Name.Equals(panel.Name)))
-            throw new PanelNotValidException("A panel with the same name already exists in the team.");
-
-        return true;
-    }
-
-    private bool CanRemovePanelFromTeam(Panel panel, Team team)
-    {
-        if (!team.Panels.Contains(panel))
-            throw new PanelNotValidException("Panel is not in team");
-
-        return true;
-    }
-
     private bool IsTeamNameUnique(string teamName)
     {
         return _teamRepository.GetAllTeams().All(t => t.Name != teamName);
-    }
-
-    private bool IsTeamFull(Team team)
-    {
-        return team.Users.Count >= team.MaxAmountOfMembers;
     }
 }

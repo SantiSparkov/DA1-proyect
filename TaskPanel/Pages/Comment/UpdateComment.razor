@@ -1,11 +1,10 @@
 @page "/comment/update/{commentId:int}"
 
-@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
 @using TaskPanelLibrary.Service.Interface
-@using System.Data
+@using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
 
@@ -18,90 +17,109 @@
 <h1>Update comment</h1>
 
 
-
 <EditForm Model="@comment" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Message</th>
-                <th>Status</th>
-                <th>Resolved by</th>
-                <th>Resolved at</th>
-                <th>Comment</th>
-            </tr>
+        <tr>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Resolved by</th>
+            <th>Resolved at</th>
+            <th>Comment</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>@comment.Message</td>
-                <td>
-                    <InputSelect @bind-Value="comment.Status">
-                        @foreach (var status in Enum.GetValues(typeof(EStatusComment))) 
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    </InputSelect>
-                </td>
-               <td>
-                   <InputSelect @bind-Value="userId">
-                       @foreach (User user in UserService.GetAllUsers())
-                       {
-                           <option value="@user.Id">@user.Email</option>
-                       }
-                   </InputSelect>
-               </td>
-                <td>@comment.ResolvedAt</td>
-                <td>
-                    <InputText @bind-Value="comment.Message" />
-                </td>
-            </tr>
+        <tr>
+            <td>@comment.Message</td>
+            <td>
+                <InputSelect @bind-Value="comment.Status">
+                    @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </InputSelect>
+            </td>
+            <td>
+                <InputSelect @bind-Value="userId">
+                    @foreach (User user in UserService.GetAllUsers())
+                    {
+                        <option value="@user.Id">@user.Email</option>
+                    }
+                </InputSelect>
+            </td>
+            <td>@comment.ResolvedAt</td>
+            <td>
+                <InputText @bind-Value="comment.Message"/>
+            </td>
+        </tr>
         </tbody>
     </table>
 
     <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
-    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()" >Cancel</button>
+    <button class="btn btn-secondary mt-3" type="button" @onclick="NavigationGoBack">Cancel</button>
 
 </EditForm>
 
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        <strong>Error, check again the fields!</strong> @_errorMessage
+    </div>
+}
 
 @code {
-    
-    [Parameter]
-    public int commentId { get; set; }
 
+    [Parameter] public int commentId { get; set; }
     Comment comment;
 
+    private string _errorMessage;
     int userId;
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        comment = CommentService.FindById(commentId);
+        comment = CommentService.GetCommentById(commentId);
         Panels.createTeamAndPanel();
-        
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
+
+    [Inject] private NavigationManager Navigation { get; set; }
 
     private void NavigationUpdateComment(Comment comment)
     {
-        this.comment.ResolvedAt = DateTime.Now;
-        User user = UserService.GetUserById(userId);
-        comment.ResolvedBy = user;
-        CommentService.UpdateComment(comment);
-        Navigation.NavigateTo($"/comments/{comment.TaskId}");
+        try
+        {
+            if (comment.Status == EStatusComment.RESOLVED)
+            {
+                this.comment.ResolvedAt = DateTime.Now;
+                User user = UserService.GetUserById(userId);
+                comment.ResolvedBy = user;
+            }
+            else
+            {
+                this.comment.ResolvedAt = null;
+                this.comment.ResolvedBy = null;
+            }
+
+            CommentService.UpdateComment(comment);
+            Navigation.NavigateTo($"/comments/{comment.TaskId}");
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+        }
     }
-    
+
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/comments/{comment.TaskId}");    }
-    
-    private void HandleValidSubmit()
+        Navigation.NavigateTo($"/comments/{comment.TaskId}");
+    }
+
+    private Task HandleValidSubmit()
     {
-        
+        return Task.CompletedTask;
     }
 
 }

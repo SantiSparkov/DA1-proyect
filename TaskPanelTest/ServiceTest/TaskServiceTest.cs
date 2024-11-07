@@ -52,26 +52,27 @@ public class TaskServiceTest
             PanelId = 1,
             Title = "Title test",
             Description = "Description test",
-            Priority = ETaskPriority.LOW
+            Priority = ETaskPriority.LOW,
+            DueDate = new DateTime(DateTime.Now.Year+1, DateTime.Now.Month, DateTime.Now.Day)
         };
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-        var panels = _panelRepository.GetAll().ToList();
-        var comments = _commentRepository.GetAll().ToList();
+        var panels = _panelRepository.GetAllPanels().ToList();
+        var comments = _commentRepository.GetAllComments().ToList();
         var tasks = taskRepository.GetAllTasks().ToList();
         var users = _userRepository.GetAllUsers().ToList();
         _passwordGeneratorService = null;
 
         foreach (var panel in panels)
         {
-            _panelRepository.Delete(panel.Id);
+            _panelRepository.DeletePanel(panel.Id);
         }
         foreach (var comment in comments)
         {
-            _commentRepository.Delete(comment.Id);
+            _commentRepository.DeleteComment(comment.Id);
         }
         foreach (var task in tasks)
         {
@@ -132,51 +133,6 @@ public class TaskServiceTest
         Assert.AreEqual("Description test updated", updatedTask.Description, "The task description is not updated correctly");
         Assert.AreEqual(ETaskPriority.HIGH, updatedTask.Priority, "The task priority is not updated correctly");
         Assert.AreEqual("Title test updated", updatedTask.Title, "The task title is not updated correctly");
-    }
-    
-    [TestMethod]
-    public void AddCommentToTask()
-    {
-        // Arrange
-        var createdTask = _taskService.CreateTask(_task);
-        var comment = new Comment()
-        {
-            Id = 1,
-            TaskId = createdTask.Id,
-            Message = "Comment test"
-        };
-        var createdComment = _commentService.CreateComment(comment);
-        
-        // Act
-        _taskService.AddComentToTask(createdTask.Id, createdComment);
-        
-        // Assert
-        var task = _taskService.GetTaskById(createdTask.Id);
-        Assert.AreEqual(1, task.CommentList.Count);
-        Assert.AreEqual("Comment test", task.CommentList.First().Message);
-    }
-    
-    [TestMethod]
-    public void MarkCommentAsDone()
-    {
-        // Arrange
-        var createdTask = _taskService.CreateTask(_task);
-        var comment = new Comment()
-        {
-            Id = 1,
-            TaskId = createdTask.Id,
-            Message = "Comment test"
-        };
-        var createdComment = _commentService.CreateComment(comment);
-        _taskService.AddComentToTask(createdTask.Id, createdComment);
-        
-        // Act
-        _taskService.MarkCommentAsDone(createdTask.Id, createdComment.Id);
-        
-        // Assert
-        var task = _taskService.GetTaskById(createdTask.Id);
-        Assert.AreEqual(1, task.CommentList.Count);
-        Assert.AreEqual(EStatusComment.RESOLVED, task.CommentList.First().Status);
     }
     
     [TestMethod]

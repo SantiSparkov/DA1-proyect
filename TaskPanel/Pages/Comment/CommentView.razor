@@ -31,7 +31,7 @@
                 @if (comment.Status == EStatusComment.RESOLVED)
                 {
                     <dt class="col-sm-3">Resolved At</dt>
-                    <dd class="col-sm-9">@comment.ResolvedAt.ToString("g")</dd>
+                    <dd class="col-sm-9">@comment.ResolvedAt</dd>
 
                     <dt class="col-sm-3">Resolved By</dt>
                     <dd class="col-sm-9">@comment.ResolvedBy.Name</dd>
@@ -55,7 +55,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        comment = CommentService.FindById(commentId);
+        comment = CommentService.GetCommentById(commentId);
         return base.OnInitializedAsync();
     }
     

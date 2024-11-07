@@ -6,13 +6,13 @@ public interface IPanelRepository
 { 
     public Panel AddPanel(Panel panel);
 
-    public Panel Delete(int id);
+    public Panel DeletePanel(int id);
 
-    public Panel FindById(int id);
+    public Panel GetPanelById(int id);
 
-    public Panel Update(Panel panel);
+    public Panel UpdatePanel(Panel panel);
 
-    public List<Panel> GetAll();
+    public List<Panel> GetAllPanels();
 
     public int Count();
 }

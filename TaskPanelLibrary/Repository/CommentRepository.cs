@@ -14,15 +14,16 @@ public class CommentRepository : ICommentRepository
         _comments = new List<Comment>();
     }
 
-    public Comment Add(Comment comment)
+    public Comment AddComment(Comment comment)
     {
+        comment.Id = _comments.Count > 0 ? _comments.Max(t => t.Id) + 1 : 1;
         _comments.Add(comment);
         return comment;
     }
 
-    public Comment FindById(int id)
+    public Comment GetCommentById(int id)
     {
-        List<Comment> comments = GetAll();
+        List<Comment> comments = GetAllComments();
         foreach (var comment in comments)
         {
             if (comment.Id == id)
@@ -34,7 +35,7 @@ public class CommentRepository : ICommentRepository
         throw new CommentNotValidException($"Panel with id: {id} does not exist");
     }
 
-    public Comment Delete(int id)
+    public Comment DeleteComment(int id)
     {
         foreach (var comment in _comments)
         {
@@ -48,14 +49,14 @@ public class CommentRepository : ICommentRepository
         throw new CommentNotValidException($"Comment with id: {id} does not exist");
     }
 
-    public List<Comment> GetAll()
+    public List<Comment> GetAllComments()
     {
         return _comments;
     }
 
-    public Comment Update(Comment comment)
+    public Comment UpdateComment(Comment comment)
     {
-        Comment commentSaved = FindById(comment.Id);
+        Comment commentSaved = GetCommentById(comment.Id);
         commentSaved.Status = comment.Status;
         commentSaved.Message = comment.Message;
         commentSaved.ResolvedBy = comment.ResolvedBy;

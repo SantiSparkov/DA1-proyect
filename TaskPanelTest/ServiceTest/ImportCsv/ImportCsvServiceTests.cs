@@ -43,7 +43,7 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
             // Arrange
             var mockFile = CreateAndGetCsvFile("taskImport.csv");
 
-            _mockPanelService.Setup(service => service.FindById(It.IsAny<int>())).Returns(new Panel());
+            _mockPanelService.Setup(service => service.GetPanelById(It.IsAny<int>())).Returns(new Panel());
             _mockTaskService.Setup(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()));
 
             // Act

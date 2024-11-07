@@ -19,11 +19,19 @@ public class TaskService : ITaskService
     public TaskService(ITaskRepository taskRepository, ICommentService commentService, IPanelService panelService)
     {
         _taskRepository = taskRepository;
-
         _commentService = commentService;
         _panelService = panelService;
     }
 
+    public Task CreateTask(Task task)
+    {
+        if (!IsValidTask(task))
+            throw new TaskNotValidException(task.Id);
+
+        _taskRepository.AddTask(task);
+        return task;
+    }
+    
     public List<Task> GetAllTasks(int panelId)
     {
         try
@@ -34,15 +42,6 @@ public class TaskService : ITaskService
         {
             return new List<Task>();
         }
-    }
-
-    public Task CreateTask(Task task)
-    {
-        if (!IsValidTask(task))
-            throw new TaskNotValidException(task.Id);
-
-        _taskRepository.AddTask(task);
-        return task;
     }
 
     public Task GetTaskById(int id)
@@ -66,27 +65,6 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public void AddComentToTask(int taskId, Comment comment)
-    {
-        var task = _taskRepository.GetTaskById(taskId);
-        if (comment == null)
-            throw new CommentNotValidException("Comment is null");
-        task.CommentList.Add(comment);
-        _taskRepository.UpdateTask(task);
-    }
-
-    public void MarkCommentAsDone(int taskId, int commentId)
-    {
-        var task = _taskRepository.GetTaskById(taskId);
-        var existingComment = _commentService.FindById(commentId);
-
-        existingComment.ResolvedAt = DateTime.Now;
-        existingComment.Status = EStatusComment.RESOLVED;
-
-        _commentService.UpdateComment(existingComment);
-        _taskRepository.UpdateTask(task);
-    }
-
     private bool IsValidTask(Task? task)
     {
         if(task == null)
@@ -96,7 +74,7 @@ public class TaskService : ITaskService
         if (string.IsNullOrEmpty(task.Description))
             throw new TaskNotValidException("Description is null or empty");
         if (task.DueDate < DateTime.Now)
-            throw new TaskNotValidException("DueDate is less than current date");
+            throw new TaskNotValidException("Due date is before today");
         
         return true;
     }
