@@ -40,7 +40,7 @@ public class TeamService : ITeamService
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers == 1 ? 2 : team.MaxAmountOfMembers,
-            TeamLeader = user,
+            TeamLeaderId = user.Id,
             Users = team.Users
         };
 
@@ -103,7 +103,7 @@ public class TeamService : ITeamService
     {
         Team existingTeam = _teamRepository.GetTeamById(updatedTeam.Id);
 
-        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeader.Id)
+        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeaderId)
             throw new UserNotValidException("User is not admin or team leader.");
 
         if (string.IsNullOrEmpty(updatedTeam.Name) && updatedTeam.Name != existingTeam.Name)

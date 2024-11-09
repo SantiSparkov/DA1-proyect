@@ -35,7 +35,8 @@ builder.Services.AddSingleton<Panels>();
 // Database configuration
 builder.Services.AddDbContextFactory<SqlContext>(
     options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        providerOptions => providerOptions.EnableRetryOnFailure()
         )
 );
     
