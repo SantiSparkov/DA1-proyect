@@ -6,12 +6,13 @@ public class PasswordGeneratorService
     private const string LowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
     private const string Numbers = "0123456789";
     private const string SpecialCharacters = "@#$%^&*()-_=+[]{}|;:,.<>?";
+    private const int MinPasswordLength = 4;
 
     private static Random random = new Random();
 
     public string GeneratePassword(int length)
     {
-        if (length < 4)
+        if (length < MinPasswordLength)
         {
             throw new ArgumentException("Password length less than 4 should throw an exception.");
         }
