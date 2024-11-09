@@ -25,7 +25,6 @@ public class ImportCsvService
         using var logFile = new StreamWriter(logFilePath, append: true);
 
         string line;
-        int lineNumber = 1;
 
         while ((line = await reader.ReadLineAsync()) != null)
         {
