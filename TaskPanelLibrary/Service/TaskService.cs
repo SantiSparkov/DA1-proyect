@@ -2,6 +2,7 @@ using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
@@ -10,15 +11,15 @@ namespace TaskPanelLibrary.Service;
 
 public class TaskService : ITaskService
 {
-    private readonly ITaskRepository _taskRepository;
+    private readonly TaskSqlRepository _taskRepository;
 
     private readonly ICommentService _commentService;
 
     private readonly IPanelService _panelService;
 
-    public TaskService(ITaskRepository taskRepository, ICommentService commentService, IPanelService panelService)
+    public TaskService(TaskSqlRepository taskSqlRepository, ICommentService commentService, IPanelService panelService)
     {
-        _taskRepository = taskRepository;
+        _taskRepository = taskSqlRepository;
         _commentService = commentService;
         _panelService = panelService;
     }

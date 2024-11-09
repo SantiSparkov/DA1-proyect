@@ -3,6 +3,7 @@ using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
 using DateTime = System.DateTime;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
@@ -12,13 +13,13 @@ namespace TaskPanelLibrary.Service;
 
 public class TeamService : ITeamService
 {
-    private readonly ITeamRepository _teamRepository;
+    private readonly TeamSqlRepository _teamRepository;
 
     private readonly IUserService _userService;
     
     private readonly IPanelService _panelService;
     
-    public TeamService(ITeamRepository teamRepository, IUserService userService, IPanelService panelService)
+    public TeamService(TeamSqlRepository teamRepository, IUserService userService, IPanelService panelService)
     {
         _teamRepository = teamRepository;
         _userService = userService;

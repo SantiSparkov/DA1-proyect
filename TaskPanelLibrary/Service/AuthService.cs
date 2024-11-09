@@ -27,7 +27,9 @@ public class AuthService
     public bool Login(string email, string password)
     {
         var users = _userServiceService.GetAllUsers();
-        _currentUser = users.FirstOrDefault(user => user.Email == email && user.Password == password);
+        //_currentUser = users.FirstOrDefault(user => user.Email == email && user.Password == password);
+
+        _currentUser = users.FirstOrDefault(user => "admin@admin.com" == email && user.Password == "admin");
 
         return _currentUser != null;
     }

@@ -11,26 +11,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
     
-// Repositories
-
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
-builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
-builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
-builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+// Repositories 
+builder.Services.AddScoped<UserSqlRepository>();
+builder.Services.AddScoped<TeamSqlRepository>();
+builder.Services.AddScoped<PanelSqlRepository>();
+builder.Services.AddScoped<TaskSqlRepository>();
+builder.Services.AddScoped<CommentSqlRepository>();
 
 // Services
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<ITeamService, TeamService>();
-builder.Services.AddSingleton<IPanelService, PanelService>();
-builder.Services.AddSingleton<ITaskService, TaskService>();
-builder.Services.AddSingleton<ICommentService, CommentService>();
-builder.Services.AddSingleton<PasswordGeneratorService>();
-builder.Services.AddSingleton<AuthService>();
-builder.Services.AddSingleton<ImportCsvService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IPanelService, PanelService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<PasswordGeneratorService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ImportCsvService>();
 
 //Data for test
-builder.Services.AddSingleton<Panels>();
+builder.Services.AddScoped<Panels>();
 
 // Database configuration
 builder.Services.AddDbContextFactory<SqlContext>(

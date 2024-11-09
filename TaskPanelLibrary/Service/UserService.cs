@@ -8,26 +8,26 @@ namespace TaskPanelLibrary.Service;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly UserSqlRepository _userSqlRepository;
 
     private readonly PasswordGeneratorService _passwordGenerator;
 
     private const int PASSWORD_LENGTH = 8;
 
-    public UserService(IUserRepository userRepository, PasswordGeneratorService passwordGenerator)
+    public UserService(UserSqlRepository userSqlRepository, PasswordGeneratorService passwordGenerator)
     {
-        _userRepository = userRepository;
+        _userSqlRepository = userSqlRepository;
         _passwordGenerator = passwordGenerator;
     }
 
     public List<User> GetAllUsers()
     {
-        return _userRepository.GetAllUsers();
+        return _userSqlRepository.GetAllUsers();
     }
 
     public User GetUserById(int id)
     {
-        var foundUser = _userRepository.GetUserById(id);
+        var foundUser = _userSqlRepository.GetUserById(id);
 
         if (foundUser == null)
         {
@@ -45,29 +45,29 @@ public class UserService : IUserService
         {
             throw new UserNotValidException("User already exists");
         }
-        return _userRepository.AddUser(user);
+        return _userSqlRepository.AddUser(user);
     }
 
     public User UpdateUser(User user)
     {
-        var existingUser = _userRepository.GetUserById(user.Id);
+        var existingUser = _userSqlRepository.GetUserById(user.Id);
         if (existingUser == null)
         {
             throw new UserNotValidException(user.Id);
         }
 
-        return _userRepository.UpdateUser(user);
+        return _userSqlRepository.UpdateUser(user);
     }
 
     public User DeleteUser(int id)
     {
-        var existingUser = _userRepository.GetUserById(id);
+        var existingUser = _userSqlRepository.GetUserById(id);
         if (existingUser == null)
         {
             throw new UserNotValidException(id);
         }
 
-        return _userRepository.DeleteUser(id);
+        return _userSqlRepository.DeleteUser(id);
     }
     
     private bool IsUserValid(User? user)

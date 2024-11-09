@@ -15,7 +15,7 @@ namespace TaskPanelTest.ServiceTest
         
         private ITeamRepository _teamRepository;
         
-        private IUserRepository _userRepository;
+        private UserSqlRepository _userSqlRepository;
         
         private IPanelRepository _panelRepository;
         
@@ -31,11 +31,11 @@ namespace TaskPanelTest.ServiceTest
         public void Initialize()
         {
             _teamRepository = new TeamRepository();
-            _userRepository = new UserRepository();
+            _userSqlRepository = new UserSqlRepository(null);
             _panelRepository = new PanelRepository();
             
             _passwordGeneratorService = new PasswordGeneratorService();
-            _userService = new UserService(_userRepository, _passwordGeneratorService);
+            _userService = new UserService(_userSqlRepository, _passwordGeneratorService);
             _panelService = new PanelService(_panelRepository, _userService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
             
