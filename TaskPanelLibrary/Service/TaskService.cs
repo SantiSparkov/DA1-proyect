@@ -11,17 +11,11 @@ namespace TaskPanelLibrary.Service;
 
 public class TaskService : ITaskService
 {
-    private readonly TaskSqlRepository _taskRepository;
+    private readonly ITaskRepository _taskRepository;
 
-    private readonly ICommentService _commentService;
-
-    private readonly IPanelService _panelService;
-
-    public TaskService(TaskSqlRepository taskSqlRepository, ICommentService commentService, IPanelService panelService)
+    public TaskService(ITaskRepository taskSqlRepository)
     {
         _taskRepository = taskSqlRepository;
-        _commentService = commentService;
-        _panelService = panelService;
     }
 
     public Task CreateTask(Task task)

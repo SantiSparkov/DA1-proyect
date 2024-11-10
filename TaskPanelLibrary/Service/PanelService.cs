@@ -10,11 +10,11 @@ namespace TaskPanelLibrary.Service;
 
 public class PanelService : IPanelService
 { 
-    private readonly PanelSqlRepository _panelRepository;
+    private readonly IPanelRepository _panelRepository;
 
     private IUserService _userService;
     
-    public PanelService(PanelSqlRepository panelRepository, IUserService userService)
+    public PanelService(IPanelRepository panelRepository, IUserService userService)
     {
         _panelRepository = panelRepository;
         _userService = userService;

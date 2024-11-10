@@ -13,17 +13,14 @@ namespace TaskPanelLibrary.Service;
 
 public class TeamService : ITeamService
 {
-    private readonly TeamSqlRepository _teamRepository;
+    private readonly ITeamRepository _teamRepository;
 
     private readonly IUserService _userService;
     
-    private readonly IPanelService _panelService;
-    
-    public TeamService(TeamSqlRepository teamRepository, IUserService userService, IPanelService panelService)
+    public TeamService(ITeamRepository teamRepository, IUserService userService)
     {
         _teamRepository = teamRepository;
         _userService = userService;
-        _panelService = panelService;
     }
 
     public Team CreateTeam(Team team, int userId)

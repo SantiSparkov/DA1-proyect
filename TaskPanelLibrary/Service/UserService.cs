@@ -8,16 +8,11 @@ namespace TaskPanelLibrary.Service;
 
 public class UserService : IUserService
 {
-    private readonly UserSqlRepository _userSqlRepository;
+    private readonly IUserRepository _userSqlRepository;
 
-    private readonly PasswordGeneratorService _passwordGenerator;
-
-    private const int PASSWORD_LENGTH = 8;
-
-    public UserService(UserSqlRepository userSqlRepository, PasswordGeneratorService passwordGenerator)
+    public UserService(IUserRepository userSqlRepository)
     {
         _userSqlRepository = userSqlRepository;
-        _passwordGenerator = passwordGenerator;
     }
 
     public List<User> GetAllUsers()

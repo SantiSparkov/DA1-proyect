@@ -7,9 +7,9 @@ namespace TaskPanelLibrary.Service;
 
 public class TrashService : ITrashService
 {
-    private readonly TrashSqlRepository _trashRepository;
+    private readonly ITrashRepository _trashRepository;
 
-    public TrashService(TrashSqlRepository trashRepository)
+    public TrashService(ITrashRepository trashRepository)
     {
         _trashRepository = trashRepository;
     }

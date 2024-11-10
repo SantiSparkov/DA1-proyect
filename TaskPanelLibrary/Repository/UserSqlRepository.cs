@@ -8,31 +8,31 @@ public class UserSqlRepository : IUserRepository
 {
 
     private SqlContext _userDataBase;
-    
+
     public UserSqlRepository(SqlContext sqlContext)
     {
         _userDataBase = sqlContext;
-        
-        var adminUser = new User
+
+        if (!_userDataBase.Users.Any(u => u.Email == "admin@admin.com"))
         {
-            Name = "Admin",
-            LastName = "User",
-            Email = "admin@admin.com",
-            Password = "admin",
-            IsAdmin = true,
-            BirthDate = new DateTime(1990, 1, 1)
-        };
-        _userDataBase.Add(adminUser);
+            var adminUser = new User
+            {
+                Name = "Admin",
+                LastName = "User",
+                Email = "admin@admin.com",
+                Password = "Aa1@",
+                IsAdmin = true,
+                BirthDate = new DateTime(1990, 1, 1)
+            };
+            _userDataBase.Add(adminUser);
+            _userDataBase.SaveChanges();
+        }
     }
 
     public User AddUser(User user)
     {
-        
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _userDataBase.Users.Add(user);
-            _userDataBase.SaveChanges();
-        }
+        _userDataBase.Users.Add(user);
+        _userDataBase.SaveChanges();
         return user;
     }
 
@@ -44,7 +44,8 @@ public class UserSqlRepository : IUserRepository
             throw new System.Exception($"User with id: {id} does not exist");
 
         }
-        _userDataBase.Remove(userDelete); 
+        _userDataBase.Remove(userDelete);
+        _userDataBase.SaveChanges();
         return userDelete;
     }
 
@@ -68,6 +69,7 @@ public class UserSqlRepository : IUserRepository
     public User UpdateUser(User user)
     {
         _userDataBase.Users.Update(user);
+        _userDataBase.SaveChanges();
         return user;
     }
 

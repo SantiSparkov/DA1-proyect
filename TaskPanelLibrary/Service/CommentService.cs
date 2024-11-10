@@ -11,14 +11,11 @@ namespace TaskPanelLibrary.Service;
 
 public class CommentService : ICommentService
 {
-    private readonly CommentSqlRepository _commentRepository;
+    private readonly ICommentRepository _commentRepository;
 
-    private IUserService _userService;
-
-    public CommentService(CommentSqlRepository commentRepository, IUserService userService)
+    public CommentService(ICommentRepository commentRepository)
     {
         _commentRepository = commentRepository;
-        _userService = userService;
     }
 
     public Comment CreateComment(Comment comment)

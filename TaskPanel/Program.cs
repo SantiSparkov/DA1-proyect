@@ -12,11 +12,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
     
 // Repositories 
-builder.Services.AddScoped<UserSqlRepository>();
-builder.Services.AddScoped<TeamSqlRepository>();
-builder.Services.AddScoped<PanelSqlRepository>();
-builder.Services.AddScoped<TaskSqlRepository>();
-builder.Services.AddScoped<CommentSqlRepository>();
+builder.Services.AddScoped<IUserRepository, UserSqlRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamSqlRepository>();
+builder.Services.AddScoped<IPanelRepository, PanelSqlRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskSqlRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentSqlRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
