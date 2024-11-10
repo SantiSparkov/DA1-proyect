@@ -15,11 +15,8 @@ public class TaskSqlRepository : ITaskRepository
 
     public Task AddTask(Task task)
     {
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _tasksDataBase.Tasks.Add(task);
-            _tasksDataBase.SaveChanges();
-        }
+        _tasksDataBase.Tasks.Add(task); 
+        _tasksDataBase.SaveChanges();
         return task;
     }
 
@@ -32,6 +29,7 @@ public class TaskSqlRepository : ITaskRepository
 
         }
         _tasksDataBase.Tasks.Remove(task);
+        _tasksDataBase.SaveChanges();
         return task;
     }
 
@@ -54,6 +52,7 @@ public class TaskSqlRepository : ITaskRepository
     public Task UpdateTask(Task task)
     {
         _tasksDataBase.Tasks.Update(task);
+        _tasksDataBase.SaveChanges();
         return task;
     }
 

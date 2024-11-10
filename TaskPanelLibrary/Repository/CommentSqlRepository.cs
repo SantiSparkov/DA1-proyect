@@ -19,11 +19,8 @@ public class CommentSqlRepository : ICommentRepository
 
     public Comment AddComment(Comment comment)
     {
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _commentDataBase.Comments.Add(comment);
-            _commentDataBase.SaveChanges();
-        }
+        _commentDataBase.Comments.Add(comment); 
+        _commentDataBase.SaveChanges();
         return comment;
         
     }
@@ -48,13 +45,10 @@ public class CommentSqlRepository : ICommentRepository
         if (commentSaved != null)
         {
             _commentDataBase.Comments.Remove(commentSaved);
+            _commentDataBase.SaveChanges();
+            return commentSaved;
         }
-        else
-        {
-            throw new CommentNotValidException($"Comment with id: {id} does not exist");
-        }
-
-        return commentSaved;
+        throw new CommentNotValidException($"Comment with id: {id} does not exist");
     }
 
     public List<Comment> GetAllComments()
@@ -65,6 +59,7 @@ public class CommentSqlRepository : ICommentRepository
     public Comment UpdateComment(Comment comment)
     {
         _commentDataBase.Update(comment);
+        _commentDataBase.SaveChanges();
         return comment;
     }
 }

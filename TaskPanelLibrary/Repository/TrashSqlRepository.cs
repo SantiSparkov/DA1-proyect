@@ -15,11 +15,8 @@ public class TrashSqlRepository : ITrashRepository
 
     public void AddTrash(Trash trash)
     {
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _trashDatabase.Trashes.Add(trash); 
-            _trashDatabase.SaveChanges();
-        }
+        _trashDatabase.Trashes.Add(trash); 
+        _trashDatabase.SaveChanges();
     }
 
     public Trash GetTrashById(int id)
@@ -42,6 +39,7 @@ public class TrashSqlRepository : ITrashRepository
 
         }
         _trashDatabase.Trashes.Remove(trash);
+        _trashDatabase.SaveChanges();
         return trash;
     }
 

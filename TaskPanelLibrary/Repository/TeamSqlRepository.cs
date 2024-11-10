@@ -31,11 +31,8 @@ public class TeamSqlRepository: ITeamRepository
 
     public Team AddTeam(Team team)
     {
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _teamDataBase.Teams.Add(team);
-            _teamDataBase.SaveChanges();
-        }
+        _teamDataBase.Teams.Add(team); 
+        _teamDataBase.SaveChanges(); 
         return team;
     }
 
@@ -54,6 +51,7 @@ public class TeamSqlRepository: ITeamRepository
 
         }
         _teamDataBase.Teams.Remove(team);
+        _teamDataBase.SaveChanges();
         return team;
     }
 }

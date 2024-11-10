@@ -15,12 +15,9 @@ public class PanelSqlRepository: IPanelRepository
     }
 
     public Panel AddPanel(Panel panel)
-    {
-        using (SqlContext ctx = new SqlContext(null))
-        { 
-            _panelDataBase.Panels.Add(panel);
-            _panelDataBase.SaveChanges();
-        }
+    { 
+        _panelDataBase.Panels.Add(panel); 
+        _panelDataBase.SaveChanges();
         return panel;
     }
     
@@ -34,6 +31,7 @@ public class PanelSqlRepository: IPanelRepository
         }
 
         _panelDataBase.Panels.Remove(panel);
+        _panelDataBase.SaveChanges();
         return panel;
     }
 
@@ -51,6 +49,7 @@ public class PanelSqlRepository: IPanelRepository
     public Panel UpdatePanel(Panel panel)
     {
         _panelDataBase.Panels.Update(panel);
+        _panelDataBase.SaveChanges();
         return panel;
     }
 
