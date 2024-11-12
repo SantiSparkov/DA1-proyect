@@ -9,12 +9,12 @@ namespace TaskPanelLibrary.Service;
 
 public class TrashService : ITrashService
 {
-    private readonly ITrashRepository _trashRepository;
+    private readonly ITrashRepository _trashSqlRepository;
     private const int MaxCapacity = 10;
 
-    public TrashService(ITrashRepository trashRepository)
+    public TrashService(ITrashRepository trashSqlRepository)
     {
-        _trashRepository = trashRepository;
+        _trashSqlRepository = trashSqlRepository;
     }
 
     public Trash CreateTrash(int userId)
@@ -25,12 +25,12 @@ public class TrashService : ITrashService
             Elements = 0
         };
         
-        return _trashRepository.AddTrash(newTrash);
+        return _trashSqlRepository.AddTrash(newTrash);
     }
 
     public void AddTaskToTrash(Task task, int trashId)
     {
-        var trash = _trashRepository.GetTrashById(trashId);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
         
         if (!IsFull(trashId))
         {
@@ -41,7 +41,7 @@ public class TrashService : ITrashService
 
     public void AddPanelToTrash(Panel panel, int trashId)
     {
-        var trash = _trashRepository.GetTrashById(trashId);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
         
         if (!IsFull(trashId))
         {
@@ -52,7 +52,7 @@ public class TrashService : ITrashService
 
     public Task RecoverTaskFromTrash(int taskId)
     {
-        var trash = _trashRepository.GetTrashById(taskId);
+        var trash = _trashSqlRepository.GetTrashById(taskId);
         var task = trash.TaskList.Find(t => t.Id == taskId);
         
         if (task == null)
@@ -68,7 +68,7 @@ public class TrashService : ITrashService
 
     public Panel RecoverPanelFromTrash(int panelId)
     {
-        var trash = _trashRepository.GetTrashById(panelId);
+        var trash = _trashSqlRepository.GetTrashById(panelId);
         var panel = trash.PanelList.Find(p => p.Id == panelId);
         
         if (panel == null)
@@ -84,14 +84,14 @@ public class TrashService : ITrashService
 
     private bool IsFull(int trashId)
     {
-        var trash = _trashRepository.GetTrashById(trashId);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
         
         return (trash.TaskList.Count + trash.PanelList.Count) >= MaxCapacity;
     }
 
     public Trash GetTrashById(int trashId)
     {
-        return _trashRepository.GetTrashById(trashId);
+        return _trashSqlRepository.GetTrashById(trashId);
     }
 }
 

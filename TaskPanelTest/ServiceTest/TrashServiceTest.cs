@@ -11,7 +11,9 @@ namespace TaskPanelTest.ServiceTest;
 public class TrashServiceTest
 {
     private ITrashService _trashService;
+    private IUserService _userService;
 
+    private IUserRepository _userRepository;
     private ITrashRepository _trashRepository;
 
     
