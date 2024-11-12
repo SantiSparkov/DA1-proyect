@@ -13,10 +13,12 @@ public class TrashSqlRepository : ITrashRepository
         _trashDatabase = sqlContext;
     }
 
-    public void AddTrash(Trash trash)
+    public Trash AddTrash(Trash trash)
     {
-        _trashDatabase.Trashes.Add(trash); 
+        _trashDatabase.Trashes.Add(trash);
         _trashDatabase.SaveChanges();
+        
+        return trash;
     }
 
     public Trash GetTrashById(int id)
@@ -25,8 +27,8 @@ public class TrashSqlRepository : ITrashRepository
         if (trash == null)
         {
             throw new System.Exception($"Trash with id: {id} does not exist");
-
         }
+
         return trash;
     }
 
@@ -36,8 +38,8 @@ public class TrashSqlRepository : ITrashRepository
         if (trash == null)
         {
             throw new System.Exception($"Trash with id: {id} does not exist");
-
         }
+
         _trashDatabase.Trashes.Remove(trash);
         _trashDatabase.SaveChanges();
         return trash;
@@ -46,6 +48,14 @@ public class TrashSqlRepository : ITrashRepository
     public int Count()
     {
         return _trashDatabase.Trashes.Count();
+    }
+
+    public Trash UpdateTrash(Trash trash)
+    {
+        _trashDatabase.Trashes.Update(trash);
+        _trashDatabase.SaveChanges();
+        
+        return trash;
     }
 
     public List<Trash> GetAll()

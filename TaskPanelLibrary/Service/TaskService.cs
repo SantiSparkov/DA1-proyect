@@ -1,3 +1,4 @@
+using Microsoft.Identity.Client;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
@@ -12,10 +13,14 @@ namespace TaskPanelLibrary.Service;
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ITrashService _trashService;
+    private readonly IUserService _userService;
 
-    public TaskService(ITaskRepository taskSqlRepository)
+    public TaskService(ITaskRepository taskSqlRepository, IUserService userService, ITrashService trashService)
     {
         _taskRepository = taskSqlRepository;
+        _userService = userService;
+        _trashService = trashService;
     }
 
     public Task CreateTask(Task task)
@@ -52,9 +57,11 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public Task DeleteTask(Task task)
+    public Task DeleteTask(Task task, User user)
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
+        
+        _trashService.AddTaskToTrash(existingTask, user.Trash.Id);
         _taskRepository.DeleteTask(existingTask.Id);
 
         return existingTask;

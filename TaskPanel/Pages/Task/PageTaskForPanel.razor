@@ -1,8 +1,10 @@
 @page "/tasks/panel/{panelId:int}"
 
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = TaskPanelLibrary.Entity.Task
 
+@inject AuthService AuthService
 @inject ITaskService TaskService
 @inject NavigationManager Navigation
 
@@ -131,9 +133,11 @@
 
     private void ConfirmDeleteTask(Task task)
     {
-        TaskService.DeleteTask(task);
+        var currentUser = AuthService.GetCurrentUser();
+        TaskService.DeleteTask(task, currentUser);
         tasks = TaskService.GetAllTasks(panelId);
     }
+
 
     private void OpenReactivateTaskModal(int taskId)
     {

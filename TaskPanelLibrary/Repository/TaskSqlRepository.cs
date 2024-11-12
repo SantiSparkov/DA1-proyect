@@ -15,7 +15,7 @@ public class TaskSqlRepository : ITaskRepository
 
     public Task AddTask(Task task)
     {
-        _tasksDataBase.Tasks.Add(task); 
+        _tasksDataBase.Tasks.Add(task);
         _tasksDataBase.SaveChanges();
         return task;
     }
@@ -26,8 +26,8 @@ public class TaskSqlRepository : ITaskRepository
         if (task == null)
         {
             throw new System.Exception($"Task with id: {id} does not exist");
-
         }
+
         _tasksDataBase.Tasks.Remove(task);
         _tasksDataBase.SaveChanges();
         return task;
@@ -39,8 +39,8 @@ public class TaskSqlRepository : ITaskRepository
         if (task == null)
         {
             throw new System.Exception($"Task with id: {id} does not exist");
-
         }
+
         return task;
     }
 
@@ -55,5 +55,4 @@ public class TaskSqlRepository : ITaskRepository
         _tasksDataBase.SaveChanges();
         return task;
     }
-
 }

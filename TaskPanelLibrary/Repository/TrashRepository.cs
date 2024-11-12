@@ -13,9 +13,10 @@ public class TrashRepository : ITrashRepository
         _trashes = new List<Trash>();
     }
 
-    public void AddTrash(Trash trash)
+    public Trash AddTrash(Trash trash)
     {
         _trashes.Add(trash);
+        return trash;
     }
 
     public Trash GetTrashById(int id)
@@ -32,7 +33,6 @@ public class TrashRepository : ITrashRepository
 
     public Trash DeleteTrashForId(int id)
     {
-        
         foreach (var trash in _trashes)
         {
             if (trash.Id == id)
@@ -47,6 +47,19 @@ public class TrashRepository : ITrashRepository
     public int Count()
     {
         return _trashes.Count;
+    }
+
+    public Trash UpdateTrash(Trash trash)
+    {
+        for (int i = 0; i < _trashes.Count; i++)
+        {
+            if (_trashes[i].Id == trash.Id)
+            {
+                _trashes[i] = trash;
+                return trash;
+            }
+        }
+        throw new TrashNotValidException(trash.Id);
     }
 
     public List<Trash> GetAll()

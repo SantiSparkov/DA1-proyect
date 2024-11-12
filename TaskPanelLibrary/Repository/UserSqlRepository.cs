@@ -6,7 +6,6 @@ using TaskPanelLibrary.Entity;
 
 public class UserSqlRepository : IUserRepository
 {
-
     private SqlContext _userDataBase;
 
     public UserSqlRepository(SqlContext sqlContext)
@@ -42,8 +41,8 @@ public class UserSqlRepository : IUserRepository
         if (userDelete == null)
         {
             throw new System.Exception($"User with id: {id} does not exist");
-
         }
+
         _userDataBase.Remove(userDelete);
         _userDataBase.SaveChanges();
         return userDelete;
@@ -55,10 +54,9 @@ public class UserSqlRepository : IUserRepository
         if (user == null)
         {
             throw new System.Exception($"User with id: {id} does not exist");
-
         }
-        return user;
 
+        return user;
     }
 
     public List<User> GetAllUsers()
@@ -72,5 +70,4 @@ public class UserSqlRepository : IUserRepository
         _userDataBase.SaveChanges();
         return user;
     }
-
 }

@@ -14,10 +14,13 @@ public class PanelService : IPanelService
 
     private IUserService _userService;
     
-    public PanelService(IPanelRepository panelRepository, IUserService userService)
+    private ITrashService _trashService;
+    
+    public PanelService(IPanelRepository panelRepository, IUserService userService, ITrashService trashService)
     {
         _panelRepository = panelRepository;
         _userService = userService;
+        _trashService = trashService;
     }
 
     public Panel CreatePanel(Panel panel)
@@ -65,13 +68,16 @@ public class PanelService : IPanelService
 
     public Panel DeletePanel(int panelId, User user)
     {
+        var panel = _panelRepository.GetPanelById(panelId);
+        
         if (!user.IsAdmin)
         {
             throw new PanelNotValidException($"User is not admin, userId: {user.Id}");
         }
-
-        Panel panel = _panelRepository.DeletePanel(panelId);
-        user.Trash.AddPanel(panel);
+        
+        _trashService.AddPanelToTrash(panel, user.Trash.Id);
+        _panelRepository.DeletePanel(panelId);
+        
         return panel;
     }
 

@@ -4,9 +4,8 @@ using TaskPanelLibrary.Repository.Interface;
 
 namespace TaskPanelLibrary.Repository;
 
-public class PanelSqlRepository: IPanelRepository
+public class PanelSqlRepository : IPanelRepository
 {
-    
     private SqlContext _panelDataBase;
 
     public PanelSqlRepository(SqlContext sqlContext)
@@ -15,19 +14,18 @@ public class PanelSqlRepository: IPanelRepository
     }
 
     public Panel AddPanel(Panel panel)
-    { 
-        _panelDataBase.Panels.Add(panel); 
+    {
+        _panelDataBase.Panels.Add(panel);
         _panelDataBase.SaveChanges();
         return panel;
     }
-    
+
     public Panel DeletePanel(int id)
     {
         Panel panel = _panelDataBase.Panels.Find(id);
         if (panel == null)
         {
             throw new System.Exception($"Panel with id: {id} does not exist");
-
         }
 
         _panelDataBase.Panels.Remove(panel);
@@ -41,8 +39,8 @@ public class PanelSqlRepository: IPanelRepository
         if (panel == null)
         {
             throw new System.Exception($"Panel with id: {id} does not exist");
-
         }
+
         return panel;
     }
 
@@ -62,5 +60,4 @@ public class PanelSqlRepository: IPanelRepository
     {
         return _panelDataBase.Panels.Count();
     }
-
 }

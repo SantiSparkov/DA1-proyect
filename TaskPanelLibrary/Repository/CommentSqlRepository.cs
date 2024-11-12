@@ -19,24 +19,20 @@ public class CommentSqlRepository : ICommentRepository
 
     public Comment AddComment(Comment comment)
     {
-        _commentDataBase.Comments.Add(comment); 
+        _commentDataBase.Comments.Add(comment);
         _commentDataBase.SaveChanges();
         return comment;
-        
     }
 
     public Comment GetCommentById(int id)
     {
-        List<Comment> comments = _commentDataBase.Comments.ToList();
-        foreach (var comment in comments)
+        Comment comment = _commentDataBase.Comments.Find(id);
+        if (comment == null)
         {
-            if (comment.Id == id)
-            {
-                return comment;
-            }
+            throw new CommentNotValidException($"Comment with id: {id} does not exist");
         }
 
-        throw new CommentNotValidException($"Panel with id: {id} does not exist");
+        return comment;
     }
 
     public Comment DeleteComment(int id)
@@ -48,6 +44,7 @@ public class CommentSqlRepository : ICommentRepository
             _commentDataBase.SaveChanges();
             return commentSaved;
         }
+
         throw new CommentNotValidException($"Comment with id: {id} does not exist");
     }
 

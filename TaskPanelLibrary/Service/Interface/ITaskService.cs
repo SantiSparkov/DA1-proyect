@@ -13,5 +13,5 @@ public interface ITaskService
     
     Task UpdateTask(Task task);
 
-    Task DeleteTask(Task task);
+    Task DeleteTask(Task task, User user);
 }
