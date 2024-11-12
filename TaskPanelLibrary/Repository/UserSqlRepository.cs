@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Config;
+using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelLibrary.Repository.Interface;
 
@@ -6,11 +7,13 @@ using TaskPanelLibrary.Entity;
 
 public class UserSqlRepository : IUserRepository
 {
-    private SqlContext _userDataBase;
+    private readonly SqlContext _userDataBase;
+    private readonly ITrashService _trashService;
 
-    public UserSqlRepository(SqlContext sqlContext)
+    public UserSqlRepository(SqlContext sqlContext, ITrashService trashService)
     {
         _userDataBase = sqlContext;
+        _trashService = trashService;
 
         if (!_userDataBase.Users.Any(u => u.Email == "admin@admin.com"))
         {
@@ -23,8 +26,14 @@ public class UserSqlRepository : IUserRepository
                 IsAdmin = true,
                 BirthDate = new DateTime(1990, 1, 1),
             };
+            
             _userDataBase.Add(adminUser);
             _userDataBase.SaveChanges();
+            
+            _trashService.CreateTrash(adminUser.Id);
+            _userDataBase.Update(adminUser);
+            _userDataBase.SaveChanges();
+            
         }
     }
 
@@ -32,6 +41,7 @@ public class UserSqlRepository : IUserRepository
     {
         _userDataBase.Users.Add(user);
         _userDataBase.SaveChanges();
+
         return user;
     }
 

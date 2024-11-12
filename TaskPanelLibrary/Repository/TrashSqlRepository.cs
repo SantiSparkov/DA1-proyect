@@ -1,6 +1,7 @@
 using TaskPanelLibrary.Config;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository.Interface;
+using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelLibrary.Repository;
 
