@@ -17,6 +17,7 @@ builder.Services.AddScoped<ITeamRepository, TeamSqlRepository>();
 builder.Services.AddScoped<IPanelRepository, PanelSqlRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskSqlRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentSqlRepository>();
+builder.Services.AddScoped<ITrashRepository, TrashSqlRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -27,6 +28,8 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<PasswordGeneratorService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ImportCsvService>();
+builder.Services.AddScoped<ITrashService, TrashService>();
+
 
 //Data for test
 builder.Services.AddScoped<Panels>();

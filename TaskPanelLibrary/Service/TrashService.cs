@@ -10,22 +10,18 @@ namespace TaskPanelLibrary.Service;
 public class TrashService : ITrashService
 {
     private readonly ITrashRepository _trashRepository;
-    private readonly IUserService _userService;
     private const int MaxCapacity = 10;
 
-    public TrashService(ITrashRepository trashRepository, IUserService userService)
+    public TrashService(ITrashRepository trashRepository)
     {
         _trashRepository = trashRepository;
-        _userService = userService;
     }
 
-    public Trash CreateTrash(Trash trash, int userId)
+    public Trash CreateTrash(int userId)
     {
-        var user = _userService.GetUserById(userId);
-
         Trash newTrash = new Trash()
         {
-            UserId = user.Id,
+            UserId = userId,
             Elements = 0
         };
         

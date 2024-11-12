@@ -9,10 +9,12 @@ namespace TaskPanelLibrary.Service;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userSqlRepository;
+    private readonly ITrashService _trashService;
 
-    public UserService(IUserRepository userSqlRepository)
+    public UserService(IUserRepository userSqlRepository, ITrashService trashService)
     {
         _userSqlRepository = userSqlRepository;
+        _trashService = trashService;
     }
 
     public List<User> GetAllUsers()
@@ -40,8 +42,15 @@ public class UserService : IUserService
         {
             throw new UserNotValidException("User already exists");
         }
-        return _userSqlRepository.AddUser(user);
+        
+        var addedUser = _userSqlRepository.AddUser(user);
+
+        var trash = _trashService.CreateTrash(addedUser.Id);
+        addedUser.Trash = trash;
+        
+        return addedUser;
     }
+
 
     public User UpdateUser(User user)
     {

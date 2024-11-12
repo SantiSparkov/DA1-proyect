@@ -6,9 +6,9 @@ public class Trash
 {
     public int Id { get; set; }
     
-    public List<Task> TaskList { get; }
+    public List<Task> TaskList { get; set; }
     
-    public List<Panel> PanelList { get; }
+    public List<Panel> PanelList { get; set; }
     
     public int UserId { get; set; }
     

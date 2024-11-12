@@ -14,6 +14,7 @@ public class User
     [RegularExpression(@"^[^@]+@[^@]+\.[a-zA-Z]{2,}$", ErrorMessage = "Email must contain both '@' and '.'")]
     public string Email { get; set; }
     
+    [Required(ErrorMessage = "Password must not be empty.")]
     public string Password { get; set; }
     
     [Required(ErrorMessage = "First name must not be empty.")]
@@ -24,9 +25,4 @@ public class User
     public bool IsAdmin { get; set; }
     
     public Trash Trash { get; set; }
-    
-    public User()
-    {
-        Trash = new Trash();
-    }
 }

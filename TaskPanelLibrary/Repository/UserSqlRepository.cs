@@ -21,7 +21,7 @@ public class UserSqlRepository : IUserRepository
                 Email = "admin@admin.com",
                 Password = "Aa1@",
                 IsAdmin = true,
-                BirthDate = new DateTime(1990, 1, 1)
+                BirthDate = new DateTime(1990, 1, 1),
             };
             _userDataBase.Add(adminUser);
             _userDataBase.SaveChanges();
