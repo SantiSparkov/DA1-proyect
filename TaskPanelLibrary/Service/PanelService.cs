@@ -90,7 +90,7 @@ public class PanelService : IPanelService
         return panel;
     }
     
-    public Panel RecoverPanel(int panelId, User user)
+    public Panel RestorePanel(int panelId, User user)
     {
         var panel = _panelRepository.GetPanelById(panelId);
 

@@ -112,7 +112,7 @@
     {
         try
         {
-            PanelService.RecoverPanel(panelId, AuthService.GetCurrentUser());
+            PanelService.RestorePanel(panelId, AuthService.GetCurrentUser());
             LoadPanels();
         }
         catch (Exception ex)

@@ -4,10 +4,9 @@
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service.Interface
 
-
 @inject ICommentService CommentService
-
-@inject Panels Panels;
+@inject Panels Panels
+@inject NavigationManager Navigation
 
 <title>CommentForTask</title>
 
@@ -37,40 +36,40 @@
     }
     </tbody>
 </table>
-<button class="btn btn-primary mt-3" @onclick="() => NavigationCreateComment()" style="cursor: pointer;">New comment</button>
 
+<button class="btn btn-primary mt-3" @onclick="() => NavigationCreateComment()" style="cursor: pointer;">New comment</button>
+<button class="btn btn-secondary mt-3" @onclick="NavigateBackToTasks" style="cursor: pointer;">Cancel</button>
 
 @code {
-    
     [Parameter]
     public int taskId { get; set; }
 
-    List<Comment> comments;
-    
+    private List<Comment> comments;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Panels.createTeamAndPanel();
         comments = CommentService.GetCommentForTask(taskId);
-        
-        
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
 
     private void NavigationViewComment(int commentId)
     {
-       Navigation.NavigateTo($"/comment/view/{commentId}/{taskId}");
+        Navigation.NavigateTo($"/comment/view/{commentId}/{taskId}");
     }
-    
+
     private void NavigationUpdateComment(int commentId)
     {
         Navigation.NavigateTo($"/comment/update/{commentId}");
     }
-    
+
     private void NavigationCreateComment()
     {
         Navigation.NavigateTo($"/comment/new/{taskId}");
+    }
+
+    private void NavigateBackToTasks()
+    {
+        Navigation.NavigateTo($"/tasks/panel/{taskId}");
     }
 }
