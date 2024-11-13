@@ -89,6 +89,25 @@ public class PanelService : IPanelService
 
         return panel;
     }
+    
+    public Panel RecoverPanel(int panelId, User user)
+    {
+        var panel = _panelRepository.GetPanelById(panelId);
+
+        if (!user.IsAdmin)
+        {
+            throw new PanelNotValidException($"User is not admin, userId: {user.Id}");
+        }
+
+        if (_trashService.GetTrashById(user.TrashId).PanelList.Contains(panel))
+        {
+            _trashService.RecoverPanelFromTrash(panelId, user.TrashId);
+            panel.IsDeleted = false;
+            _panelRepository.UpdatePanel(panel);
+        }
+
+        return panel;
+    }
 
 
     public Panel GetPanelById(int panelId)

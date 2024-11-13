@@ -11,9 +11,9 @@ public interface ITrashService
     
     public void AddPanelToTrash(Panel panel, int trash);
     
-    public Task RecoverTaskFromTrash(int taskId);
+    public Task RecoverTaskFromTrash(int taskId, int trashId);
     
-    public Panel RecoverPanelFromTrash(int panelId);
+    public Panel RecoverPanelFromTrash(int panelId, int trashId);
     
     public void DeleteTrash(int trashId);
     

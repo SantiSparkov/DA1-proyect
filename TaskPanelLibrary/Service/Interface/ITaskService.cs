@@ -5,13 +5,15 @@ namespace TaskPanelLibrary.Service.Interface;
 
 public interface ITaskService
 {
-    Task GetTaskById(int id);
+    public Task GetTaskById(int id);
     
-    List<Task> GetAllTasks(int panelId);
+    public List<Task> GetAllTasks(int panelId);
     
-    Task CreateTask(Task task);
+    public Task CreateTask(Task task);
     
-    Task UpdateTask(Task task);
+    public Task UpdateTask(Task task);
 
-    Task DeleteTask(Task task, User user);
+    public Task DeleteTask(Task task, User user);
+    
+    public Task RecoverTask(Task task, User user);
 }

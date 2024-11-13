@@ -52,9 +52,9 @@ public class TrashService : ITrashService
         }
     }
 
-    public Task RecoverTaskFromTrash(int taskId)
+    public Task RecoverTaskFromTrash(int taskId, int trashId)
     {
-        var trash = _trashSqlRepository.GetTrashById(taskId);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
         var task = trash.TaskList.Find(t => t.Id == taskId);
         
         if (task == null)
@@ -63,14 +63,14 @@ public class TrashService : ITrashService
         }
         
         trash.TaskList.Remove(task);
-        trash.Elements--;
+        trash.Elements = Count(trashId);
         
         return task;
     }
 
-    public Panel RecoverPanelFromTrash(int panelId)
+    public Panel RecoverPanelFromTrash(int panelId, int trashId)
     {
-        var trash = _trashSqlRepository.GetTrashById(panelId);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
         var panel = trash.PanelList.Find(p => p.Id == panelId);
         
         if (panel == null)
@@ -79,7 +79,7 @@ public class TrashService : ITrashService
         }
         
         trash.PanelList.Remove(panel);
-        trash.Elements--;
+        trash.Elements = Count(trashId);
         
         return panel;
     }

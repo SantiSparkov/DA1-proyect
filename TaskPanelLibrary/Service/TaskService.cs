@@ -76,7 +76,20 @@ public class TaskService : ITaskService
 
         return existingTask;
     }
+    
+    public Task RecoverTask(Task task, User user)
+    {
+        var existingTask = _taskRepository.GetTaskById(task.Id);
 
+        if (_trashService.GetTrashById(user.TrashId).TaskList.Contains(existingTask))
+        {
+            _trashService.RecoverTaskFromTrash(existingTask.Id, user.TrashId);
+            existingTask.IsDeleted = false;
+            _taskRepository.UpdateTask(existingTask);
+        }
+        
+        return existingTask;
+    }
 
     private bool IsValidTask(Task? task)
     {
