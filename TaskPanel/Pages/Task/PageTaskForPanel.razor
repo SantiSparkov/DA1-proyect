@@ -1,8 +1,10 @@
 @page "/tasks/panel/{panelId:int}"
 
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = TaskPanelLibrary.Entity.Task
 
+@inject AuthService AuthService
 @inject ITaskService TaskService
 @inject NavigationManager Navigation
 
@@ -23,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now))
+    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted))
     {
         <tr>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
@@ -34,6 +36,35 @@
             <td>
                 <button class="btn btn-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
                 <button class="btn btn-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h3 class="mt-5">Deleted Tasks</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Task task in tasks.Where(t => t.IsDeleted))
+    {
+        <tr>
+            <td>@task.Id</td>
+            <td>@task.Title</td>
+            <td>@task.Description</td>
+            <td>@task.Priority</td>
+            <td>@task.DueDate</td>
+            <td>
+                <button class="btn btn-success btn-sm" @onclick="() => RecoverTask(task)">Recover</button>
             </td>
         </tr>
     }
@@ -53,7 +84,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now))
+    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now && !t.IsDeleted))
     {
         <tr>
             <td>@task.Id</td>
@@ -63,6 +94,7 @@
             <td>@task.DueDate</td>
             <td>
                 <button class="btn btn-warning btn-sm" @onclick="() => OpenReactivateTaskModal(task.Id)">Reactivate</button>
+                <button class="btn btn-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
             </td>
         </tr>
     }
@@ -88,7 +120,7 @@
                     <EditForm Model="@this">
                         <p>Update the due date for task:</p>
                         <label for="dueDate">New Due Date:</label>
-                        <InputDate id="dueDate" @bind-Value="newDueDate" class="form-control"/>
+                        <InputDate id="dueDate" @bind-Value="newDueDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control"/>
                     </EditForm>
                 </div>
                 <div class="modal-footer">
@@ -100,12 +132,34 @@
     </div>
 }
 
+@if (showWarningModal)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invalid Date</h5>
+                    <button type="button" class="close" @onclick="CloseWarningModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>The selected due date cannot be in the past. Please choose a valid date.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @onclick="CloseWarningModal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter] public int panelId { get; set; }
 
     private List<Task> tasks;
     private bool showModal = false;
+    private bool showWarningModal = false;
     private int selectedTaskId;
     private DateTime newDueDate;
 
@@ -131,13 +185,15 @@
 
     private void ConfirmDeleteTask(Task task)
     {
-        TaskService.DeleteTask(task);
+        var currentUser = AuthService.GetCurrentUser();
+        TaskService.DeleteTask(task, currentUser);
         tasks = TaskService.GetAllTasks(panelId);
     }
 
     private void OpenReactivateTaskModal(int taskId)
     {
         selectedTaskId = taskId;
+        newDueDate = DateTime.Now; // Asignar la fecha actual como valor predeterminado
         showModal = true;
     }
 
@@ -146,12 +202,31 @@
         showModal = false;
     }
 
+    private void CloseWarningModal()
+    {
+        showWarningModal = false;
+    }
+
     private void ReactivateTask()
     {
-        var task = TaskService.GetTaskById(selectedTaskId);
-        task.DueDate = newDueDate;
-        TaskService.UpdateTask(task);
-        showModal = false;
+        if (newDueDate >= DateTime.Now)
+        {
+            var task = TaskService.GetTaskById(selectedTaskId);
+            task.DueDate = newDueDate;
+            TaskService.UpdateTask(task);
+            tasks = TaskService.GetAllTasks(panelId);
+            showModal = false;
+        }
+        else
+        {
+            showWarningModal = true;
+        }
+    }
+
+    private void RecoverTask(Task task)
+    {
+        var currentUser = AuthService.GetCurrentUser();
+        TaskService.RecoverTask(task, currentUser);
         tasks = TaskService.GetAllTasks(panelId);
     }
 

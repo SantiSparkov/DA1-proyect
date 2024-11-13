@@ -6,40 +6,17 @@ public class Trash
 {
     public int Id { get; set; }
     
-    public List<Task> TaskList { get; }
+    public List<Task> TaskList { get; set; }
     
-    public List<Panel> PanelList { get; }
+    public List<Panel> PanelList { get; set; }
+    
+    public int UserId { get; set; }
+    
+    public int Elements { get; set; }
 
     public Trash()
     {
         TaskList = new List<Task>();
         PanelList = new List<Panel>();
     }
-
-    public void AddPanel(Panel panel)
-    {
-        CheckTrashSpace();
-        PanelList.Add(panel);
-    }
-    
-    public void AddTask(Task task)
-    {
-        CheckTrashSpace();
-        TaskList.Add(task);
-    }
-    
-    private void CheckTrashSpace()
-    {
-        int count = QuantityElemnt();
-        if (count >= 10)
-        {
-            throw new TrashNotValidException("Papelera llena");
-        }
-    }
-
-    private int QuantityElemnt()
-    { 
-        return PanelList.Count + TaskList.Count;
-    }
-    
 }

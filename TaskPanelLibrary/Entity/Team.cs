@@ -22,7 +22,7 @@ public class Team
     
     public List<Panel> Panels { get; set; }
     
-    public User TeamLeader { get; set; }
+    public int TeamLeaderId { get; set; }
     
     public Team()
     {

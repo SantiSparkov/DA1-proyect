@@ -15,7 +15,7 @@ namespace TaskPanelTest.ServiceTest
         
         private ITeamRepository _teamRepository;
         
-        private IUserRepository _userRepository;
+        private UserSqlRepository _userSqlRepository;
         
         private IPanelRepository _panelRepository;
         
@@ -31,11 +31,11 @@ namespace TaskPanelTest.ServiceTest
         public void Initialize()
         {
             _teamRepository = new TeamRepository();
-            _userRepository = new UserRepository();
+            _userSqlRepository = new UserSqlRepository(null);
             _panelRepository = new PanelRepository();
             
             _passwordGeneratorService = new PasswordGeneratorService();
-            _userService = new UserService(_userRepository, _passwordGeneratorService);
+            _userService = new UserService(_userSqlRepository, _passwordGeneratorService);
             _panelService = new PanelService(_panelRepository, _userService);
             _teamService = new TeamService(_teamRepository, _userService, _panelService);
             
@@ -62,7 +62,7 @@ namespace TaskPanelTest.ServiceTest
             // Assert
             Assert.IsNotNull(createdTeam);
             Assert.AreEqual(team.Name, createdTeam.Name);
-            Assert.AreEqual(_adminUser.Id, createdTeam.TeamLeader.Id);
+            Assert.AreEqual(_adminUser.Id, createdTeam.TeamLeaderId);
             Assert.AreEqual(1, createdTeam.Users.Count);
         }
 
@@ -95,7 +95,7 @@ namespace TaskPanelTest.ServiceTest
             {
                 Id = 1,
                 Name = "Team C",
-                TeamLeader = _adminUser,
+                TeamLeaderId = _adminUser.Id,
                 MaxAmountOfMembers = 5,
                 TasksDescription = "Task description for Team C",
                 Panels = new List<Panel>()
@@ -124,7 +124,7 @@ namespace TaskPanelTest.ServiceTest
             {
                 Id = 1,
                 Name = "Team D",
-                TeamLeader = _adminUser,
+                TeamLeaderId = _adminUser.Id,
                 TasksDescription = "Task description for Team D",
                 MaxAmountOfMembers = 5,
                 Panels = new List<Panel>()

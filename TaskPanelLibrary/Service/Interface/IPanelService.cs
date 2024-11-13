@@ -14,6 +14,8 @@ public interface IPanelService
     public Panel UpdatePanel(Panel panelUpdated);
 
     public Panel DeletePanel(int panelId, User user);
+    
+    public Panel RecoverPanel(int panelId, User user);
 
     public Panel GetPanelById(int panelId);
     

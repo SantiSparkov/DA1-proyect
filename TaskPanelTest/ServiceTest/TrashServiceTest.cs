@@ -11,7 +11,9 @@ namespace TaskPanelTest.ServiceTest;
 public class TrashServiceTest
 {
     private ITrashService _trashService;
+    private IUserService _userService;
 
+    private IUserRepository _userRepository;
     private ITrashRepository _trashRepository;
 
     
@@ -61,12 +63,6 @@ public class TrashServiceTest
         
         // Assert
         Assert.AreEqual($"Trash with id 1 not found", exception.Message);
-    }
-    
-    [TestCleanup]
-    public void Cleanup()
-    {
-        _trashRepository.GetAll().Clear();
     }
     
 }

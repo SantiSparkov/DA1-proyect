@@ -1,36 +1,117 @@
 using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Repository;
+using TaskPanelLibrary.Exception.Panel;
+using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
+using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelLibrary.Service;
 
 public class TrashService : ITrashService
 {
-    private readonly ITrashRepository _trashRepository;
+    private readonly ITrashRepository _trashSqlRepository;
+    private const int MaxCapacity = 10;
 
-    public TrashService(ITrashRepository trashRepository)
+    public TrashService(ITrashRepository trashSqlRepository)
     {
-        _trashRepository = trashRepository;
+        _trashSqlRepository = trashSqlRepository;
     }
 
-    public Trash CreateTrash()
+    public Trash CreateTrash(User user)
     {
-        Trash trash = new Trash()
+        Trash newTrash = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            UserId = user.Id,
+            Elements = 0,
+            TaskList = new List<Task>(),
+            PanelList = new List<Panel>()
         };
-        _trashRepository.AddTrash(trash);
-        return trash;
+        
+        return _trashSqlRepository.AddTrash(newTrash);
     }
 
-    public Trash GetTrashById(int id)
+    public void AddTaskToTrash(Task task, int trashId)
     {
-        return _trashRepository.GetTrashById(id);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        
+        if (!IsFull(trashId))
+        {
+            trash.TaskList.Add(task);
+            trash.Elements = Count(trashId);
+        }
     }
 
-    public Trash DeleteTrash(int id)
+    public void AddPanelToTrash(Panel panel, int trashId)
     {
-       return _trashRepository.DeleteTrashForId(id);
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        
+        if (!IsFull(trashId))
+        {
+            trash.PanelList.Add(panel);
+            trash.Elements = Count(trashId);
+        }
+    }
+
+    public Task RecoverTaskFromTrash(int taskId, int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        var task = trash.TaskList.Find(t => t.Id == taskId);
+        
+        if (task == null)
+        {
+            throw new TaskNotValidException("Task not found in trash");
+        }
+        
+        trash.TaskList.Remove(task);
+        trash.Elements = Count(trashId);
+        
+        return task;
+    }
+
+    public Panel RecoverPanelFromTrash(int panelId, int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        var panel = trash.PanelList.Find(p => p.Id == panelId);
+        
+        if (panel == null)
+        {
+            throw new PanelNotValidException("Panel not found in trash");
+        }
+        
+        trash.PanelList.Remove(panel);
+        trash.Elements = Count(trashId);
+        
+        return panel;
+    }
+
+    public void DeleteTrash(int trashId)
+    {
+        _trashSqlRepository.DeleteTrashForId(trashId);
+    }
+
+    public bool IsFull(int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        return (trash.TaskList.Count + trash.PanelList.Count) >= MaxCapacity;
+    }
+    
+    private int Count(int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        return (trash.TaskList.Count + trash.PanelList.Count);
+    }
+    
+    public void UpdateTrash(int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        trash.Elements = Count(trashId);
+        _trashSqlRepository.UpdateTrash(trash);
+    }
+
+    public Trash GetTrashById(int trashId)
+    {
+        return _trashSqlRepository.GetTrashById(trashId);
     }
 }
+
+

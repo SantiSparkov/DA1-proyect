@@ -1,7 +1,9 @@
+using Microsoft.Identity.Client;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
@@ -11,16 +13,14 @@ namespace TaskPanelLibrary.Service;
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ITrashService _trashService;
+    private readonly IUserService _userService;
 
-    private readonly ICommentService _commentService;
-
-    private readonly IPanelService _panelService;
-
-    public TaskService(ITaskRepository taskRepository, ICommentService commentService, IPanelService panelService)
+    public TaskService(ITaskRepository taskSqlRepository, IUserService userService, ITrashService trashService)
     {
-        _taskRepository = taskRepository;
-        _commentService = commentService;
-        _panelService = panelService;
+        _taskRepository = taskSqlRepository;
+        _userService = userService;
+        _trashService = trashService;
     }
 
     public Task CreateTask(Task task)
@@ -31,7 +31,7 @@ public class TaskService : ITaskService
         _taskRepository.AddTask(task);
         return task;
     }
-    
+
     public List<Task> GetAllTasks(int panelId)
     {
         try
@@ -57,17 +57,43 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public Task DeleteTask(Task task)
+    public Task DeleteTask(Task task, User user)
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
-        _taskRepository.DeleteTask(existingTask.Id);
 
+        existingTask.IsDeleted = true;
+
+        if (!_trashService.IsFull(user.TrashId))
+        {
+            _trashService.AddTaskToTrash(existingTask, user.TrashId);
+            _taskRepository.UpdateTask(existingTask);
+        }
+        else
+        {
+            _taskRepository.DeleteTask(existingTask.Id);
+            _trashService.UpdateTrash(user.TrashId);
+        }
+
+        return existingTask;
+    }
+    
+    public Task RecoverTask(Task task, User user)
+    {
+        var existingTask = _taskRepository.GetTaskById(task.Id);
+
+        if (_trashService.GetTrashById(user.TrashId).TaskList.Contains(existingTask))
+        {
+            _trashService.RecoverTaskFromTrash(existingTask.Id, user.TrashId);
+            existingTask.IsDeleted = false;
+            _taskRepository.UpdateTask(existingTask);
+        }
+        
         return existingTask;
     }
 
     private bool IsValidTask(Task? task)
     {
-        if(task == null)
+        if (task == null)
             throw new TaskNotValidException("Task is null");
         if (string.IsNullOrEmpty(task.Title))
             throw new TaskNotValidException("Title is null or empty");
@@ -75,7 +101,7 @@ public class TaskService : ITaskService
             throw new TaskNotValidException("Description is null or empty");
         if (task.DueDate < DateTime.Now)
             throw new TaskNotValidException("Due date is before today");
-        
+
         return true;
     }
 }

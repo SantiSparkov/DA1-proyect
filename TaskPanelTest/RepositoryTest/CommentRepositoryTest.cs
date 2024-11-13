@@ -39,7 +39,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            Trash = new Trash()
+            TrashId = new Trash()
         };
         Comment comment = new Comment()
         {
@@ -77,7 +77,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            Trash = new Trash()
+            TrashId = new Trash()
         };
         Comment comment = new Comment()
         {
@@ -110,7 +110,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            Trash = new Trash()
+            TrashId = new Trash()
         };
         Comment comment = new Comment()
         {

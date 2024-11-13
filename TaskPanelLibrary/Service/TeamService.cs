@@ -3,6 +3,7 @@ using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
 using DateTime = System.DateTime;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
@@ -16,13 +17,10 @@ public class TeamService : ITeamService
 
     private readonly IUserService _userService;
     
-    private readonly IPanelService _panelService;
-    
-    public TeamService(ITeamRepository teamRepository, IUserService userService, IPanelService panelService)
+    public TeamService(ITeamRepository teamRepository, IUserService userService)
     {
         _teamRepository = teamRepository;
         _userService = userService;
-        _panelService = panelService;
     }
 
     public Team CreateTeam(Team team, int userId)
@@ -40,7 +38,7 @@ public class TeamService : ITeamService
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers == 1 ? 2 : team.MaxAmountOfMembers,
-            TeamLeader = user,
+            TeamLeaderId = user.Id,
             Users = team.Users
         };
 
@@ -103,7 +101,7 @@ public class TeamService : ITeamService
     {
         Team existingTeam = _teamRepository.GetTeamById(updatedTeam.Id);
 
-        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeader.Id)
+        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeaderId)
             throw new UserNotValidException("User is not admin or team leader.");
 
         if (string.IsNullOrEmpty(updatedTeam.Name) && updatedTeam.Name != existingTeam.Name)

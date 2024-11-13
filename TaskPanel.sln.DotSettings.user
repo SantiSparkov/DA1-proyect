@@ -49,14 +49,14 @@
 
 	
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa59535d_002Db46f_002D46bb_002D9d5b_002De204c68e1612/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ImportCsvServiceTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.ImportCsv.ImportCsvServiceTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa59535d_002Db46f_002D46bb_002D9d5b_002De204c68e1612/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ImportCsvServiceTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.ImportCsv.ImportCsvServiceTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa6362db_002D968f_002D4624_002Db2a7_002D022d906959e5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AddTask #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Solution /&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa6362db_002D968f_002D4624_002Db2a7_002D022d906959e5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddTask #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	

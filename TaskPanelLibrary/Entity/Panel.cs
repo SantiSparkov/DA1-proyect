@@ -17,4 +17,5 @@ public class Panel
     
     public List<Task> Tasks { get; set; }
     
+    public bool IsDeleted { get; set; } = false;
 }

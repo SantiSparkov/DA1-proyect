@@ -10,6 +10,7 @@
 
 <h1>Panels for User</h1>
 
+<h3>Active Panels</h3>
 <table class="table table-hover table-striped">
     <thead>
     <tr>
@@ -20,7 +21,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var panel in _panels)
+    @foreach (var panel in _panels.Where(p => !p.IsDeleted))
     {
         <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
             <td>@panel.Team.Id</td>
@@ -37,6 +38,31 @@
 
 <button class="btn btn-primary mt-3" @onclick="CreateNewPanel">New Panel</button>
 
+<h3 class="mt-5">Deleted Panels</h3>
+<table class="table table-hover table-striped">
+    <thead>
+    <tr>
+        <th>Team Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-center">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var panel in _panels.Where(p => p.IsDeleted))
+    {
+        <tr>
+            <td>@panel.Team.Id</td>
+            <td>@panel.Name</td>
+            <td>@panel.Description</td>
+            <td class="text-center">
+                <button class="btn btn-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
 @code {
 
     [Parameter] public int userId { get; set; }
@@ -44,6 +70,11 @@
     private List<Panel> _panels;
 
     protected override void OnInitialized()
+    {
+        LoadPanels();
+    }
+
+    private void LoadPanels()
     {
         try
         {
@@ -74,7 +105,20 @@
     private void ConfirmDeletePanel(int panelId)
     {
         PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
-        _panels = PanelService.GetAllPanelForUser(userId);
+        LoadPanels();
+    }
+
+    private void RestorePanel(int panelId)
+    {
+        try
+        {
+            PanelService.RecoverPanel(panelId, AuthService.GetCurrentUser());
+            LoadPanels();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error restoring panel: " + ex.Message);
+        }
     }
 
 }
