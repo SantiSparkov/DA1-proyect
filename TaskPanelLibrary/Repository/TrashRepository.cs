@@ -44,11 +44,6 @@ public class TrashRepository : ITrashRepository
         throw new TrashNotValidException(id);
     }
 
-    public int Count()
-    {
-        return _trashes.Count;
-    }
-
     public Trash UpdateTrash(Trash trash)
     {
         for (int i = 0; i < _trashes.Count; i++)
@@ -61,9 +56,5 @@ public class TrashRepository : ITrashRepository
         }
         throw new TrashNotValidException(trash.Id);
     }
-
-    public List<Trash> GetAll()
-    {
-        return _trashes;
-    }
+    
 }

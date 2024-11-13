@@ -5,7 +5,7 @@ namespace TaskPanelLibrary.Service.Interface;
 
 public interface ITrashService
 {
-    public Trash CreateTrash(int userId);
+    public Trash CreateTrash(User user);
     
     public void AddTaskToTrash(Task task, int trash);
     
@@ -14,6 +14,8 @@ public interface ITrashService
     public Task RecoverTaskFromTrash(int taskId);
     
     public Panel RecoverPanelFromTrash(int panelId);
+    
+    public void DeleteTrash(int trashId);
     
     public Trash GetTrashById(int trashId);
 }

@@ -75,8 +75,8 @@ public class PanelService : IPanelService
             throw new PanelNotValidException($"User is not admin, userId: {user.Id}");
         }
         
-        _trashService.AddPanelToTrash(panel, user.Trash.Id);
         _panelRepository.DeletePanel(panelId);
+        _trashService.AddPanelToTrash(panel, user.TrashId);
         
         return panel;
     }

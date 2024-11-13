@@ -30,7 +30,8 @@ public class UserSqlRepository : IUserRepository
             _userDataBase.Add(adminUser);
             _userDataBase.SaveChanges();
             
-            _trashService.CreateTrash(adminUser.Id);
+            _trashService.CreateTrash(adminUser);
+            adminUser.TrashId = 1;
             _userDataBase.Update(adminUser);
             _userDataBase.SaveChanges();
             

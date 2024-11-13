@@ -12,7 +12,7 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241112175058_PrimeraMigracion")]
+    [Migration("20241113045828_PrimeraMigracion")]
     partial class PrimeraMigracion
     {
         /// <inheritdoc />
@@ -172,9 +172,6 @@ namespace TaskPanelLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
                     b.ToTable("Trashes");
                 });
 
@@ -209,6 +206,9 @@ namespace TaskPanelLibrary.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrashId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -263,15 +263,6 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("TrashId");
                 });
 
-            modelBuilder.Entity("TaskPanelLibrary.Entity.Trash", b =>
-                {
-                    b.HasOne("TaskPanelLibrary.Entity.User", null)
-                        .WithOne("Trash")
-                        .HasForeignKey("TaskPanelLibrary.Entity.Trash", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TaskPanelLibrary.Entity.User", b =>
                 {
                     b.HasOne("TaskPanelLibrary.Entity.Team", null)
@@ -301,12 +292,6 @@ namespace TaskPanelLibrary.Migrations
                     b.Navigation("PanelList");
 
                     b.Navigation("TaskList");
-                });
-
-            modelBuilder.Entity("TaskPanelLibrary.Entity.User", b =>
-                {
-                    b.Navigation("Trash")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -11,8 +11,4 @@ public interface ITrashRepository
     public Trash DeleteTrashForId(int id);
     
     public Trash UpdateTrash(Trash trash);
-
-    public int Count();
-
-    public List<Trash> GetAll();
 }

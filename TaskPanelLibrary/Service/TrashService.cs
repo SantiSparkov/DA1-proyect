@@ -17,12 +17,14 @@ public class TrashService : ITrashService
         _trashSqlRepository = trashSqlRepository;
     }
 
-    public Trash CreateTrash(int userId)
+    public Trash CreateTrash(User user)
     {
         Trash newTrash = new Trash()
         {
-            UserId = userId,
-            Elements = 0
+            UserId = user.Id,
+            Elements = 0,
+            TaskList = new List<Task>(),
+            PanelList = new List<Panel>()
         };
         
         return _trashSqlRepository.AddTrash(newTrash);
@@ -80,6 +82,11 @@ public class TrashService : ITrashService
         trash.Elements--;
         
         return panel;
+    }
+
+    public void DeleteTrash(int trashId)
+    {
+        _trashSqlRepository.DeleteTrashForId(trashId);
     }
 
     private bool IsFull(int trashId)

@@ -46,11 +46,6 @@ public class TrashSqlRepository : ITrashRepository
         return trash;
     }
 
-    public int Count()
-    {
-        return _trashDatabase.Trashes.Count();
-    }
-
     public Trash UpdateTrash(Trash trash)
     {
         _trashDatabase.Trashes.Update(trash);
@@ -58,9 +53,5 @@ public class TrashSqlRepository : ITrashRepository
         
         return trash;
     }
-
-    public List<Trash> GetAll()
-    {
-        return _trashDatabase.Trashes.ToList();
-    }
+    
 }

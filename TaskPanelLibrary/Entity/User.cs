@@ -24,5 +24,5 @@ public class User
     
     public bool IsAdmin { get; set; }
     
-    public Trash Trash { get; set; }
+    public int TrashId { get; set; }
 }

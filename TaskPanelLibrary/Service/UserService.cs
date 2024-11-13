@@ -45,8 +45,9 @@ public class UserService : IUserService
         
         var addedUser = _userSqlRepository.AddUser(user);
 
-        var trash = _trashService.CreateTrash(addedUser.Id);
-        addedUser.Trash = trash;
+        var trash = _trashService.CreateTrash(addedUser);
+        addedUser.TrashId = trash.Id;
+        _userSqlRepository.UpdateUser(addedUser);
         
         return addedUser;
     }
@@ -70,6 +71,8 @@ public class UserService : IUserService
         {
             throw new UserNotValidException(id);
         }
+        
+        _trashService.DeleteTrash(existingUser.TrashId);
 
         return _userSqlRepository.DeleteUser(id);
     }

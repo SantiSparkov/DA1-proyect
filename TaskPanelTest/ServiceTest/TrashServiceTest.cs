@@ -65,10 +65,4 @@ public class TrashServiceTest
         Assert.AreEqual($"Trash with id 1 not found", exception.Message);
     }
     
-    [TestCleanup]
-    public void Cleanup()
-    {
-        _trashRepository.GetAll().Clear();
-    }
-    
 }
