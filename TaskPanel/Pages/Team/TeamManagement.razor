@@ -1,9 +1,11 @@
 ﻿@page "/teams"
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = System.Threading.Tasks.Task
 @inject ITeamService TeamService
 @inject NavigationManager NavigationManager
+@inject AuthService AuthService
 
 <h3>Teams</h3>
 
@@ -31,7 +33,10 @@
                 <td>@team.TasksDescription</td>
                 <td>@team.MaxAmountOfMembers</td>
                 <td>
-                    <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
+                    @if (isAdmin)
+                    {
+                        <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
+                    }
                 </td>
                 <td>
                     <button class="btn btn-info" @onclick="() => ShowMembers(team)" @onclick:stopPropagation>View Members</button>
@@ -52,7 +57,10 @@ else
     <div class="alert alert-danger">@_errorMessage</div>
 }
 
-<button class="btn btn-primary mt-3" @onclick="NavigateToCreateTeam">Create New Team</button>
+@if (isAdmin)
+{
+    <button class="btn btn-primary mt-3" @onclick="NavigateToCreateTeam">Create New Team</button>
+}
 
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showModal ? "block" : "none");" aria-hidden="@(showModal ? "false" : "true")">
     <div class="modal-dialog" role="document">
@@ -95,12 +103,14 @@ else
     private string _errorMessage;
     private bool showModal = false;
     private Team selectedTeam = null;
+    private bool isAdmin;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             _teams = TeamService.GetAllTeams();
+            isAdmin = AuthService.GetCurrentUser().IsAdmin;
         }
         catch (Exception ex)
         {
