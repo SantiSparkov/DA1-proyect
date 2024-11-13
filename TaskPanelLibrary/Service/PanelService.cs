@@ -76,13 +76,17 @@ public class PanelService : IPanelService
 
         panel.IsDeleted = true;
 
-        if (!_trashService.IsFull(user.TrashId)){
+        if (!_trashService.IsFull(user.TrashId))
+        {
             _trashService.AddPanelToTrash(panel, user.TrashId);
             _panelRepository.UpdatePanel(panel);
         }
         else
+        {
             _panelRepository.DeletePanel(panelId);
-        
+            _trashService.UpdateTrash(user.TrashId);
+        }
+
         return panel;
     }
 

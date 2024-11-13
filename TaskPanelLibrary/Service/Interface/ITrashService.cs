@@ -19,5 +19,7 @@ public interface ITrashService
     
     public bool IsFull(int trashId);
     
+    public void UpdateTrash(int trashId);
+    
     public Trash GetTrashById(int trashId);
 }

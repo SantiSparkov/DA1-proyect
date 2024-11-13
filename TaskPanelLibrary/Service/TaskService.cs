@@ -69,7 +69,10 @@ public class TaskService : ITaskService
             _taskRepository.UpdateTask(existingTask);
         }
         else
+        {
             _taskRepository.DeleteTask(existingTask.Id);
+            _trashService.UpdateTrash(user.TrashId);
+        }
 
         return existingTask;
     }

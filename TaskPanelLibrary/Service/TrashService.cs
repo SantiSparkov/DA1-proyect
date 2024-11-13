@@ -100,6 +100,13 @@ public class TrashService : ITrashService
         var trash = _trashSqlRepository.GetTrashById(trashId);
         return (trash.TaskList.Count + trash.PanelList.Count);
     }
+    
+    public void UpdateTrash(int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        trash.Elements = Count(trashId);
+        _trashSqlRepository.UpdateTrash(trash);
+    }
 
     public Trash GetTrashById(int trashId)
     {
