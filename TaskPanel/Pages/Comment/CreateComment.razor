@@ -21,12 +21,12 @@
     <div class="form-group">
         <label>Status:</label>
         <span class="form-control-plaintext">PENDING</span>
-        <input type="hidden" value="PENDING" />
+        <input type="hidden" value="PENDING"/>
         <ValidationMessage For="@(() => _newComment.Status)" class="text-danger validation-message"/>
     </div>
 
     <div class="mt-4">
-        <button class="btn btn-primary" type="submit" @onclick="SaveComment">Save</button>
+        <button class="btn btn-primary" type="submit">Save</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
@@ -66,12 +66,20 @@
         };
     }
 
+    private async Task HandleValidSubmit()
+    {
+        await SaveComment();
+    }
+
     private async Task SaveComment()
     {
-        try {
+        try
+        {
             CommentService.CreateComment(_newComment);
             NavigationGoBack();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             _errorMessage = e.Message;
         }
     }
@@ -79,11 +87,6 @@
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/comments/{taskId}");
-    }
-    
-    private Task HandleValidSubmit(EditContext arg)
-    {
-        return Task.CompletedTask;
     }
 
 }

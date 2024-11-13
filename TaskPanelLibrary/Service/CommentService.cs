@@ -64,8 +64,11 @@ public class CommentService : ICommentService
         commentSaved.Status = comment.Status;
         commentSaved.ResolvedAt = comment.ResolvedAt;
         commentSaved.ResolvedBy = comment.ResolvedBy;
+        
+        _commentRepository.UpdateComment(commentSaved);
         return commentSaved;
     }
+
     
     public List<Comment> GetAllComments()
     {
