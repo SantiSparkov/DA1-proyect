@@ -2,9 +2,12 @@
 
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Repository.Interface
 @using TaskPanelLibrary.Service.Interface
+@using Task = TaskPanelLibrary.Entity.Task
 
 @inject ICommentService CommentService
+@inject ITaskService TaskService
 @inject Panels Panels
 @inject NavigationManager Navigation
 
@@ -71,6 +74,7 @@
 
     private void NavigateBackToTasks()
     {
-        Navigation.NavigateTo($"/tasks/panel/{taskId}");
+        Task task = TaskService.GetTaskById(taskId);
+        Navigation.NavigateTo($"/tasks/panel/{task.PanelId}");
     }
 }
