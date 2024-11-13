@@ -25,7 +25,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now))
+    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted))
     {
         <tr>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
@@ -55,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now))
+    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now && !t.IsDeleted))
     {
         <tr>
             <td>@task.Id</td>

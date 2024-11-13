@@ -31,7 +31,7 @@ public class TaskService : ITaskService
         _taskRepository.AddTask(task);
         return task;
     }
-    
+
     public List<Task> GetAllTasks(int panelId)
     {
         try
@@ -60,16 +60,24 @@ public class TaskService : ITaskService
     public Task DeleteTask(Task task, User user)
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
-        
-        _taskRepository.DeleteTask(existingTask.Id);
-        _trashService.AddTaskToTrash(existingTask, user.TrashId);
+
+        existingTask.IsDeleted = true;
+
+        if (!_trashService.IsFull(user.TrashId))
+        {
+            _trashService.AddTaskToTrash(existingTask, user.TrashId);
+            _taskRepository.UpdateTask(existingTask);
+        }
+        else
+            _taskRepository.DeleteTask(existingTask.Id);
 
         return existingTask;
     }
 
+
     private bool IsValidTask(Task? task)
     {
-        if(task == null)
+        if (task == null)
             throw new TaskNotValidException("Task is null");
         if (string.IsNullOrEmpty(task.Title))
             throw new TaskNotValidException("Title is null or empty");
@@ -77,7 +85,7 @@ public class TaskService : ITaskService
             throw new TaskNotValidException("Description is null or empty");
         if (task.DueDate < DateTime.Now)
             throw new TaskNotValidException("Due date is before today");
-        
+
         return true;
     }
 }

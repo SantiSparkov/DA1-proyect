@@ -12,7 +12,7 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241113045828_PrimeraMigracion")]
+    [Migration("20241113055446_PrimeraMigracion")]
     partial class PrimeraMigracion
     {
         /// <inheritdoc />
@@ -70,6 +70,9 @@ namespace TaskPanelLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -103,6 +106,9 @@ namespace TaskPanelLibrary.Migrations
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PanelId")
                         .HasColumnType("int");

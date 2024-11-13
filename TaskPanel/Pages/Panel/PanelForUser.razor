@@ -20,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var panel in _panels)
+    @foreach (var panel in _panels.Where(p => !p.IsDeleted))
     {
         <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
             <td>@panel.Team.Id</td>

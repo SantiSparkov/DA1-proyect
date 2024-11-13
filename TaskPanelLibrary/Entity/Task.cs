@@ -23,6 +23,8 @@ public class Task
     [Required(ErrorMessage = "Priority is required")]
     public ETaskPriority Priority { get; set; }
     
+    public bool IsDeleted { get; set; } = false;
+    
     public Task()
     {
         CommentList = new List<Comment>();

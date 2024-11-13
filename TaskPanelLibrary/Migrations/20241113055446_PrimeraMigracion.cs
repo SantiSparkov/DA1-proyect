@@ -76,6 +76,7 @@ namespace TaskPanelLibrary.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     TrashId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -105,6 +106,7 @@ namespace TaskPanelLibrary.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Priority = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     TrashId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

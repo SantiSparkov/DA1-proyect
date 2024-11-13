@@ -37,7 +37,7 @@ public class TrashService : ITrashService
         if (!IsFull(trashId))
         {
             trash.TaskList.Add(task);
-            trash.Elements++;
+            trash.Elements = Count(trashId);
         }
     }
 
@@ -48,7 +48,7 @@ public class TrashService : ITrashService
         if (!IsFull(trashId))
         {
             trash.PanelList.Add(panel);
-            trash.Elements++;
+            trash.Elements = Count(trashId);
         }
     }
 
@@ -89,11 +89,16 @@ public class TrashService : ITrashService
         _trashSqlRepository.DeleteTrashForId(trashId);
     }
 
-    private bool IsFull(int trashId)
+    public bool IsFull(int trashId)
     {
         var trash = _trashSqlRepository.GetTrashById(trashId);
-        
         return (trash.TaskList.Count + trash.PanelList.Count) >= MaxCapacity;
+    }
+    
+    private int Count(int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        return (trash.TaskList.Count + trash.PanelList.Count);
     }
 
     public Trash GetTrashById(int trashId)
