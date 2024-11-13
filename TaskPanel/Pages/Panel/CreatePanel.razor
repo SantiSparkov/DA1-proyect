@@ -98,7 +98,7 @@
                 _panel.Team = TeamService.GetTeamById(selectedTeamId);
             }
 
-            PanelService.CreatePanel(_panel);
+            PanelService.CreatePanel(_panel, AuthService.GetCurrentUser().Id);
             NavigationGoBack();
         }
         catch (Exception e)

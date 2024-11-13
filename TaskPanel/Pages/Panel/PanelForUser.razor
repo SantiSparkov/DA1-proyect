@@ -7,6 +7,7 @@
 @inject IPanelService PanelService
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject ITrashService TrashService
 
 <h1>Panels for User</h1>
 
@@ -28,8 +29,11 @@
             <td>@panel.Name</td>
             <td>@panel.Description</td>
             <td class="text-center">
-                <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
-                <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                @if (isAdmin)
+                {
+                    <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                    <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                }
             </td>
         </tr>
     }
@@ -49,14 +53,17 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var panel in _panels.Where(p => p.IsDeleted))
+    @foreach (var panel in deletedPanels)
     {
         <tr>
             <td>@panel.Team.Id</td>
             <td>@panel.Name</td>
             <td>@panel.Description</td>
             <td class="text-center">
-                <button class="btn btn-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+                @if (isAdmin)
+                {
+                    <button class="btn btn-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+                }
             </td>
         </tr>
     }
@@ -68,9 +75,12 @@
     [Parameter] public int userId { get; set; }
 
     private List<Panel> _panels;
+    private List<Panel> deletedPanels = new();
+    private bool isAdmin;
 
     protected override void OnInitialized()
     {
+        isAdmin = AuthService.GetCurrentUser().IsAdmin;
         LoadPanels();
     }
 
@@ -78,8 +88,10 @@
     {
         try
         {
-            _panels = PanelService.GetAllPanelForUser(userId);
-            _panels = _panels.DistinctBy(p => p.Id).ToList();
+            _panels = PanelService.GetAllPanelForUser(userId).Where(p => !p.IsDeleted).DistinctBy(p => p.Id).ToList();
+            var currentUser = AuthService.GetCurrentUser();
+            var trash = TrashService.GetTrashById(currentUser.TrashId);
+            deletedPanels = trash.PanelList.Where(p => p.IsDeleted).ToList();
         }
         catch (Exception ex)
         {
@@ -104,16 +116,22 @@
 
     private void ConfirmDeletePanel(int panelId)
     {
-        PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
-        LoadPanels();
+        if (isAdmin)
+        {
+            PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+            LoadPanels();
+        }
     }
 
     private void RestorePanel(int panelId)
     {
         try
         {
-            PanelService.RestorePanel(panelId, AuthService.GetCurrentUser());
-            LoadPanels();
+            if (isAdmin)
+            {
+                PanelService.RestorePanel(panelId, AuthService.GetCurrentUser());
+                LoadPanels();
+            }
         }
         catch (Exception ex)
         {

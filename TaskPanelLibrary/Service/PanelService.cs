@@ -23,8 +23,11 @@ public class PanelService : IPanelService
         _trashService = trashService;
     }
 
-    public Panel CreatePanel(Panel panel)
+    public Panel CreatePanel(Panel panel, int userId)
     {
+        var user = _userService.GetUserById(userId);
+        panel.CreatorId = user.Id;
+        
         if (!IsValidPanel(panel))
             throw new PanelNotValidException("Panel is not valid");
 
@@ -34,29 +37,14 @@ public class PanelService : IPanelService
 
     public List<Panel> GetAllPanelForTeam(int idTeam)
     {
-        try
-        {
-            return _panelRepository.GetAllPanels().FindAll(i => i.Team.Id == idTeam);
-        }
-        catch (ArgumentException e)
-        {
-            return new List<Panel>();
-        }
+        return _panelRepository.GetAllPanels().FindAll(i => i.Team.Id == idTeam);
     }
 
     public List<Panel> GetAllPanelForUser(int userId)
     {
-        try
-        {
-            User user = _userService.GetUserById(userId);
-            return _panelRepository.GetAllPanels().FindAll(i => i.Team.Users.Contains(user)).ToList();
-        }
-        catch (ArgumentException e)
-        {
-            return new List<Panel>();
-        }
+        User user = _userService.GetUserById(userId);
+        return _panelRepository.GetAllPanels().FindAll(i => i.CreatorId == userId).ToList();
     }
-
 
     public Panel UpdatePanel(Panel panelUpdated)
     {
