@@ -7,66 +7,68 @@
 @inject NavigationManager NavigationManager
 @inject PasswordGeneratorService PasswordGenerator
 
-<h3>Create User</h3>
+<title>Create User</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create User</h1>
 
 <EditForm Model="_newUser" OnValidSubmit="HandleAddUser">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
+    <ValidationSummary class="text-danger"/>
 
-    <div class="form-group">
-        <label>Name:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Name:</label>
         <InputText @bind-Value="_newUser.Name" class="form-control"/>
-        <ValidationMessage For="@(() => _newUser.Name)"/>
+        <ValidationMessage For="@(() => _newUser.Name)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label>Last Name:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Last Name:</label>
         <InputText @bind-Value="_newUser.LastName" class="form-control"/>
-        <ValidationMessage For="@(() => _newUser.LastName)"/>
+        <ValidationMessage For="@(() => _newUser.LastName)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label>Email:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Email:</label>
         <InputText @bind-Value="_newUser.Email" class="form-control"/>
-        <ValidationMessage For="@(() => _newUser.Email)"/>
+        <ValidationMessage For="@(() => _newUser.Email)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label>Born Date:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Born Date:</label>
         <InputDate @bind-Value="_newUser.BirthDate" class="form-control"/>
-        <ValidationMessage For="@(() => _newUser.BirthDate)"/>
+        <ValidationMessage For="@(() => _newUser.BirthDate)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label>Password:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Password:</label>
         <div class="input-group">
             <InputText @bind-Value="_newUser.Password" class="form-control" type="@PasswordInputType" readonly/>
             <button type="button" class="btn btn-secondary" @onclick="GeneratePassword">Generate Password</button>
         </div>
-        <div class="form-check">
+        <div class="form-check mt-2">
             <input type="checkbox" class="form-check-input" @bind="_showPassword" id="showPasswordCheckbox"/>
             <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
         </div>
-        <ValidationMessage For="@(() => _newUser.Password)"/>
+        <ValidationMessage For="@(() => _newUser.Password)" class="text-danger"/>
     </div>
 
-    <div class="form-check">
+    <div class="form-check mb-4">
         <input type="checkbox" class="form-check-input" @bind="_newUser.IsAdmin" id="isAdminCheckbox"/>
-        <label class="form-check-label" for="isAdminCheckbox">Is Admin</label>
+        <label class="form-check-label font-weight-bold" for="isAdminCheckbox">Is Admin</label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-
-    <button type="button" class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    <div class="mt-4 d-flex justify-content-start">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary ml-3" @onclick="GoBack">Cancel</button>
+    </div>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <div class="alert alert-danger" style="margin-top: 10px">@_errorMessage</div>
+    <div class="alert alert-danger mt-4">@_errorMessage</div>
 }
 
 @code {
-
     private User _newUser = new User
     {
         BirthDate = new DateTime(1900, 1, 1)
@@ -104,5 +106,4 @@
     {
         return PasswordGenerator.GeneratePassword(PasswordLength);
     }
-
 }

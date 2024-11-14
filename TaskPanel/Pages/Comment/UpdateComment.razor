@@ -14,59 +14,63 @@
 @inject AuthService AuthorizationService
 @inject NavigationManager Navigation
 
-<title>UpdateComment</title>
+<title>Update Comment</title>
 
-<h1>Update comment</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Update Comment</h1>
 
 <EditForm Model="@comment" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Message</th>
-            <th>Status</th>
-            <th>Resolved by</th>
-            <th>Resolved at</th>
-            <th>Comment</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>@comment.Message</td>
-            <td>
-                <InputSelect @bind-Value="comment.Status">
-                    @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
-                    {
-                        <option value="@status">@status</option>
-                    }
-                </InputSelect>
-            </td>
-            <td>
-                <InputSelect @bind-Value="userId">
-                    @foreach (User user in UserService.GetAllUsers())
-                    {
-                        <option value="@user.Id">@user.Email</option>
-                    }
-                </InputSelect>
-            </td>
-            <td>@comment.ResolvedAt</td>
-            <td>
-                <InputText @bind-Value="comment.Message"/>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered mt-3">
+            <thead class="thead-light">
+            <tr>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Resolved by</th>
+                <th>Resolved at</th>
+                <th>Comment</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@comment.Message</td>
+                <td>
+                    <InputSelect @bind-Value="comment.Status" class="form-control">
+                        @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputSelect>
+                </td>
+                <td>
+                    <InputSelect @bind-Value="userId" class="form-control">
+                        @foreach (User user in UserService.GetAllUsers())
+                        {
+                            <option value="@user.Id">@user.Email</option>
+                        }
+                    </InputSelect>
+                </td>
+                <td>@comment.ResolvedAt</td>
+                <td>
+                    <InputText @bind-Value="comment.Message" class="form-control"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
-    <button class="btn btn-secondary mt-3" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
+    <div class="d-flex justify-content-start mt-4">
+        <button class="btn btn-primary" @onclick="() => NavigationUpdateComment(comment)">Update</button>
+        <button class="btn btn-secondary ml-3" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
+    </div>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
     <div class="alert alert-danger mt-3" role="alert">
-        <strong>Error, check again the fields!</strong> @_errorMessage
+        <strong>Error!</strong> @_errorMessage
     </div>
 }
 

@@ -8,7 +8,9 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 
-<h3>User Management</h3>
+<title>User Management</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">User Management</h1>
 
 @if (_currentUser == null)
 {
@@ -16,8 +18,8 @@
 }
 else if (_currentUser.IsAdmin)
 {
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
         <tr>
             <th>Id</th>
             <th>Name</th>
@@ -25,7 +27,7 @@ else if (_currentUser.IsAdmin)
             <th>Email</th>
             <th>Birth Date</th>
             <th>Admin</th>
-            <th>Acciones</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -41,25 +43,26 @@ else if (_currentUser.IsAdmin)
                 <td>
                     @if (_currentUser.Id != user.Id && !user.IsAdmin)
                     {
-                        <button class="btn btn-warning" @onclick="() => EditUser(user.Id)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => DeleteUser(user.Id)">Delete</button>
+                        <button class="btn btn-outline-warning btn-sm" @onclick="() => EditUser(user.Id)">Edit</button>
+                        <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => DeleteUser(user.Id)">Delete</button>
                     }
                 </td>
             </tr>
         }
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-start mt-4">
+        <button class="btn btn-primary" @onclick="NavigateToAddUser">Create New User</button>
+    </div>
 }
 else
 {
     NavigationManager.NavigateTo("/error");
 }
 
-<button class="btn btn-primary" @onclick="NavigateToAddUser">Create</button>
-
 @code {
     private List<User> users;
-
     private User _currentUser;
 
     protected override async Task OnInitializedAsync()
@@ -102,5 +105,4 @@ else
     {
         NavigationManager.NavigateTo(!_currentUser.IsAdmin ? "/error" : $"/users/edit/{id}");
     }
-
 }

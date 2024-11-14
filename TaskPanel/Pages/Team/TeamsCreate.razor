@@ -8,33 +8,35 @@
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
-<h3>Create Team</h3>
+<title>Create Team</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create Team</h1>
 
 <EditForm Model="_newTeam" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary class="text-danger"/>
 
-    <div class="form-group">
-        <label for="teamName">Team Name:</label>
+    <div class="form-group mb-3">
+        <label for="teamName" class="font-weight-bold">Team Name:</label>
         <InputText id="teamName" @bind-Value="_newTeam.Name" class="form-control" placeholder="Enter team name"/>
-        <ValidationMessage For="@(() => _newTeam.Name)" class="validation-message"/>
+        <ValidationMessage For="@(() => _newTeam.Name)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label for="taskDescription">Task Description:</label>
+    <div class="form-group mb-3">
+        <label for="taskDescription" class="font-weight-bold">Task Description:</label>
         <InputTextArea id="taskDescription" @bind-Value="_newTeam.TasksDescription" class="form-control" placeholder="Enter task description"/>
-        <ValidationMessage For="@(() => _newTeam.TasksDescription)" class="validation-message"/>
+        <ValidationMessage For="@(() => _newTeam.TasksDescription)" class="text-danger"/>
     </div>
 
-    <div class="form-group">
-        <label for="maxMembers">Max Members:</label>
+    <div class="form-group mb-3">
+        <label for="maxMembers" class="font-weight-bold">Max Members:</label>
         <InputNumber id="maxMembers" @bind-Value="_newTeam.MaxAmountOfMembers" class="form-control" placeholder="Enter max members"/>
-        <ValidationMessage For="@(() => _newTeam.MaxAmountOfMembers)" class="validation-message"/>
+        <ValidationMessage For="@(() => _newTeam.MaxAmountOfMembers)" class="text-danger"/>
     </div>
 
-    <div class="form-group mt-4">
-        <label>Team Members:</label>
-        <button type="button" class="btn btn-info" style="margin-top: 10px;" @onclick="OpenUserSelectionModal">Select Team Members</button>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Team Members:</label>
+        <button type="button" class="btn btn-info btn-sm ml-2" @onclick="OpenUserSelectionModal">Select Team Members</button>
         <ul class="list-group mt-2">
             @if (_newTeam.Users != null && _newTeam.Users.Any())
             {
@@ -46,12 +48,12 @@
             }
             else
             {
-                <li class="list-group-item">No users assigned</li>
+                <li class="list-group-item text-muted">No users assigned</li>
             }
         </ul>
     </div>
 
-    <div class="mt-4 d-flex justify-content-between">
+    <div class="mt-4 d-flex justify-content-start">
         <button type="submit" class="btn btn-primary">Create Team</button>
         <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
     </div>
@@ -59,15 +61,15 @@
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <div class="alert alert-danger mt-3">@_errorMessage</div>
+    <div class="alert alert-danger mt-4">@_errorMessage</div>
 }
 
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showUserModal ? "block" : "none");" aria-hidden="@(showUserModal ? "false" : "true")">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header bg-secondary text-white">
                 <h5 class="modal-title">Select Team Members</h5>
-                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseUserModal"></button>
+                <button type="button" class="btn-close text-white" aria-label="Close" @onclick="CloseUserModal"></button>
             </div>
             <div class="modal-body">
                 <ul class="list-group">
@@ -75,8 +77,9 @@
                     {
                         if (user.Email != AuthService.GetCurrentUser().Email)
                         {
-                            <li class="list-group-item">
-                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)"/> @user.Name (@user.Email)
+                            <li class="list-group-item d-flex align-items-center">
+                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/> 
+                                <span>@user.Name (@user.Email)</span>
                             </li>
                         }
                     }
@@ -91,7 +94,6 @@
 </div>
 
 @code {
-
     private Team _newTeam = new()
     {
         CreationDate = DateTime.Now
@@ -183,5 +185,4 @@
         _newTeam.Users = new List<User>(_selectedUsers);
         showUserModal = false;
     }
-
 }

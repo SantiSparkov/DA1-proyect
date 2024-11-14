@@ -7,25 +7,26 @@
 @inject ICommentService CommentService
 @inject NavigationManager Navigation
 
-<h3>Create Comment</h3>
+<title>Create Comment</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create Comment</h1>
 
 <EditForm Model="_newComment" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
 
-    <div class="form-group">
-        <label>Message:</label>
-        <InputText @bind-Value="_newComment.Message" class="form-control"/>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Message:</label>
+        <InputText @bind-Value="_newComment.Message" class="form-control" placeholder="Enter your comment message"/>
         <ValidationMessage For="@(() => _newComment.Message)" class="text-danger validation-message"/>
     </div>
 
-    <div class="form-group">
-        <label>Status:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Status:</label>
         <span class="form-control-plaintext">PENDING</span>
         <input type="hidden" value="PENDING"/>
-        <ValidationMessage For="@(() => _newComment.Status)" class="text-danger validation-message"/>
     </div>
 
-    <div class="mt-4">
+    <div class="d-flex justify-content-start mt-4">
         <button class="btn btn-primary" type="submit">Save</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
@@ -37,18 +38,6 @@
         <strong>Error!</strong> @_errorMessage
     </div>
 }
-
-<style>
-    .validation-message {
-        font-size: 0.875rem;
-        color: #dc3545;
-        margin-top: 5px;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-</style>
 
 @code {
     [Parameter] public int taskId { get; set; }
@@ -88,5 +77,4 @@
     {
         Navigation.NavigateTo($"/comments/{taskId}");
     }
-
 }
