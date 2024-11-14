@@ -16,11 +16,14 @@ public class PanelService : IPanelService
 
     private ITrashService _trashService;
 
-    public PanelService(IPanelRepository panelRepository, IUserService userService, ITrashService trashService)
+    private ITeamService _teamService;
+
+    public PanelService(IPanelRepository panelRepository, IUserService userService, ITrashService trashService, ITeamService teamService)
     {
         _panelRepository = panelRepository;
         _userService = userService;
         _trashService = trashService;
+        _teamService = teamService;
     }
 
     public Panel CreatePanel(Panel panel, int userId)
@@ -42,8 +45,8 @@ public class PanelService : IPanelService
 
     public List<Panel> GetAllPanelForUser(int userId)
     {
-        User user = _userService.GetUserById(userId);
-        return _panelRepository.GetAllPanels().FindAll(i => i.CreatorId == userId).ToList();
+        List<Team> teams = _teamService.TeamsForUser(userId) ?? new List<Team>();
+        return _panelRepository.GetAllPanels().FindAll(i => teams.Contains(i.Team)).ToList();
     }
 
     public Panel UpdatePanel(Panel panelUpdated)
