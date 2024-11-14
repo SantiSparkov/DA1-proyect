@@ -12,8 +12,8 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241113062329_PrimeraMigracion")]
-    partial class PrimeraMigracion
+    [Migration("20241113232009_Migrations1")]
+    partial class Migrations1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,7 @@ namespace TaskPanelLibrary.Migrations
                     b.Property<DateTime?>("ResolvedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ResolvedById")
+                    b.Property<int?>("ResolvedById")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -65,6 +65,9 @@ namespace TaskPanelLibrary.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -228,9 +231,7 @@ namespace TaskPanelLibrary.Migrations
                 {
                     b.HasOne("TaskPanelLibrary.Entity.User", "ResolvedBy")
                         .WithMany()
-                        .HasForeignKey("ResolvedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResolvedById");
 
                     b.HasOne("TaskPanelLibrary.Entity.Task", null)
                         .WithMany("CommentList")

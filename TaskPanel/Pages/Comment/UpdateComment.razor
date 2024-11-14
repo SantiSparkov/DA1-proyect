@@ -3,19 +3,20 @@
 @using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
-
-@inject IUserService UserService;
-
-@inject Panels Panels;
+@inject IUserService UserService
+@inject ITaskService TaskService
+@inject Panels Panels
+@inject AuthService AuthorizationService
+@inject NavigationManager Navigation
 
 <title>UpdateComment</title>
 
 <h1>Update comment</h1>
-
 
 <EditForm Model="@comment" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -59,8 +60,7 @@
     </table>
 
     <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
-    <button class="btn btn-secondary mt-3" type="button" @onclick="NavigationGoBack">Cancel</button>
-
+    <button class="btn btn-secondary mt-3" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(_errorMessage))
@@ -77,15 +77,16 @@
 
     private string _errorMessage;
     int userId;
+    private int panelId;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         comment = CommentService.GetCommentById(commentId);
+        var task = TaskService.GetTaskById(comment.TaskId);
+        panelId = task.PanelId;
         Panels.createTeamAndPanel();
     }
-
-    [Inject] private NavigationManager Navigation { get; set; }
 
     private void NavigationUpdateComment(Comment comment)
     {
@@ -104,7 +105,7 @@
             }
 
             CommentService.UpdateComment(comment);
-            Navigation.NavigateTo($"/comments/{comment.TaskId}");
+            Navigation.NavigateTo($"/tasks/panel/{panelId}");
         }
         catch (Exception e)
         {
@@ -114,12 +115,11 @@
 
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/comments/{comment.TaskId}");
+        Navigation.NavigateTo($"/panels/user/{AuthorizationService.GetCurrentUser().Id}");
     }
 
     private Task HandleValidSubmit()
     {
         return Task.CompletedTask;
     }
-
 }

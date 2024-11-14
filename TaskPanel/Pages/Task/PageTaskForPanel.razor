@@ -7,6 +7,7 @@
 @inject AuthService AuthService
 @inject ITaskService TaskService
 @inject NavigationManager Navigation
+@inject ITrashService TrashService
 
 <title>TaskForPanel</title>
 
@@ -25,7 +26,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted))
+    @foreach (Task task in _activeTasks)
     {
         <tr>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
@@ -55,7 +56,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.IsDeleted))
+    @foreach (Task task in _deletedTasks)
     {
         <tr>
             <td>@task.Id</td>
@@ -84,7 +85,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now && !t.IsDeleted))
+    @foreach (Task task in _expiredTasks)
     {
         <tr>
             <td>@task.Id</td>
@@ -105,59 +106,12 @@
     <button class="btn btn-primary" @onclick="() => NavigateCreateTask(panelId)">New Task</button>
 </div>
 
-@if (showModal)
-{
-    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block;" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Reactivate Task</h5>
-                    <button type="button" class="close" @onclick="CloseModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <EditForm Model="@this">
-                        <p>Update the due date for task:</p>
-                        <label for="dueDate">New Due Date:</label>
-                        <InputDate id="dueDate" @bind-Value="newDueDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control"/>
-                    </EditForm>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
-                    <button class="btn btn-primary" @onclick="ReactivateTask">Reactivate</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-@if (showWarningModal)
-{
-    <div class="modal fade show" tabindex="-1" role="dialog" style="display:block;" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Invalid Date</h5>
-                    <button type="button" class="close" @onclick="CloseWarningModal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>The selected due date cannot be in the past. Please choose a valid date.</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" @onclick="CloseWarningModal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 @code {
     [Parameter] public int panelId { get; set; }
 
-    private List<Task> tasks;
+    private List<Task> _activeTasks;
+    private List<Task> _deletedTasks;
+    private List<Task> _expiredTasks;
     private bool showModal = false;
     private bool showWarningModal = false;
     private int selectedTaskId;
@@ -165,7 +119,19 @@
 
     protected override void OnInitialized()
     {
-        tasks = TaskService.GetAllTasks(panelId);
+        LoadTasks();
+    }
+
+    private void LoadTasks()
+    {
+        var currentUser = AuthService.GetCurrentUser();
+        var trash = TrashService.GetTrashById(currentUser.TrashId);
+        
+        _activeTasks = TaskService.GetAllTasks(panelId).Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted).ToList();
+        
+        _deletedTasks = trash.TaskList.Where(t => t.PanelId == panelId && t.IsDeleted).ToList();
+        
+        _expiredTasks = TaskService.GetAllTasks(panelId).Where(t => t.DueDate < DateTime.Now && !t.IsDeleted).ToList();
     }
 
     private void NavigationComments(int taskId)
@@ -187,47 +153,20 @@
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.DeleteTask(task, currentUser);
-        tasks = TaskService.GetAllTasks(panelId);
-    }
-
-    private void OpenReactivateTaskModal(int taskId)
-    {
-        selectedTaskId = taskId;
-        newDueDate = DateTime.Now; // Asignar la fecha actual como valor predeterminado
-        showModal = true;
-    }
-
-    private void CloseModal()
-    {
-        showModal = false;
-    }
-
-    private void CloseWarningModal()
-    {
-        showWarningModal = false;
-    }
-
-    private void ReactivateTask()
-    {
-        if (newDueDate >= DateTime.Now)
-        {
-            var task = TaskService.GetTaskById(selectedTaskId);
-            task.DueDate = newDueDate;
-            TaskService.UpdateTask(task);
-            tasks = TaskService.GetAllTasks(panelId);
-            showModal = false;
-        }
-        else
-        {
-            showWarningModal = true;
-        }
+        LoadTasks();
     }
 
     private void RecoverTask(Task task)
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.RecoverTask(task, currentUser);
-        tasks = TaskService.GetAllTasks(panelId);
+        LoadTasks();
     }
 
+    private void OpenReactivateTaskModal(int taskId)
+    {
+        selectedTaskId = taskId;
+        newDueDate = DateTime.Now;
+        showModal = true;
+    }
 }

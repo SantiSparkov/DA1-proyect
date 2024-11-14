@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskPanelLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraMigracion : Migration
+    public partial class Migrations1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,6 +77,7 @@ namespace TaskPanelLibrary.Migrations
                     TeamId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatorId = table.Column<int>(type: "int", nullable: false),
                     TrashId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -133,7 +134,7 @@ namespace TaskPanelLibrary.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskId = table.Column<int>(type: "int", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResolvedById = table.Column<int>(type: "int", nullable: false),
+                    ResolvedById = table.Column<int>(type: "int", nullable: true),
                     ResolvedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -150,8 +151,7 @@ namespace TaskPanelLibrary.Migrations
                         name: "FK_Comments_Users_ResolvedById",
                         column: x => x.ResolvedById,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

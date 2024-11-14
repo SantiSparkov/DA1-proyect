@@ -50,7 +50,7 @@ public class Panels
                 Description = "Task",
                 Team = team
             };
-            _panelService.CreatePanel(newPanel);
+            _panelService.CreatePanel(newPanel, user.Id);
 
             Task newtask = new Task()
             {
