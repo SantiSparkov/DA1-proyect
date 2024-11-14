@@ -10,7 +10,7 @@ public class Task
     public int Id { get; set; }
 
     public int PanelId { get; set;}
-    
+
     [Required(ErrorMessage = "The title is required")]
     public string Title { get; set; }
     

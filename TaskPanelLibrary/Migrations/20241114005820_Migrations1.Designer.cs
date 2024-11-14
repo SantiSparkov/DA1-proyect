@@ -12,7 +12,7 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241113232009_Migrations1")]
+    [Migration("20241114005820_Migrations1")]
     partial class Migrations1
     {
         /// <inheritdoc />
