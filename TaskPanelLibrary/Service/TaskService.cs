@@ -61,18 +61,18 @@ public class TaskService : ITaskService
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
 
-        existingTask.IsDeleted = true;
-
-        if (!_trashService.IsFull(user.TrashId))
+        if (existingTask.IsDeleted)
         {
-            _trashService.AddTaskToTrash(existingTask, user.TrashId);
-            _taskRepository.UpdateTask(existingTask);
+            _trashService.RemoveTaskFromTrash(existingTask.Id, user.TrashId);
+            _taskRepository.DeleteTask(existingTask.Id);
         }
         else
         {
-            _taskRepository.DeleteTask(existingTask.Id);
-            _trashService.UpdateTrash(user.TrashId);
+            existingTask.IsDeleted = true;
+            _trashService.AddTaskToTrash(existingTask, user.TrashId);
+            _taskRepository.UpdateTask(existingTask);
         }
+        
 
         return existingTask;
     }

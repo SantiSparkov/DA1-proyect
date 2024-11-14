@@ -9,11 +9,13 @@
 @inject NavigationManager Navigation
 @inject ITrashService TrashService
 
-<h1>Panels for User</h1>
+<title>Panels for User</title>
 
-<h3>Active Panels</h3>
-<table class="table table-hover table-striped">
-    <thead>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Panels for User</h1>
+
+<h3 class="mt-5 text-success">Active Panels</h3>
+<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+    <thead class="thead-light">
     <tr>
         <th>Team Id</th>
         <th>Name</th>
@@ -31,8 +33,8 @@
             <td class="text-center">
                 @if (isAdmin)
                 {
-                    <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
-                    <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                    <button class="btn btn-outline-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                    <button class="btn btn-outline-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
                 }
             </td>
         </tr>
@@ -40,11 +42,14 @@
     </tbody>
 </table>
 
-<button class="btn btn-primary mt-3" @onclick="CreateNewPanel">New Panel</button>
+<div class="d-flex justify-content-start mt-4">
+    <button class="btn btn-primary" @onclick="CreateNewPanel">New Panel</button>
+</div>
 
-<h3 class="mt-5">Deleted Panels</h3>
-<table class="table table-hover table-striped">
-    <thead>
+<!-- Deleted Panels Section -->
+<h3 class="mt-5 text-danger">Deleted Panels</h3>
+<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+    <thead class="thead-light">
     <tr>
         <th>Team Id</th>
         <th>Name</th>
@@ -62,7 +67,8 @@
             <td class="text-center">
                 @if (isAdmin)
                 {
-                    <button class="btn btn-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+                    <button class="btn btn-outline-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+                    <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
                 }
             </td>
         </tr>
@@ -71,7 +77,6 @@
 </table>
 
 @code {
-
     [Parameter] public int userId { get; set; }
 
     private List<Panel> _panels;
@@ -116,10 +121,17 @@
 
     private void ConfirmDeletePanel(int panelId)
     {
-        if (isAdmin)
+        try
         {
-            PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
-            LoadPanels();
+            if (isAdmin)
+            {
+                PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+                LoadPanels();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error deleting panel: " + ex.Message);
         }
     }
 
@@ -138,5 +150,4 @@
             Console.WriteLine("Error restoring panel: " + ex.Message);
         }
     }
-
 }

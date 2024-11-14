@@ -67,7 +67,31 @@ public class TrashService : ITrashService
         
         return task;
     }
+    
+    public void RemoveTaskFromTrash(int taskId, int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        var task = trash.TaskList.FirstOrDefault(t => t.Id == taskId);
+        if (task != null)
+        {
+            trash.TaskList.Remove(task);
+            trash.Elements = Count(trashId);
+            _trashSqlRepository.UpdateTrash(trash);
+        }
+    }
 
+    public void RemovePanelFromTrash(int panelId, int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        var panel = trash.PanelList.FirstOrDefault(p => p.Id == panelId);
+        if (panel != null)
+        {
+            trash.PanelList.Remove(panel);
+            trash.Elements = Count(trashId);
+            _trashSqlRepository.UpdateTrash(trash);
+        }
+    }
+    
     public Panel RecoverPanelFromTrash(int panelId, int trashId)
     {
         var trash = _trashSqlRepository.GetTrashById(trashId);

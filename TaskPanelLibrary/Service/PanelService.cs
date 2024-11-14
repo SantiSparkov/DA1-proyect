@@ -65,21 +65,21 @@ public class PanelService : IPanelService
             throw new PanelNotValidException($"User is not admin, userId: {user.Id}");
         }
 
-        panel.IsDeleted = true;
-
-        if (!_trashService.IsFull(user.TrashId))
+        if (panel.IsDeleted)
         {
-            _trashService.AddPanelToTrash(panel, user.TrashId);
-            _panelRepository.UpdatePanel(panel);
+            _trashService.RemovePanelFromTrash(panelId, user.TrashId);
+            _panelRepository.DeletePanel(panelId);
         }
         else
         {
-            _panelRepository.DeletePanel(panelId);
-            _trashService.UpdateTrash(user.TrashId);
+            panel.IsDeleted = true;
+            _trashService.AddPanelToTrash(panel, user.TrashId);
+            _panelRepository.UpdatePanel(panel);
         }
 
         return panel;
     }
+
     
     public Panel RestorePanel(int panelId, User user)
     {
@@ -99,8 +99,7 @@ public class PanelService : IPanelService
 
         return panel;
     }
-
-
+    
     public Panel GetPanelById(int panelId)
     {
         return _panelRepository.GetPanelById(panelId);
