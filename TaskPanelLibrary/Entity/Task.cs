@@ -25,6 +25,10 @@ public class Task
     
     public bool IsDeleted { get; set; } = false;
     
+    public int EstimatioHour { get; set; }
+
+    public int InvertedEstimateHour { get; set; }
+    
     public Task()
     {
         CommentList = new List<Comment>();

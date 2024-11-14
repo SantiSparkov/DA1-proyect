@@ -47,6 +47,11 @@
         <InputDate id="taskDueDate" @bind-Value="task.DueDate" class="form-control"/>
         <ValidationMessage For="@(() => task.DueDate)" class="text-danger validation-message"/>
     </div>
+    
+    <div class="form-group">
+                <label for="taskDueDate">Inverted estimate hour:</label>
+                <InputNumber id="taskInvertedEstimate" @bind-Value="task.InvertedEstimateHour" class="form-control"/>
+        </div>
 
     <div class="mt-4">
         <button class="btn btn-primary" type="submit">Update</button>
@@ -59,13 +64,19 @@
 
     Task task;
 
+    int estimationHour;
+    
     protected override void OnInitialized()
     {
         task = TaskService.GetTaskById(taskId);
+        estimationHour = task.InvertedEstimateHour;
+        task.InvertedEstimateHour = 0;
     }
 
     private void NavigationUpdateTask()
     {
+        estimationHour += task.InvertedEstimateHour;
+        task.InvertedEstimateHour = estimationHour;
         TaskService.UpdateTask(task);
         Navigation.NavigateTo($"/tasks/panel/{task.PanelId}");
     }

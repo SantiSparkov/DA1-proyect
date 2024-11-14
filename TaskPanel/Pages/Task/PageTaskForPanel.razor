@@ -22,6 +22,8 @@
         <th>Description</th>
         <th>Priority</th>
         <th>Due Date</th>
+        <th>Estimation hour</th>
+        <th>Inverted Estimate Hour</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -34,6 +36,8 @@
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.EstimatioHour</td>
+            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@(task.InvertedEstimateHour - task.EstimatioHour)</td>
             <td>
                 <button class="btn btn-outline-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
                 <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>

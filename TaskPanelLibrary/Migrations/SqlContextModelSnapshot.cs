@@ -107,6 +107,12 @@ namespace TaskPanelLibrary.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("EstimatioHour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvertedEstimateHour")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
