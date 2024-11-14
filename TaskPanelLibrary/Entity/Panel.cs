@@ -15,9 +15,11 @@ public class Panel
     [Required(ErrorMessage = "The description is required")]
     public string Description { get; set; }
     
-    public List<Task> Tasks { get; set; }
-    
     public bool IsDeleted { get; set; } = false;
     
     public int CreatorId { get; set; }
+    
+    public List<Task> Tasks { get; set; }
+    
+    public List<Epic> Epicas { get; set; }
 }

@@ -32,7 +32,7 @@ public class TaskService : ITaskService
         return task;
     }
 
-    public List<Task> GetAllTasks(int panelId)
+    public List<Task> GetTasksFromPanel(int panelId)
     {
         try
         {

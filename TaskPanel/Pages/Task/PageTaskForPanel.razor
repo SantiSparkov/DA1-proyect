@@ -167,7 +167,7 @@
 
     protected override void OnInitialized()
     {
-        tasks = TaskService.GetAllTasks(panelId);
+        tasks = TaskService.GetTasksFromPanel(panelId);
     }
 
     private void NavigationComments(int taskId)
@@ -189,7 +189,7 @@
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.DeleteTask(task, currentUser);
-        tasks = TaskService.GetAllTasks(panelId);
+        tasks = TaskService.GetTasksFromPanel(panelId);
     }
 
     private void OpenReactivateTaskModal(int taskId)
@@ -216,7 +216,7 @@
             var task = TaskService.GetTaskById(selectedTaskId);
             task.DueDate = newDueDate;
             TaskService.UpdateTask(task);
-            tasks = TaskService.GetAllTasks(panelId);
+            tasks = TaskService.GetTasksFromPanel(panelId);
             showModal = false;
         }
         else
@@ -229,7 +229,7 @@
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.RecoverTask(task, currentUser);
-        tasks = TaskService.GetAllTasks(panelId);
+        tasks = TaskService.GetTasksFromPanel(panelId);
     }
 
 }

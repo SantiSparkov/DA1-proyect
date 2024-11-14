@@ -60,7 +60,7 @@ public class ImportCsvService
                 continue;
             }
 
-            if (!Enum.TryParse<ETaskPriority>(columns[4], true, out var priority))
+            if (!Enum.TryParse<EPriority>(columns[4], true, out var priority))
             {
                 LogError(logFile, line, "Invalid priority value", userName);
                 continue;

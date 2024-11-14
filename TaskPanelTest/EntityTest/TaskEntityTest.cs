@@ -17,7 +17,7 @@ public class TaskEntityTest
             Title = "Title",
             Description = "Description",
             DueDate = new DateTime(2008, 6, 1, 7, 47, 0),
-            Priority = ETaskPriority.HIGH,
+            Priority = EPriority.HIGH,
             CommentList = new List<Comment>(),
         };
         
@@ -26,7 +26,7 @@ public class TaskEntityTest
         Assert.AreEqual("Title", task.Title);
         Assert.AreEqual("Description", task.Description);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), task.DueDate);
-        Assert.AreEqual(ETaskPriority.HIGH, task.Priority);
+        Assert.AreEqual(EPriority.HIGH, task.Priority);
         Assert.IsNotNull(task.CommentList);
 
     }

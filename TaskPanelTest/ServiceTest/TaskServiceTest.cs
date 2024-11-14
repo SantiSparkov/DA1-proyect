@@ -52,7 +52,7 @@ public class TaskServiceTest
             PanelId = 1,
             Title = "Title test",
             Description = "Description test",
-            Priority = ETaskPriority.LOW,
+            Priority = EPriority.LOW,
             DueDate = new DateTime(DateTime.Now.Year+1, DateTime.Now.Month, DateTime.Now.Day)
         };
     }
@@ -92,13 +92,13 @@ public class TaskServiceTest
         
         // Act
         createdTask.Description = "Description test";
-        createdTask.Priority = ETaskPriority.LOW;
+        createdTask.Priority = EPriority.LOW;
         createdTask.Title = "Title test";
         
         // Assert
         Assert.IsNotNull(createdTask, "The task is not created");
         Assert.AreEqual("Description test", createdTask.Description, "The task description is not stored correctly");
-        Assert.AreEqual(ETaskPriority.LOW, createdTask.Priority, "The task priority is not stored correctly");
+        Assert.AreEqual(EPriority.LOW, createdTask.Priority, "The task priority is not stored correctly");
         Assert.AreEqual("Title test", createdTask.Title, "The task title is not stored correctly");
     }
 
@@ -124,14 +124,14 @@ public class TaskServiceTest
         
         // Act
         createdTask.Description = "Description test updated";
-        createdTask.Priority = ETaskPriority.HIGH;
+        createdTask.Priority = EPriority.HIGH;
         createdTask.Title = "Title test updated";
         var updatedTask = _taskService.UpdateTask(createdTask);
         
         // Assert
         Assert.IsNotNull(updatedTask, "The task is not updated");
         Assert.AreEqual("Description test updated", updatedTask.Description, "The task description is not updated correctly");
-        Assert.AreEqual(ETaskPriority.HIGH, updatedTask.Priority, "The task priority is not updated correctly");
+        Assert.AreEqual(EPriority.HIGH, updatedTask.Priority, "The task priority is not updated correctly");
         Assert.AreEqual("Title test updated", updatedTask.Title, "The task title is not updated correctly");
     }
     

@@ -33,7 +33,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         
         // Act
@@ -55,7 +55,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         _taskRepository.AddTask(task);
         
@@ -77,7 +77,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         var task2 = new Task
         {
@@ -85,7 +85,7 @@ public class TaskRepositoryTests
             Title = "Task 2",
             Description = "Description 2",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.MEDIUM
+            Priority = EPriority.MEDIUM
         };
         _taskRepository.AddTask(task1);
         _taskRepository.AddTask(task2);
@@ -107,7 +107,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         
         var task2 = new Task()
@@ -116,7 +116,7 @@ public class TaskRepositoryTests
             Title = "Task 2",
             Description = "Description 2",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.MEDIUM
+            Priority = EPriority.MEDIUM
         };
         
         _taskRepository.AddTask(task);
@@ -139,7 +139,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         
         var addTask = _taskRepository.AddTask(task);
@@ -171,7 +171,7 @@ public class TaskRepositoryTests
             Title = "Task 1",
             Description = "Description 1",
             DueDate = DateTime.Now,
-            Priority = ETaskPriority.HIGH
+            Priority = EPriority.HIGH
         };
         
         // Act & Assert

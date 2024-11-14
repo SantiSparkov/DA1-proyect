@@ -21,9 +21,11 @@ public class Task
     public DateTime DueDate { get; set; }
     
     [Required(ErrorMessage = "Priority is required")]
-    public ETaskPriority Priority { get; set; }
+    public EPriority Priority { get; set; }
     
     public bool IsDeleted { get; set; } = false;
+    
+    public int? EpicId { get; set; }
     
     public Task()
     {

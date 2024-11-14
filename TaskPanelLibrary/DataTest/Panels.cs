@@ -57,7 +57,7 @@ public class Panels
                 Title = "Title task",
                 Description = "description task",
                 PanelId = newPanel.Id,
-                Priority = ETaskPriority.LOW
+                Priority = EPriority.LOW
             };
             _taskService.CreateTask(newtask);
 

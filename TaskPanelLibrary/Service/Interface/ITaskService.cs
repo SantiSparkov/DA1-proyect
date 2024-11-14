@@ -7,7 +7,7 @@ public interface ITaskService
 {
     public Task GetTaskById(int id);
     
-    public List<Task> GetAllTasks(int panelId);
+    public List<Task> GetTasksFromPanel(int panelId);
     
     public Task CreateTask(Task task);
     

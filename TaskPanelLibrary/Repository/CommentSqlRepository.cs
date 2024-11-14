@@ -1,12 +1,9 @@
-using Microsoft.Data.SqlClient;
 using TaskPanelLibrary.Config;
-
-namespace TaskPanelLibrary.Repository;
-
 using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository.Interface;
+
+namespace TaskPanelLibrary.Repository;
 
 public class CommentSqlRepository : ICommentRepository
 {
