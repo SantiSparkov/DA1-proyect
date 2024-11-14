@@ -21,5 +21,9 @@ public interface ITrashService
     
     public void UpdateTrash(int trashId);
     
+    public void RemoveTaskFromTrash(int taskId, int trashId);
+    
+    public void RemovePanelFromTrash(int panelId, int trashId);
+    
     public Trash GetTrashById(int trashId);
 }

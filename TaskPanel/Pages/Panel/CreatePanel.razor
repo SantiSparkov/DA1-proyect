@@ -8,29 +8,29 @@
 @inject NavigationManager Navigation
 @inject AuthService AuthService
 
-<title>CreatePanel</title>
+<title>Create Panel</title>
 
-<h1>New panel</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create Panel</h1>
 
-<EditForm Model="_panel" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="_panel" OnValidSubmit="HandleValidSubmit" class="shadow p-4 rounded bg-light">
     <DataAnnotationsValidator/>
 
-    <div class="form-group">
-        <label>Name:</label>
-        <InputText @bind-Value="_panel.Name" class="form-control"/>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Name:</label>
+        <InputText @bind-Value="_panel.Name" class="form-control" placeholder="Enter panel name"/>
         <ValidationMessage For="@(() => _panel.Name)" class="text-danger validation-message"/>
     </div>
 
-    <div class="form-group">
-        <label>Description:</label>
-        <InputText @bind-Value="_panel.Description" class="form-control"/>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Description:</label>
+        <InputText @bind-Value="_panel.Description" class="form-control" placeholder="Enter panel description"/>
         <ValidationMessage For="@(() => _panel.Description)" class="text-danger validation-message"/>
     </div>
 
     @if (!HasTeamSelected())
     {
-        <div class="form-group">
-            <label for="teamSelect">Select Team:</label>
+        <div class="form-group mb-3">
+            <label for="teamSelect" class="font-weight-bold">Select Team:</label>
             <InputSelect @bind-Value="selectedTeamId" class="form-control">
                 <option value="" disabled selected>Select a team...</option>
                 @foreach (var team in _availableTeams)
@@ -42,7 +42,7 @@
         </div>
     }
 
-    <div class="mt-4">
+    <div class="d-flex justify-content-start mt-4">
         <button class="btn btn-primary" type="submit" @onclick="SavePanel">Create Panel</button>
         <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
@@ -92,7 +92,7 @@
                 _errorMessage = "Please select a team";
                 return;
             }
-            
+
             if (!HasTeamSelected())
             {
                 _panel.Team = TeamService.GetTeamById(selectedTeamId);
@@ -113,7 +113,7 @@
     }
 
     private Task HandleValidSubmit(EditContext arg)
-    {   
+    {
         return Task.CompletedTask;
     }
 

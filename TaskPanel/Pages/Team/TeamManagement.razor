@@ -7,12 +7,14 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 
-<h3>Teams</h3>
+<title>Teams</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Teams</h1>
 
 @if (_teams != null && _teams.Any())
 {
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
         <tr>
             <th>Id</th>
             <th>Name</th>
@@ -35,39 +37,38 @@
                 <td>
                     @if (isAdmin)
                     {
-                        <button class="btn btn-warning" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
+                        <button class="btn btn-outline-warning btn-sm" @onclick="() => EditTeam(team.Id)" @onclick:stopPropagation>Edit</button>
                     }
                 </td>
                 <td>
-                    <button class="btn btn-info" @onclick="() => ShowMembers(team)" @onclick:stopPropagation>View Members</button>
+                    <button class="btn btn-outline-info btn-sm" @onclick="() => ShowMembers(team)" @onclick:stopPropagation>View Members</button>
                 </td>
             </tr>
         }
-
         </tbody>
     </table>
 }
 else
 {
-    <p>No teams available. Please create one.</p>
+    <p class="text-muted">No teams available. Please create one.</p>
 }
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <div class="alert alert-danger">@_errorMessage</div>
+    <div class="alert alert-danger mt-4">@_errorMessage</div>
 }
 
 @if (isAdmin)
 {
-    <button class="btn btn-primary mt-3" @onclick="NavigateToCreateTeam">Create New Team</button>
+    <button class="btn btn-primary mt-4" @onclick="NavigateToCreateTeam">Create New Team</button>
 }
 
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showModal ? "block" : "none");" aria-hidden="@(showModal ? "false" : "true")">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header bg-secondary text-white">
                 <h5 class="modal-title">Team Members</h5>
-                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseModal"></button>
+                <button type="button" class="btn-close text-white" aria-label="Close" @onclick="CloseModal"></button>
             </div>
             <div class="modal-body">
                 @if (selectedTeam != null && selectedTeam.Users != null && selectedTeam.Users.Any())
@@ -81,7 +82,7 @@ else
                 }
                 else
                 {
-                    <p>No users assigned to this team.</p>
+                    <p class="text-muted">No users assigned to this team.</p>
                 }
             </div>
             <div class="modal-footer">
@@ -93,7 +94,7 @@ else
 
 <style>
     .selectable-row:hover {
-        background-color: #f0f0f0;
+        background-color: #f9f9f9;
         cursor: pointer;
     }
 </style>
