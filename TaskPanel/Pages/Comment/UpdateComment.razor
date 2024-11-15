@@ -12,6 +12,7 @@
 @inject ITaskService TaskService
 @inject Panels Panels
 @inject AuthService AuthorizationService
+@inject INotificationService NotificationService
 @inject NavigationManager Navigation
 
 <title>Update Comment</title>
@@ -101,6 +102,7 @@
                 this.comment.ResolvedAt = DateTime.Now;
                 User user = UserService.GetUserById(userId);
                 comment.ResolvedBy = user;
+                NotificationService.CreateNotification(this.comment.Id, this.comment.Message);
             }
             else
             {
