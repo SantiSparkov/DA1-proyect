@@ -28,7 +28,7 @@
     <div class="form-group mb-3">
         <label class="font-weight-bold" for="taskPriority">Priority:</label>
         <InputSelect id="taskPriority" @bind-Value="task.Priority" class="form-control">
-            @foreach (var priority in Enum.GetValues(typeof(ETaskPriority)))
+            @foreach (var priority in Enum.GetValues(typeof(EPriority)))
             {
                 <option value="@priority">@priority</option>
             }
@@ -55,7 +55,7 @@
 
     <div class="mt-4">
         <button class="btn btn-primary" type="submit">Update</button>
-        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+        <button class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
 

@@ -41,7 +41,7 @@ public class CommentServiceTest
             Id = 1,
             PanelId = 1,
             Description = "Description test",
-            Priority = ETaskPriority.LOW
+            Priority = EPriority.LOW
 
         };
         _user = new User()

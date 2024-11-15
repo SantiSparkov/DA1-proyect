@@ -7,7 +7,7 @@ public interface ITaskService
 {
     public Task GetTaskById(int id);
     
-    public List<Task> GetAllTasks(int panelId);
+    public List<Task> GetTasksFromPanel(int panelId);
     
     public Task CreateTask(Task task);
     
@@ -16,4 +16,8 @@ public interface ITaskService
     public Task DeleteTask(Task task, User user);
     
     public Task RecoverTask(Task task, User user);
+    
+    public List<Task> GetAllTasks();
+    
+    public List<Task> GetTasksFromEpic(int epicId);
 }

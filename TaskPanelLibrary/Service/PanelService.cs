@@ -1,10 +1,7 @@
 using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Panel;
-using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
-using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelLibrary.Service;
 
@@ -55,6 +52,7 @@ public class PanelService : IPanelService
         }
         return panelForUser;
     }
+
 
     public Panel UpdatePanel(Panel panelUpdated)
     {

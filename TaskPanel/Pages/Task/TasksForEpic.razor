@@ -1,6 +1,5 @@
-@page "/tasks/panel/{panelId:int}"
+@page "/tasks/epic/{epicId:int}"
 
-@using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @using Task = TaskPanelLibrary.Entity.Task
@@ -8,11 +7,11 @@
 @inject AuthService AuthService
 @inject ITaskService TaskService
 @inject NavigationManager Navigation
-@inject ITrashService TrashService
+@inject IEpicService EpicService
 
-<title>TaskForPanel</title>
+<title>Tasks for Epic</title>
 
-<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Tasks for Panel</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Tasks for Epic</h1>
 
 <h3 class="mt-5 text-success">Active Tasks</h3>
 <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
@@ -23,8 +22,6 @@
         <th>Description</th>
         <th>Priority</th>
         <th>Due Date</th>
-        <th>Estimation hour</th>
-        <th>Inverted Estimate Hour</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -37,8 +34,6 @@
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
             <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.EstimatioHour</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@(task.InvertedEstimateHour - task.EstimatioHour)</td>
             <td>
                 <button class="btn btn-outline-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
                 <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
@@ -108,9 +103,8 @@
     </tbody>
 </table>
 
-<div class="d-flex justify-content-start mt-3">
-    <button class="btn btn-primary" @onclick="() => NavigateCreateTask(panelId)">New Task</button>
-    <button class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" type="button" @onclick="NavigationGoBack">Back to Panels</button>
+<div class="d-flex justify-content-start mt-4">
+    <button class="btn btn-danger text-white ml-3" style="cursor: pointer;" type="button" @onclick="NavigationGoBack">Back to Epics</button>
 </div>
 
 @if (showModal)
@@ -163,17 +157,20 @@
 }
 
 @code {
-    [Parameter] public int panelId { get; set; }
+    [Parameter] public int epicId { get; set; }
 
     private List<Task> tasks;
     private bool showModal = false;
     private bool showWarningModal = false;
     private int selectedTaskId;
     private DateTime newDueDate;
+    private int panelId;
 
     protected override void OnInitialized()
     {
-        tasks = TaskService.GetTasksFromPanel(panelId);
+        tasks = TaskService.GetTasksFromEpic(epicId);
+        var epic = EpicService.GetEpicById(epicId);
+        panelId = epic.PanelId;
     }
 
     private void NavigationComments(int taskId)
@@ -186,16 +183,11 @@
         Navigation.NavigateTo($"/task/update/{taskId}");
     }
 
-    private void NavigateCreateTask(int panelId)
-    {
-        Navigation.NavigateTo($"/task/create/{panelId}");
-    }
-
     private void ConfirmDeleteTask(Task task)
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.DeleteTask(task, currentUser);
-        tasks = TaskService.GetTasksFromPanel(panelId);
+        tasks = TaskService.GetTasksFromEpic(epicId);
     }
 
     private void OpenReactivateTaskModal(int taskId)
@@ -222,7 +214,7 @@
             var task = TaskService.GetTaskById(selectedTaskId);
             task.DueDate = newDueDate;
             TaskService.UpdateTask(task);
-            tasks = TaskService.GetTasksFromPanel(panelId);
+            tasks = TaskService.GetTasksFromEpic(epicId);
             showModal = false;
         }
         else
@@ -231,16 +223,15 @@
         }
     }
 
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/EpicForPanel/{panelId}");
+    }
+
     private void RecoverTask(Task task)
     {
         var currentUser = AuthService.GetCurrentUser();
         TaskService.RecoverTask(task, currentUser);
-        tasks = TaskService.GetTasksFromPanel(panelId);
+        tasks = TaskService.GetTasksFromEpic(epicId);
     }
-    
-    private void NavigationGoBack()
-    {
-        Navigation.NavigateTo($"/panels/user/{AuthService.GetCurrentUser().Id}");
-    }
-
 }

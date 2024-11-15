@@ -23,6 +23,8 @@ public class SqlContext : DbContext
     
     public DbSet<Comment> Comments { get; set; }
     
+    public DbSet<Epic> Epics { get; set; }
+
     public DbSet<Notification> Notifications { get; set; }
 
 }

@@ -32,11 +32,23 @@ public class TaskService : ITaskService
         return task;
     }
 
-    public List<Task> GetAllTasks(int panelId)
+    public List<Task> GetTasksFromPanel(int panelId)
     {
         try
         {
             return _taskRepository.GetAllTasks().Where(i => i.PanelId == panelId).ToList();
+        }
+        catch (ArgumentException e)
+        {
+            return new List<Task>();
+        }
+    }
+    
+    public List<Task> GetTasksFromEpic(int epicId)
+    {
+        try
+        {
+            return _taskRepository.GetAllTasks().Where(i => i.EpicId == epicId).ToList();
         }
         catch (ArgumentException e)
         {
@@ -89,6 +101,11 @@ public class TaskService : ITaskService
         }
         
         return existingTask;
+    }
+
+    public List<Task> GetAllTasks()
+    {
+        return _taskRepository.GetAllTasks();
     }
 
     private bool IsValidTask(Task? task)

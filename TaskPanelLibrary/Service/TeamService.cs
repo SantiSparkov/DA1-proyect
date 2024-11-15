@@ -97,8 +97,7 @@ public class TeamService : ITeamService
 
         return result;
     }
-
-
+    
     private bool CanUpdateTeam(User updater, Team updatedTeam)
     {
         Team existingTeam = _teamRepository.GetTeamById(updatedTeam.Id);
