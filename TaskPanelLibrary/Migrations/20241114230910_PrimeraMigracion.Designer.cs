@@ -12,7 +12,7 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241114050114_PrimeraMigracion")]
+    [Migration("20241114230910_PrimeraMigracion")]
     partial class PrimeraMigracion
     {
         /// <inheritdoc />
@@ -56,6 +56,38 @@ namespace TaskPanelLibrary.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("TaskPanelLibrary.Entity.Epic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DueDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PanelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PanelId");
+
+                    b.ToTable("Epics");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
@@ -110,6 +142,9 @@ namespace TaskPanelLibrary.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("EpicId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -127,6 +162,8 @@ namespace TaskPanelLibrary.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EpicId");
 
                     b.HasIndex("PanelId");
 
@@ -242,6 +279,15 @@ namespace TaskPanelLibrary.Migrations
                     b.Navigation("ResolvedBy");
                 });
 
+            modelBuilder.Entity("TaskPanelLibrary.Entity.Epic", b =>
+                {
+                    b.HasOne("TaskPanelLibrary.Entity.Panel", null)
+                        .WithMany("Epicas")
+                        .HasForeignKey("PanelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
                 {
                     b.HasOne("TaskPanelLibrary.Entity.Team", "Team")
@@ -259,6 +305,10 @@ namespace TaskPanelLibrary.Migrations
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Task", b =>
                 {
+                    b.HasOne("TaskPanelLibrary.Entity.Epic", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("EpicId");
+
                     b.HasOne("TaskPanelLibrary.Entity.Panel", null)
                         .WithMany("Tasks")
                         .HasForeignKey("PanelId")
@@ -277,8 +327,15 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("TeamId");
                 });
 
+            modelBuilder.Entity("TaskPanelLibrary.Entity.Epic", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
                 {
+                    b.Navigation("Epicas");
+
                     b.Navigation("Tasks");
                 });
 
