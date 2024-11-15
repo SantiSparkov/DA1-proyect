@@ -25,4 +25,6 @@ public class User
     public bool IsAdmin { get; set; }
     
     public int TrashId { get; set; }
+    
+    public ICollection<Team> Teams { get; set; }
 }

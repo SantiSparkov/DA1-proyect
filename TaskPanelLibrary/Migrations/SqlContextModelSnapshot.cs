@@ -244,17 +244,27 @@ namespace TaskPanelLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TrashId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TeamUser", b =>
+                {
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TeamsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TeamUser");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Comment", b =>
@@ -319,11 +329,19 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("TrashId");
                 });
 
-            modelBuilder.Entity("TaskPanelLibrary.Entity.User", b =>
+            modelBuilder.Entity("TeamUser", b =>
                 {
                     b.HasOne("TaskPanelLibrary.Entity.Team", null)
-                        .WithMany("Users")
-                        .HasForeignKey("TeamId");
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskPanelLibrary.Entity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
@@ -339,8 +357,6 @@ namespace TaskPanelLibrary.Migrations
             modelBuilder.Entity("TaskPanelLibrary.Entity.Team", b =>
                 {
                     b.Navigation("Panels");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Trash", b =>
