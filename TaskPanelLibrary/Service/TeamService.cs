@@ -84,6 +84,7 @@ public class TeamService : ITeamService
     public List<Team> TeamsForUser(int userId)
     {
         List<Team> result = new List<Team>();
+        List<User> users = _userService.GetAllUsers();
         List<Team> teams = _teamRepository.GetAllTeams();
     
         foreach (Team team in teams)

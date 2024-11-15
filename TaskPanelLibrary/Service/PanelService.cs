@@ -46,7 +46,14 @@ public class PanelService : IPanelService
     public List<Panel> GetAllPanelForUser(int userId)
     {
         List<Team> teams = _teamService.TeamsForUser(userId) ?? new List<Team>();
-        return _panelRepository.GetAllPanels().FindAll(i => teams.Contains(i.Team)).ToList();
+        List<Panel> panels = _panelRepository.GetAllPanels();
+        List<Panel> panelForUser = new List<Panel>();
+
+        foreach (Team team in teams)
+        {
+            panelForUser.AddRange(team.Panels);
+        }
+        return panelForUser;
     }
 
     public Panel UpdatePanel(Panel panelUpdated)
