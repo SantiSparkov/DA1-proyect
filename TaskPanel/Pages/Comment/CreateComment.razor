@@ -2,10 +2,12 @@
 @using TaskPanelLibrary.Service.Interface
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service
 @using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
 
 <h3>Create Comment</h3>
 
@@ -62,7 +64,9 @@
         _newComment = new Comment
         {
             TaskId = taskId,
-            Status = EStatusComment.PENDING
+            Status = EStatusComment.PENDING,
+            CreatedBy = AuthService.GetCurrentUser(),
+            CreatedById = AuthService.GetCurrentUser().Id
         };
     }
 
