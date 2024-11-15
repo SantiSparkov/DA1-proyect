@@ -12,6 +12,10 @@ public class Comment
     [Required(ErrorMessage = "Message is required")]
     public string Message { get; set; }
     
+    public int CreatedById { get; set; }
+    
+    public User? CreatedBy { get; set; }
+    
     public User? ResolvedBy { get; set; }
     
     public DateTime? ResolvedAt { get; set; }

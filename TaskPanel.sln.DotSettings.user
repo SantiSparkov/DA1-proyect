@@ -16,6 +16,11 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=38099f10_002Df58f_002D4caa_002Dae0d_002D820eaee1a8ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;TaskPanelTest&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/spark/Desktop/ORT/Diseno 1/291719_270092_251817/TaskPanelTest" Presentation="&amp;lt;TaskPanelTest&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d28979af_002D5ee9_002D4d73_002D95db_002D5bee7598c5de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NotificationSqlRepositoryTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.RepositoryTest.SqlRepositories.NotificationSqlRepositoryTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	

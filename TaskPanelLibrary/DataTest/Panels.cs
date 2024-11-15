@@ -63,7 +63,11 @@ public class Panels
 
             Comment newComment = new Comment()
             {
-                Message = "Comment test", Status = EStatusComment.PENDING, TaskId = newtask.Id
+                Message = "Comment test", 
+                Status = EStatusComment.PENDING, 
+                TaskId = newtask.Id,
+                CreatedBy = _authService.GetCurrentUser(),
+                CreatedById = _authService.GetCurrentUser().Id
             };
             _commentService.CreateComment(newComment);
         }

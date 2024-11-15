@@ -1,0 +1,55 @@
+﻿@page "/notifications"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
+@inject INotificationService NotificationService
+@inject AuthService AuthService
+
+<PageTitle>Notifications</PageTitle>
+
+<h1>Notifications</h1>
+
+@if (notifications != null && notifications.Any())
+{
+    <ul class="list-group">
+        @foreach (var notification in notifications)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@notification.Message</span>
+                <button class="btn btn-danger" @onclick="() => DeleteNotification(notification.Id)">
+                    Delete
+                </button>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No notifications available.</p>
+}
+
+@code {
+    private List<Notification> notifications = new List<Notification>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUser = AuthService.GetCurrentUser();
+        if (currentUser != null)
+        {
+            notifications = NotificationService.GetNotifications(currentUser.Id) ?? new List<Notification>();
+        }
+    }
+
+    private async Task DeleteNotification(int notificationId)
+    {
+        NotificationService.DeleteNotification(notificationId);
+        
+        var currentUser = AuthService.GetCurrentUser();
+        if (currentUser != null)
+        {
+            notifications = NotificationService.GetNotifications(currentUser.Id) ?? new List<Notification>();
+        }
+    }
+}
