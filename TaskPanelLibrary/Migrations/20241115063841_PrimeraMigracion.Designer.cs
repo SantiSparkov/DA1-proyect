@@ -12,7 +12,7 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241114230910_PrimeraMigracion")]
+    [Migration("20241115063841_PrimeraMigracion")]
     partial class PrimeraMigracion
     {
         /// <inheritdoc />

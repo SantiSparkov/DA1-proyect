@@ -1,9 +1,11 @@
 @page "/panel/update/{panelId:int}"
 
 @using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @inject IPanelService PanelService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Update Panel</h1>
 
@@ -23,16 +25,18 @@
         <ValidationMessage For="@(() => panel.Description)" class="text-danger"/>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
+    <div class="d-flex justify-content-start mt-4">
         <button class="btn btn-primary mr-3" type="submit">Update</button>
-        <button class="btn btn-secondary" type="button" @onclick="NavigationGoBack">Cancel</button>
+        <button class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
+
 </EditForm>
 
 @code {
     [Parameter] public int panelId { get; set; }
 
     private Panel panel;
+    private User user = new User();
 
     protected override void OnInitialized()
     {
@@ -42,12 +46,14 @@
     private void NavigationUpdatePanel()
     {
         PanelService.UpdatePanel(panel);
-        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
+        user = AuthService.GetCurrentUser();
+        Navigation.NavigateTo($"/panels/user/{user.Id}");
     }
 
     private void NavigationGoBack()
     {
-        Navigation.NavigateTo($"/panels/teams/{panel.Team.Id}");
+        user = AuthService.GetCurrentUser();
+        Navigation.NavigateTo($"/panels/user/{user.Id}");
     }
 
 }

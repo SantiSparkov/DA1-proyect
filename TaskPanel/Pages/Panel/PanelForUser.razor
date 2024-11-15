@@ -24,7 +24,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var panel in _panels.Where(p => !p.IsDeleted))
+    @foreach (var panel in _panels)
     {
         <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
             <td>@panel.Team.Id</td>
@@ -35,16 +35,13 @@
                 {
                     <button class="btn btn-outline-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
                     <button class="btn btn-outline-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                    <button class="btn btn-outline-info btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => NavigateToEpics(panel.Id)">Epics</button>
                 }
             </td>
         </tr>
     }
     </tbody>
 </table>
-
-<div class="d-flex justify-content-start mt-4">
-    <button class="btn btn-primary" @onclick="CreateNewPanel">New Panel</button>
-</div>
 
 <h3 class="mt-5 text-danger">Deleted Panels</h3>
 <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
@@ -75,6 +72,10 @@
     </tbody>
 </table>
 
+<div class="d-flex justify-content-start mt-4">
+    <button class="btn btn-primary" @onclick="CreateNewPanel">New Panel</button>
+</div>
+
 @code {
     [Parameter] public int userId { get; set; }
 
@@ -92,9 +93,10 @@
     {
         try
         {
-            _panels = PanelService.GetAllPanelForUser(userId).Where(p => !p.IsDeleted).DistinctBy(p => p.Id).ToList();
             var currentUser = AuthService.GetCurrentUser();
             var trash = TrashService.GetTrashById(currentUser.TrashId);
+            
+            _panels = PanelService.GetAllPanelForUser(userId).Where(p => !p.IsDeleted).ToList();
             deletedPanels = trash.PanelList.Where(p => p.IsDeleted).ToList();
         }
         catch (Exception ex)
@@ -148,5 +150,10 @@
         {
             Console.WriteLine("Error restoring panel: " + ex.Message);
         }
+    }
+
+    private void NavigateToEpics(int panelId)
+    {
+        Navigation.NavigateTo($"/EpicForPanel/{panelId}");
     }
 }

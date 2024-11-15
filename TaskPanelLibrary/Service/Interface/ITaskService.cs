@@ -16,4 +16,8 @@ public interface ITaskService
     public Task DeleteTask(Task task, User user);
     
     public Task RecoverTask(Task task, User user);
+    
+    public List<Task> GetAllTasks();
+    
+    public List<Task> GetTasksFromEpic(int epicId);
 }

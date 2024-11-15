@@ -1,0 +1,144 @@
+@page "/ManageTasksInEpic/{epicId:int}"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+@using Task = TaskPanelLibrary.Entity.Task
+@inject IEpicService EpicService
+@inject ITaskService TaskService
+@inject NavigationManager Navigation
+
+<title>Manage Tasks in Epic</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Manage Tasks in Epic</h1>
+
+@if (_epic != null)
+{
+    <h4 class="mt-4">Tasks in Epic</h4>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in _tasksInEpic)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => RemoveTaskFromEpic(task.Id)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Available Tasks</h4>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in _availableTasks)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => AddTaskToEpic(task.Id)">Add to Epic</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-start mt-4">
+        <button class="btn btn-danger text-white ml-3" style="cursor: pointer;" @onclick="NavigationGoBack">Back to Epic</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger mt-4" role="alert">
+            @_errorMessage
+        </div>
+    }
+}
+else
+{
+    <p>Loading epic details...</p>
+}
+
+@code {
+    [Parameter] public int epicId { get; set; }
+
+    private Epic _epic;
+    private List<Task> _tasksInEpic = new List<Task>();
+    private List<Task> _availableTasks = new List<Task>();
+    private string _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            _epic = EpicService.GetEpicById(epicId);
+            _tasksInEpic = TaskService.GetAllTasks().Where(t => t.EpicId == epicId).ToList();
+            _availableTasks = TaskService.GetAllTasks()
+                .Where(t => t.EpicId == null && t.PanelId == _epic.PanelId).ToList();
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error loading epic or tasks: " + e.Message;
+        }
+    }
+
+    private void AddTaskToEpic(int taskId)
+    {
+        try
+        {
+            var task = _availableTasks.FirstOrDefault(t => t.Id == taskId);
+            if (task != null)
+            {
+                task.EpicId = epicId;
+                TaskService.UpdateTask(task);
+
+                _tasksInEpic.Add(task);
+                _availableTasks.Remove(task);
+            }
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error adding task to epic: " + e.Message;
+        }
+    }
+
+    private void RemoveTaskFromEpic(int taskId)
+    {
+        try
+        {
+            var task = _tasksInEpic.FirstOrDefault(t => t.Id == taskId);
+            if (task != null)
+            {
+                task.EpicId = null;
+                TaskService.UpdateTask(task);
+
+                _tasksInEpic.Remove(task);
+                _availableTasks.Add(task);
+            }
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error removing task from epic: " + e.Message;
+        }
+    }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/EpicForPanel/{_epic.PanelId}");
+    }
+}

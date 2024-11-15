@@ -83,21 +83,11 @@ public class TeamService : ITeamService
     
     public List<Team> TeamsForUser(int userId)
     {
-        List<Team> result = new List<Team>();
-        List<Team> teams = _teamRepository.GetAllTeams();
-    
-        foreach (Team team in teams)
-        {
-            if (team.Users.Any(user => user.Id == userId))
-            {
-                result.Add(team);
-            }
-        }
-
-        return result;
+        return _teamRepository.GetAllTeams()
+            .Where(team => team.Users.Any(user => user.Id == userId))
+            .ToList();
     }
-
-
+    
     private bool CanUpdateTeam(User updater, Team updatedTeam)
     {
         Team existingTeam = _teamRepository.GetTeamById(updatedTeam.Id);

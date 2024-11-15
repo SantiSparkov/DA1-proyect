@@ -61,34 +61,6 @@ namespace TaskPanelLibrary.Service
 
             return _epicRepository.DeleteEpic(id);
         }
-         
-        public void AddTaskToEpic(int epicId, int taskId)
-        {
-            var epic = _epicRepository.GetEpicById(epicId);
-            var task = _taskService.GetTaskById(taskId);
-
-            if (_epicRepository.GetAllEpics().Any(e => e.Tasks.Contains(task)))
-            {
-                throw new EpicNotValidException("Task already in epic");
-            }
-
-            epic.Tasks.Add(task);
-            _epicRepository.UpdateEpic(epic);
-        }
-        
-        public void DeleteTaskFromEpic(int epicId, int taskId)
-        {
-            var epic = _epicRepository.GetEpicById(epicId);
-            var task = _taskService.GetTaskById(taskId);
-
-            if (!epic.Tasks.Contains(task))
-            {
-                throw new EpicNotValidException("Task not in epic");
-            }
-
-            epic.Tasks.Remove(task);
-            _epicRepository.UpdateEpic(epic);
-        }
         
         public List<Task> GetTasksFromEpic(int epicId)
         {

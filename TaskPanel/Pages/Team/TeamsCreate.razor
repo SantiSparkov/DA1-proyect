@@ -55,7 +55,7 @@
 
     <div class="mt-4 d-flex justify-content-start">
         <button type="submit" class="btn btn-primary">Create Team</button>
-        <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" @onclick="Cancel">Cancel</button>
     </div>
 </EditForm>
 
@@ -79,7 +79,7 @@
                         {
                             <li class="list-group-item d-flex align-items-center">
                                 <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/> 
-                                <span>@user.Name (@user.Email)</span>
+                                <span style="margin-left: 10px">@user.Name (@user.Email)</span>
                             </li>
                         }
                     }
@@ -87,7 +87,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="ConfirmUserSelection">Confirm Selection</button>
-                <button type="button" class="btn btn-secondary" @onclick="CloseUserModal">Close</button>
+                <button type="button" class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" @onclick="CloseUserModal">Close</button>
             </div>
         </div>
     </div>
@@ -96,8 +96,10 @@
 @code {
     private Team _newTeam = new()
     {
-        CreationDate = DateTime.Now
+        CreationDate = DateTime.Now,
+        MaxAmountOfMembers = 1
     };
+
 
     private List<User> _availableUsers = new();
     private List<User> _selectedUsers = new();
