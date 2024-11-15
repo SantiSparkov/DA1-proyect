@@ -12,8 +12,8 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241114050114_PrimeraMigracion")]
-    partial class PrimeraMigracion
+    [Migration("20241114230947_Migrations1")]
+    partial class Migrations1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,12 @@ namespace TaskPanelLibrary.Migrations
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("EstimatioHour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvertedEstimateHour")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskPanelLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraMigracion : Migration
+    public partial class Migrations1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,6 +108,8 @@ namespace TaskPanelLibrary.Migrations
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    EstimatioHour = table.Column<int>(type: "int", nullable: false),
+                    InvertedEstimateHour = table.Column<int>(type: "int", nullable: false),
                     TrashId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
