@@ -25,4 +25,6 @@ public class SqlContext : DbContext
     
     public DbSet<Epic> Epics { get; set; }
 
+    public DbSet<Notification> Notifications { get; set; }
+
 }

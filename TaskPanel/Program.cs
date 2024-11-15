@@ -19,6 +19,7 @@ builder.Services.AddScoped<ITaskRepository, TaskSqlRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentSqlRepository>();
 builder.Services.AddScoped<ITrashRepository, TrashSqlRepository>();
 builder.Services.AddScoped<IEpicRepository, EpicSqlRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationSqlRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPanelService, PanelService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<PasswordGeneratorService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ImportCsvService>();
