@@ -12,8 +12,8 @@ using TaskPanelLibrary.Config;
 namespace TaskPanelLibrary.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20241115063841_PrimeraMigracion")]
-    partial class PrimeraMigracion
+    [Migration("20241115180112_Migrations1")]
+    partial class Migrations1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace TaskPanelLibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -50,6 +53,8 @@ namespace TaskPanelLibrary.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("ResolvedById");
 
@@ -88,6 +93,28 @@ namespace TaskPanelLibrary.Migrations
                     b.HasIndex("PanelId");
 
                     b.ToTable("Epics");
+                });
+
+            modelBuilder.Entity("TaskPanelLibrary.Entity.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
@@ -143,6 +170,12 @@ namespace TaskPanelLibrary.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("EpicId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstimatioHour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvertedEstimateHour")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -251,21 +284,37 @@ namespace TaskPanelLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("int");
-
                     b.Property<int>("TrashId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TeamUser", b =>
+                {
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TeamsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("TeamUser");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Comment", b =>
                 {
+                    b.HasOne("TaskPanelLibrary.Entity.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TaskPanelLibrary.Entity.User", "ResolvedBy")
                         .WithMany()
                         .HasForeignKey("ResolvedById");
@@ -275,6 +324,8 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CreatedBy");
 
                     b.Navigation("ResolvedBy");
                 });
@@ -286,6 +337,17 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("PanelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TaskPanelLibrary.Entity.Notification", b =>
+                {
+                    b.HasOne("TaskPanelLibrary.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Panel", b =>
@@ -320,11 +382,19 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("TrashId");
                 });
 
-            modelBuilder.Entity("TaskPanelLibrary.Entity.User", b =>
+            modelBuilder.Entity("TeamUser", b =>
                 {
                     b.HasOne("TaskPanelLibrary.Entity.Team", null)
-                        .WithMany("Users")
-                        .HasForeignKey("TeamId");
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskPanelLibrary.Entity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Epic", b =>
@@ -347,8 +417,6 @@ namespace TaskPanelLibrary.Migrations
             modelBuilder.Entity("TaskPanelLibrary.Entity.Team", b =>
                 {
                     b.Navigation("Panels");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Trash", b =>

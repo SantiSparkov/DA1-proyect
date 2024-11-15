@@ -26,6 +26,10 @@ public class Task
     public bool IsDeleted { get; set; } = false;
     
     public int? EpicId { get; set; }
+
+    public int EstimatioHour { get; set; }
+
+    public int InvertedEstimateHour { get; set; }
     
     public Task()
     {

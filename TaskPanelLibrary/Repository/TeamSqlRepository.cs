@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TaskPanelLibrary.Config;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository.Interface;
@@ -26,7 +27,9 @@ public class TeamSqlRepository : ITeamRepository
 
     public List<Team> GetAllTeams()
     {
-        return _teamDataBase.Teams.ToList();
+        return _teamDataBase.Teams
+            .Include(team => team.Users)
+            .ToList();
     }
 
     public Team AddTeam(Team team)

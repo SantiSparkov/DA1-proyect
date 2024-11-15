@@ -42,22 +42,15 @@ public class PanelService : IPanelService
 
     public List<Panel> GetAllPanelForUser(int userId)
     {
-        var user = _userService.GetUserById(userId);
-        List<Team> teams = _teamService.TeamsForUser(userId);
-        List<Panel> panels = new List<Panel>();
-        
-        foreach (var team in teams)
+        List<Team> teams = _teamService.TeamsForUser(userId) ?? new List<Team>();
+        List<Panel> panels = _panelRepository.GetAllPanels();
+        List<Panel> panelForUser = new List<Panel>();
+
+        foreach (Team team in teams)
         {
-            if (team.Users.Contains(user))
-            {
-                foreach (var panel in team.Panels)
-                {
-                    panels.Add(panel);
-                }
-            }
+            panelForUser.AddRange(team.Panels);
         }
-        
-        return panels;
+        return panelForUser;
     }
 
 

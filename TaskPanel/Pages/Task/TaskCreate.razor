@@ -38,6 +38,12 @@
         <InputDate @bind-Value="_task.DueDate" class="form-control"/>
         <ValidationMessage For="@(() => _task.DueDate)" class="text-danger validation-message"/>
     </div>
+    
+    <div class="form-group">
+        <label>Estimation hour:</label>
+        <InputNumber @bind-Value="_task.EstimatioHour" class="form-control"/>
+        <ValidationMessage For="@(() => _task.EstimatioHour)" class="text-danger validation-message"/>
+        </div>
 
     <div class="mt-4">
         <button class="btn btn-primary" type="submit" @onclick="SaveTask">Save</button>
