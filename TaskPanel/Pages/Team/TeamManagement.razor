@@ -16,12 +16,14 @@
     <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
         <thead class="thead-light">
         <tr>
-            <th>Id</th>
             <th>Name</th>
             <th>Creation Date</th>
             <th>Task Description</th>
-            <th>Max Members</th>
-            <th>Actions</th>
+            <th>Members Count</th>
+            @if (isAdmin)
+            {
+                <th>Actions</th>
+            }
             <th>Members</th>
         </tr>
         </thead>
@@ -29,11 +31,10 @@
         @foreach (var team in _teams)
         {
             <tr @onclick="() => NavigateToPanelsForTeams(team.Id)" style="cursor: pointer;" class="selectable-row">
-                <td>@team.Id</td>
                 <td>@team.Name</td>
                 <td>@team.CreationDate.ToShortDateString()</td>
                 <td>@team.TasksDescription</td>
-                <td>@team.MaxAmountOfMembers</td>
+                <td>@team.Users.Count / @team.MaxAmountOfMembers</td>
                 <td>
                     @if (isAdmin)
                     {
@@ -50,7 +51,9 @@
 }
 else
 {
-    <p class="text-muted">No teams available. Please create one.</p>
+<div class="alert alert-info mt-4" role="alert">
+    There are no teams available. Please create a new team.
+</div>
 }
 
 @if (!string.IsNullOrEmpty(_errorMessage))
