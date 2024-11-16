@@ -1,4 +1,5 @@
 @page "/EpicForPanel/{panelId:int}"
+@using System.Security.Cryptography.Xml
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
@@ -8,34 +9,43 @@
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Epics for Panel</h1>
 
-<h3 class="mt-5 text-success">Active Epics</h3>
-<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
-    <thead class="thead-light">
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Priority</th>
-        <th>Due Date</th>
-        <th class="text-center">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var epic in epics)
-    {
-        <tr @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;" class="selectable-row">
-            <td>@epic.Title</td>
-            <td>@epic.Description</td>
-            <td>@epic.Priority</td>
-            <td>@epic.DueDateTime.ToShortDateString()</td>
-            <td class="text-center">
-                <button class="btn btn-outline-warning btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => UpdateEpic(epic.Id)">Update</button>
-                <button class="btn btn-outline-danger btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => DeleteEpic(epic.Id)">Delete</button>
-                <button class="btn btn-outline-info btn-sm" @onclick:stopPropagation="true" @onclick="() => ManageTasksForEpic(epic.Id)">Manage Tasks</button>
-            </td>
+@if (epics.Any())
+{
+    <h3 class="mt-5 text-success">Active Epics</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th class="text-center">Actions</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var epic in epics)
+        {
+            <tr @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;" class="selectable-row">
+                <td>@epic.Title</td>
+                <td>@epic.Description</td>
+                <td>@epic.Priority</td>
+                <td>@epic.DueDateTime.ToShortDateString()</td>
+                <td class="text-center">
+                    <button class="btn btn-outline-warning btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => UpdateEpic(epic.Id)">Update</button>
+                    <button class="btn btn-outline-danger btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => DeleteEpic(epic.Id)">Delete</button>
+                    <button class="btn btn-outline-info btn-sm" @onclick:stopPropagation="true" @onclick="() => ManageTasksForEpic(epic.Id)">Manage Tasks</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-4" role="alert">
+        No epics available. Please create one.
+    </div>
+}
 
 <div class="d-flex justify-content-start mt-4">
     <button class="btn btn-primary" @onclick="NavigateToCreateEpic">New Epic</button>
@@ -113,3 +123,4 @@
     }
 
 }
+

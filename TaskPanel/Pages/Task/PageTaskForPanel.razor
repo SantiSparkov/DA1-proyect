@@ -14,99 +14,110 @@
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Tasks for Panel</h1>
 
-<h3 class="mt-5 text-success">Active Tasks</h3>
-<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
-    <thead class="thead-light">
-    <tr>
-        <th>Task Id</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Priority</th>
-        <th>Due Date</th>
-        <th>Estimation hour</th>
-        <th>Inverted Estimate Hour</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted))
-    {
+@if (tasks.Any())
+{
+    <h3 class="mt-5 text-success">Active Tasks</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
         <tr>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Id</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Title</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.EstimatioHour</td>
-            <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@(task.InvertedEstimateHour - task.EstimatioHour)</td>
-            <td>
-                <button class="btn btn-outline-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
-                <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
-            </td>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
+            <th>Actions</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (Task task in tasks.Where(t => t.DueDate >= DateTime.Now && !t.IsDeleted))
+        {
+            <tr>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Title</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.EstimatioHour</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@(task.InvertedEstimateHour)</td>
+                <td>
+                    <button class="btn btn-outline-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
+                    <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
-<h3 class="mt-5 text-danger">Deleted Tasks</h3>
-<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
-    <thead class="thead-light">
-    <tr>
-        <th>Task Id</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Priority</th>
-        <th>Due Date</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (Task task in tasks.Where(t => t.IsDeleted))
-    {
+    <h3 class="mt-5 text-danger">Deleted Tasks</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
         <tr>
-            <td>@task.Id</td>
-            <td>@task.Title</td>
-            <td>@task.Description</td>
-            <td>@task.Priority</td>
-            <td>@task.DueDate</td>
-            <td>
-                <button class="btn btn-outline-success btn-sm" @onclick="() => RecoverTask(task)">Recover</button>
-                <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete Permanently</button>
-            </td>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
+            <th>Actions</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (Task task in tasks.Where(t => t.IsDeleted))
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Priority</td>
+                <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td>@task.EstimatioHour</td>
+                <td>@task.InvertedEstimateHour</td>
+                <td>
+                    <button class="btn btn-outline-success btn-sm" @onclick="() => RecoverTask(task)">Recover</button>
+                    <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete Permanently</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
-<h3 class="mt-5 text-warning">Expired Tasks</h3>
-<table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
-    <thead class="thead-light">
-    <tr>
-        <th>Task Id</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Priority</th>
-        <th>Due Date</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now && !t.IsDeleted))
-    {
+    <h3 class="mt-5 text-warning">Expired Tasks</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
         <tr>
-            <td>@task.Id</td>
-            <td>@task.Title</td>
-            <td>@task.Description</td>
-            <td>@task.Priority</td>
-            <td>@task.DueDate</td>
-            <td>
-                <button class="btn btn-outline-warning btn-sm" @onclick="() => OpenReactivateTaskModal(task.Id)">Reactivate</button>
-                <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
-            </td>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
+            <th>Actions</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (Task task in tasks.Where(t => t.DueDate < DateTime.Now && !t.IsDeleted))
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Priority</td>
+                <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td>@task.EstimatioHour</td>
+                <td>@task.InvertedEstimateHour</td>
+                <td>
+                    <button class="btn btn-outline-warning btn-sm" @onclick="() => OpenReactivateTaskModal(task.Id)">Reactivate</button>
+                    <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+<div class="alert alert-info mt-4" role="alert">
+    There are no tasks available. Please create one
+</div>
+}
 
 <div class="d-flex justify-content-start mt-3">
     <button class="btn btn-primary" @onclick="() => NavigateCreateTask(panelId)">New Task</button>
@@ -237,7 +248,7 @@
         TaskService.RecoverTask(task, currentUser);
         tasks = TaskService.GetTasksFromPanel(panelId);
     }
-    
+
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/panels/user/{AuthService.GetCurrentUser().Id}");
