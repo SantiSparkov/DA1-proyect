@@ -81,6 +81,7 @@
         _task = new TaskPanelLibrary.Entity.Task();
 
         _task.DueDate = DateTime.Now.AddDays(1).Date;
+        _task.EstimatioHour = 1;
     }
 
     private async Task SaveTask()

@@ -24,6 +24,8 @@
             <th>Priority</th>
             <th>Due Date</th>
             <th>Actions</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
         </tr>
         </thead>
         <tbody>
@@ -33,7 +35,9 @@
                 <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Title</td>
                 <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Description</td>
                 <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.Priority</td>
-                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@task.EstimatioHour</td>
+                <td @onclick="() => NavigationComments(task.Id)" style="cursor: pointer;">@(task.InvertedEstimateHour)</td>
                 <td>
                     <button class="btn btn-outline-primary btn-sm" @onclick="() => NavigationUpdateTask(task.Id)">Update</button>
                     <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
@@ -52,6 +56,8 @@
             <th>Priority</th>
             <th>Due Date</th>
             <th>Actions</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
         </tr>
         </thead>
         <tbody>
@@ -61,7 +67,9 @@
                 <td>@task.Title</td>
                 <td>@task.Description</td>
                 <td>@task.Priority</td>
-                <td>@task.DueDate</td>
+                <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td>@task.EstimatioHour</td>
+                <td>@task.InvertedEstimateHour</td>
                 <td>
                     <button class="btn btn-outline-success btn-sm" @onclick="() => RecoverTask(task)">Recover</button>
                     <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete Permanently</button>
@@ -80,6 +88,8 @@
             <th>Priority</th>
             <th>Due Date</th>
             <th>Actions</th>
+            <th>Estimation Hours</th>
+            <th>Inverted Hours</th>
         </tr>
         </thead>
         <tbody>
@@ -89,7 +99,9 @@
                 <td>@task.Title</td>
                 <td>@task.Description</td>
                 <td>@task.Priority</td>
-                <td>@task.DueDate</td>
+                <td>@task.DueDate.ToString("dd/MM/yyyy")</td>
+                <td>@task.EstimatioHour</td>
+                <td>@task.InvertedEstimateHour</td>
                 <td>
                     <button class="btn btn-outline-warning btn-sm" @onclick="() => OpenReactivateTaskModal(task.Id)">Reactivate</button>
                     <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeleteTask(task)">Delete</button>
