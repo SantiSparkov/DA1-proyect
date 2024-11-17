@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskPanelLibrary.Migrations
 {
     /// <inheritdoc />
-    public partial class Migrations1 : Migration
+    public partial class PrimeraMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -144,7 +144,9 @@ namespace TaskPanelLibrary.Migrations
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DueDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PanelId = table.Column<int>(type: "int", nullable: false)
+                    PanelId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    TrashId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -155,6 +157,11 @@ namespace TaskPanelLibrary.Migrations
                         principalTable: "Panels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Epics_Trashes_TrashId",
+                        column: x => x.TrashId,
+                        principalTable: "Trashes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -249,6 +256,11 @@ namespace TaskPanelLibrary.Migrations
                 name: "IX_Epics_PanelId",
                 table: "Epics",
                 column: "PanelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Epics_TrashId",
+                table: "Epics",
+                column: "TrashId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",

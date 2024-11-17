@@ -75,6 +75,9 @@ namespace TaskPanelLibrary.Migrations
                     b.Property<DateTime>("DueDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("PanelId")
                         .HasColumnType("int");
 
@@ -85,9 +88,14 @@ namespace TaskPanelLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TrashId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PanelId");
+
+                    b.HasIndex("TrashId");
 
                     b.ToTable("Epics");
                 });
@@ -334,6 +342,10 @@ namespace TaskPanelLibrary.Migrations
                         .HasForeignKey("PanelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("TaskPanelLibrary.Entity.Trash", null)
+                        .WithMany("EpicList")
+                        .HasForeignKey("TrashId");
                 });
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Notification", b =>
@@ -418,6 +430,8 @@ namespace TaskPanelLibrary.Migrations
 
             modelBuilder.Entity("TaskPanelLibrary.Entity.Trash", b =>
                 {
+                    b.Navigation("EpicList");
+
                     b.Navigation("PanelList");
 
                     b.Navigation("TaskList");
