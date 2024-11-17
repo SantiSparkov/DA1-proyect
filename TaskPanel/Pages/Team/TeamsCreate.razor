@@ -81,7 +81,7 @@
                         if (user.Email != AuthService.GetCurrentUser().Email)
                         {
                             <li class="list-group-item d-flex align-items-center">
-                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/> 
+                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/>
                                 <span style="margin-left: 10px">@user.Name (@user.Email)</span>
                             </li>
                         }
@@ -97,6 +97,7 @@
 </div>
 
 @code {
+
     private Team _newTeam = new()
     {
         CreationDate = DateTime.Now,
@@ -190,4 +191,5 @@
         _newTeam.Users = new List<User>(_selectedUsers);
         showUserModal = false;
     }
+
 }
