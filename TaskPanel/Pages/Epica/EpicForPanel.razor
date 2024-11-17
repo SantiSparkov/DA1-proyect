@@ -1,11 +1,12 @@
 @page "/EpicForPanel/{panelId:int}"
-@using System.Security.Cryptography.Xml
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @inject IEpicService EpicService
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject ITrashService TrashService
+@inject ITaskService TaskService
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Epics for Panel</h1>
 
@@ -24,20 +25,48 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var epic in epics)
+        @foreach (var epic in epics.Where(e => !e.IsDeleted))
         {
-            <tr @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;" class="selectable-row">
+            <tr>
+                <td @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;">@epic.Title</td>
+                <td @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;">@epic.Description</td>
+                <td @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;">@epic.Priority</td>
+                <td @onclick="() => NavigateToTasksForEpic(epic.Id)" style="cursor: pointer;">@epic.DueDateTime.ToShortDateString()</td>
+                <td class="text-center">
+                    <button class="btn btn-outline-warning btn-sm" @onclick="() => UpdateEpic(epic.Id)">Update</button>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteEpic(epic)">Delete</button>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-outline-info btn-sm" @onclick="() => ManageTasksForEpic(epic.Id)">Manage Tasks</button>
+                    <button class="btn btn-outline-success btn-sm" @onclick="() => NavigateToEpicReport(epic.Id)">View Report</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h3 class="mt-5 text-danger">Deleted Epics</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var epic in deletedEpics)
+        {
+            <tr>
                 <td>@epic.Title</td>
                 <td>@epic.Description</td>
                 <td>@epic.Priority</td>
                 <td>@epic.DueDateTime.ToShortDateString()</td>
                 <td class="text-center">
-                    <button class="btn btn-outline-warning btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => UpdateEpic(epic.Id)">Update</button>
-                    <button class="btn btn-outline-danger btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => DeleteEpic(epic.Id)">Delete</button>
-                </td>
-                <td class="text-center">
-                    <button class="btn btn-outline-info btn-sm" @onclick:stopPropagation="true" @onclick="() => ManageTasksForEpic(epic.Id)">Manage Tasks</button>
-                    <button class="btn btn-outline-success btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => NavigateToEpicReport(epic.Id)">View Report</button>
+                    <button class="btn btn-outline-success btn-sm" @onclick="() => RecoverEpic(epic)">Recover</button>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="() => DeletePermanentlyEpic(epic.Id)">Delete Permanently</button>
                 </td>
             </tr>
         }
@@ -53,7 +82,7 @@ else
 
 <div class="d-flex justify-content-start mt-4">
     <button class="btn btn-primary" @onclick="NavigateToCreateEpic">New Epic</button>
-    <button class="btn btn-danger text-white ml-3" style="cursor: pointer; margin-left: 10px;" @onclick="NavigateBackToPanels">Back to Panels</button>
+    <button style="margin-left: 10px" class="btn btn-danger text-white ml-3" @onclick="NavigateBackToPanels">Back to Panels</button>
 </div>
 
 @if (!string.IsNullOrEmpty(_errorMessage))
@@ -67,8 +96,8 @@ else
     [Parameter] public int panelId { get; set; }
 
     private List<Epic> epics;
+    private List<Epic> deletedEpics;
     private string _errorMessage;
-    private User _user;
 
     protected override void OnInitialized()
     {
@@ -80,6 +109,10 @@ else
         try
         {
             epics = EpicService.GetAllEpicsByPanelId(panelId);
+            var userTrashId = AuthService.GetCurrentUser().TrashId;
+            var trash = TrashService.GetTrashById(userTrashId);
+
+            deletedEpics = trash.EpicList.Where(e => e.PanelId == panelId).ToList();
         }
         catch (Exception ex)
         {
@@ -99,8 +132,8 @@ else
 
     private void NavigateBackToPanels()
     {
-        _user = AuthService.GetCurrentUser();
-        NavigationManager.NavigateTo($"/panels/user/{_user.Id}");
+        var user = AuthService.GetCurrentUser();
+        NavigationManager.NavigateTo($"/panels/user/{user.Id}");
     }
 
     private void NavigateToTasksForEpic(int epicId)
@@ -113,16 +146,43 @@ else
         NavigationManager.NavigateTo($"/epic/update/{epicId}");
     }
 
-    private void DeleteEpic(int epicId)
+    private void DeleteEpic(Epic epic)
     {
         try
         {
-            EpicService.DeleteEpic(epicId);
+            EpicService.DeleteEpic(epic.Id, AuthService.GetCurrentUser());
             LoadEpics();
         }
         catch (Exception ex)
         {
             _errorMessage = $"Error deleting epic: {ex.Message}";
+        }
+    }
+
+    private void RecoverEpic(Epic epic)
+    {
+        try
+        {
+            EpicService.RestoreEpic(epic.Id, AuthService.GetCurrentUser());
+            LoadEpics();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error recovering epic: {ex.Message}";
+        }
+    }
+
+    private void DeletePermanentlyEpic(int epicId)
+    {
+        try
+        {
+            TrashService.RemoveEpicFromTrash(epicId, AuthService.GetCurrentUser().TrashId);
+            EpicService.DeleteEpic(epicId, AuthService.GetCurrentUser());
+            LoadEpics();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error permanently deleting epic: {ex.Message}";
         }
     }
 
