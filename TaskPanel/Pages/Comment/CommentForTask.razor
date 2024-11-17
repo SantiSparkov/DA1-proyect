@@ -20,7 +20,7 @@
     <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
         <thead class="thead-light">
         <tr>
-            <th>Task Id</th>
+            <th>Task Title</th>
             <th>Description</th>
             <th>Status</th>
             <th>Actions</th>
@@ -30,7 +30,7 @@
         @foreach (Comment comment in comments)
         {
             <tr>
-                <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.TaskId</td>
+                <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@tasks[comment.TaskId]?.Title</td>
                 <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Message</td>
                 <td @onclick="() => NavigationViewComment(comment.Id)" style="cursor: pointer;">@comment.Status</td>
                 <td>
@@ -57,12 +57,23 @@ else
     [Parameter] public int taskId { get; set; }
 
     private List<Comment> comments;
+    private Dictionary<int, Task> tasks = new Dictionary<int, Task>();
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         Panels.createTeamAndPanel();
+        
         comments = CommentService.GetCommentForTask(taskId);
+        
+        foreach (var comment in comments)
+        {
+            if (!tasks.ContainsKey(comment.TaskId))
+            {
+                var task = TaskService.GetTaskById(comment.TaskId);
+                tasks[comment.TaskId] = task;
+            }
+        }
     }
 
     private void NavigationViewComment(int commentId)

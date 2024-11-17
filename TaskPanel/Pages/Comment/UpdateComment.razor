@@ -31,12 +31,13 @@
                 <th>Status</th>
                 <th>Resolved by</th>
                 <th>Resolved at</th>
-                <th>Comment</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>@comment.Message</td>
+                <td>
+                    <InputText @bind-Value="comment.Message" class="form-control" />
+                </td>
                 <td>
                     <InputSelect @bind-Value="comment.Status" class="form-control">
                         @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
@@ -46,16 +47,24 @@
                     </InputSelect>
                 </td>
                 <td>
-                    <InputSelect @bind-Value="userId" class="form-control">
-                        @foreach (User user in UserService.GetAllUsers())
-                        {
-                            <option value="@user.Id">@user.Email</option>
-                        }
-                    </InputSelect>
+                    @if (comment.Status == EStatusComment.RESOLVED)
+                    {
+                        <span>@AuthorizationService.GetCurrentUser().Name</span>
+                    }
+                    else
+                    {
+                        <span>Not resolved</span>
+                    }
                 </td>
-                <td>@comment.ResolvedAt</td>
                 <td>
-                    <InputText @bind-Value="comment.Message" class="form-control"/>
+                    @if (comment.Status == EStatusComment.RESOLVED)
+                    {
+                        <span>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    }
+                    else
+                    {
+                        <span>Not resolved</span>
+                    }
                 </td>
             </tr>
             </tbody>
@@ -64,7 +73,7 @@
 
     <div class="d-flex justify-content-start mt-4">
         <button class="btn btn-primary" @onclick="() => NavigationUpdateComment(comment)">Update</button>
-        <button class="btn btn-secondary ml-3" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
+        <button class="btn btn-danger ml-3" style="margin-left: 10px" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
     </div>
 </EditForm>
 
@@ -76,12 +85,10 @@
 }
 
 @code {
-
     [Parameter] public int commentId { get; set; }
     Comment comment;
 
     private string _errorMessage;
-    int userId;
     private int panelId;
 
     protected override void OnInitialized()
@@ -99,9 +106,10 @@
         {
             if (comment.Status == EStatusComment.RESOLVED)
             {
+                var currentUser = AuthorizationService.GetCurrentUser();
                 this.comment.ResolvedAt = DateTime.Now;
-                User user = UserService.GetUserById(userId);
-                comment.ResolvedBy = user;
+                this.comment.ResolvedBy = currentUser;
+                
                 NotificationService.CreateNotification(this.comment.Id, this.comment.Message);
             }
             else
@@ -109,7 +117,7 @@
                 this.comment.ResolvedAt = null;
                 this.comment.ResolvedBy = null;
             }
-
+            
             CommentService.UpdateComment(comment);
             Navigation.NavigateTo($"/tasks/panel/{panelId}");
         }
