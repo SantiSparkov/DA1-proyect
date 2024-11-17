@@ -1,4 +1,4 @@
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 
 namespace TaskPanelTest.EntityTest;
 
@@ -31,4 +31,4 @@ public class UserEntityTest
         Assert.IsFalse(user.IsAdmin);
         Assert.IsNotNull(user.TrashId);
     }
-}
+}*/

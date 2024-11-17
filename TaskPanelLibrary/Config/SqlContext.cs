@@ -11,6 +11,13 @@ public class SqlContext : DbContext
         this.Database.Migrate();
     }
 
+    public SqlContext getMemoryDataBase()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<SqlContext>();
+        optionsBuilder.UseInMemoryDatabase("DataBaseInMemory");
+        return new SqlContext(optionsBuilder.Options);
+    }
+
     public DbSet<User> Users { get; set; }
     
     public DbSet<Team> Teams { get; set; }

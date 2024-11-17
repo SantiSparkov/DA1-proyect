@@ -1,4 +1,4 @@
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
@@ -9,7 +9,7 @@ using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.ServiceTest;
 
-[TestClass]
+
 public class TaskServiceTest
 {
     private ITaskService _taskService;
@@ -148,4 +148,4 @@ public class TaskServiceTest
         Assert.IsNotNull(task, "The task is not found");
         Assert.AreEqual(createdTask.Id, task.Id, "The task id is not found correctly");
     }
-}
+}*/

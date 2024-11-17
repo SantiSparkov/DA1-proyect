@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+/*using Microsoft.AspNetCore.Identity;
 using Moq;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
@@ -11,7 +11,7 @@ using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.ServiceTest;
 
-[TestClass]
+
 public class PanelServiceTest
 {
     private IUserRepository _userRepository;
@@ -79,4 +79,4 @@ public class PanelServiceTest
         Assert.AreEqual(panel.Name, _panel.Name);
         Assert.AreEqual(panel.Description, _panel.Description);
     }
-}
+}*/

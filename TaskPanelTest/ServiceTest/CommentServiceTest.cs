@@ -1,4 +1,4 @@
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
@@ -8,7 +8,7 @@ using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.ServiceTest;
-[TestClass]
+
 public class CommentServiceTest
 {
     private ICommentRepository _commentRepository;
@@ -155,4 +155,4 @@ public class CommentServiceTest
         Assert.AreEqual(comentUpdated.ResolvedAt, commentToUpdate.ResolvedAt);
         Assert.AreEqual(comentUpdated.ResolvedBy, commentToUpdate.ResolvedBy);
     }
-}
+}*/

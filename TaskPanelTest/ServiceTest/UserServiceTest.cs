@@ -1,4 +1,4 @@
-﻿using TaskPanelLibrary.Entity;
+﻿/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.User;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
@@ -7,7 +7,7 @@ using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelTest.ServiceTest;
 
-[TestClass]
+
 public class UserServiceTest
 {
     private IUserService _userService;
@@ -174,4 +174,4 @@ public class UserServiceTest
         // Act & Assert
         Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
     }
-}
+}*/

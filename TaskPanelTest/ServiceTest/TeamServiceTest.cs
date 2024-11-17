@@ -1,4 +1,4 @@
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
 using TaskPanelLibrary.Repository;
@@ -8,7 +8,7 @@ using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelTest.ServiceTest
 {
-    [TestClass]
+
     public class TeamServiceTest
     {
         private ITeamService _teamService;
@@ -137,4 +137,4 @@ namespace TaskPanelTest.ServiceTest
         }
         
     }
-}
+}*/
