@@ -40,6 +40,7 @@ namespace TaskPanelLibrary.Service
 
         public List<Epic> GetAllEpicsByPanelId(int panelId)
         {
+            List<Task> tasks = _taskService.GetAllTasks();
             return _epicRepository.GetAllEpics().Where(e => e.PanelId == panelId).ToList();
         }
 
