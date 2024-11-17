@@ -18,9 +18,7 @@
   &lt;Project Location="/Users/spark/Desktop/ORT/Diseno 1/291719_270092_251817/TaskPanelTest" Presentation="&amp;lt;TaskPanelTest&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bb56404a_002D6b2d_002D4578_002D9240_002Df2f4c0997241/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="EpicServiceTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.EpicServiceTest&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d28979af_002D5ee9_002D4d73_002D95db_002D5bee7598c5de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NotificationSqlRepositoryTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;

@@ -21,13 +21,16 @@ public class EpicServiceTest
     
     private Mock<IPanelService> _panelService;
     
+    private Mock<ITaskService>  _taskService;
+    
 
     [TestInitialize]
     public void SetUp()
     {
         _epicRepository = new Mock<IEpicRepository>();
         _panelService = new Mock<IPanelService>();
-        _epicService = new EpicService(_epicRepository.Object, _panelService.Object);
+        _taskService = new Mock<ITaskService>();
+        _epicService = new EpicService(_epicRepository.Object, _panelService.Object, _taskService.Object);
     }
 
     [TestCleanup]
