@@ -20,6 +20,7 @@
             <th>Priority</th>
             <th>Due Date</th>
             <th class="text-center">Actions</th>
+            <th class="text-center">Tasks Management</th>
         </tr>
         </thead>
         <tbody>
@@ -33,7 +34,10 @@
                 <td class="text-center">
                     <button class="btn btn-outline-warning btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => UpdateEpic(epic.Id)">Update</button>
                     <button class="btn btn-outline-danger btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => DeleteEpic(epic.Id)">Delete</button>
+                </td>
+                <td class="text-center">
                     <button class="btn btn-outline-info btn-sm" @onclick:stopPropagation="true" @onclick="() => ManageTasksForEpic(epic.Id)">Manage Tasks</button>
+                    <button class="btn btn-outline-success btn-sm mr-2" @onclick:stopPropagation="true" @onclick="() => NavigateToEpicReport(epic.Id)">View Report</button>
                 </td>
             </tr>
         }
@@ -88,6 +92,11 @@ else
         NavigationManager.NavigateTo($"/epic/create/{panelId}");
     }
 
+    private void NavigateToEpicReport(int epicId)
+    {
+        NavigationManager.NavigateTo($"/EpicReport/{epicId}");
+    }
+
     private void NavigateBackToPanels()
     {
         _user = AuthService.GetCurrentUser();
@@ -123,4 +132,3 @@ else
     }
 
 }
-
