@@ -1,4 +1,4 @@
-/*using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Comment;
@@ -25,7 +25,7 @@ public class CommentRepositoryTest
         //Act 
         // Assert
         Assert.IsNotNull(_commentRepository);
-    }
+    } 
     
     [TestMethod]
     public void AddCommentRepository()
@@ -39,7 +39,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            TrashId = new Trash()
+            TrashId = 1
         };
         Comment comment = new Comment()
         {
@@ -77,7 +77,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            TrashId = new Trash()
+            TrashId = 1
         };
         Comment comment = new Comment()
         {
@@ -110,7 +110,7 @@ public class CommentRepositoryTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            TrashId = new Trash()
+            TrashId = 1
         };
         Comment comment = new Comment()
         {
@@ -121,11 +121,22 @@ public class CommentRepositoryTest
             Status = EStatusComment.RESOLVED
         };
         
+        Comment commentNotExist = new Comment()
+        {
+            Id = 321,
+            Message = "Message comment",
+            ResolvedBy = resolvedBy,
+            ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
+            Status = EStatusComment.RESOLVED
+        };
+        
+        _commentRepository.AddComment(comment);
+        
         //Act 
-        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.DeleteComment(comment.Id));
+        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.DeleteComment(commentNotExist.Id));
 
         // Assert
-        Assert.AreEqual($"Comment with id: {comment.Id} does not exist", exception.Message);
+        Assert.AreEqual($"Comment with id: {commentNotExist.Id} does not exist", exception.Message);
     }
     
     [TestMethod]
@@ -142,12 +153,23 @@ public class CommentRepositoryTest
             Status = EStatusComment.RESOLVED
         };
         
+        Comment comment2= new Comment()
+        {
+            Id = 321,
+            Message = "Message comment",
+            ResolvedBy = resolvedBy,
+            ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
+            Status = EStatusComment.RESOLVED
+        };
+        
+        _commentRepository.AddComment(comment2);
+        
         //Act 
         _commentRepository.AddComment(comment);
         List<Comment> comments = _commentRepository.GetAllComments();
 
         // Assert
-        Assert.AreEqual(1, comments.Count);
+        Assert.AreEqual(2, comments.Count);
     }
     
     [TestMethod]
@@ -178,10 +200,39 @@ public class CommentRepositoryTest
     }
     
     
+    [TestMethod]
+    public void GetCommentByIdNotExistRepository()
+    {
+        //Arrange
+        Comment comment = new Comment()
+        {
+            Id = 123,
+            Message = "Message comment",
+            ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
+            Status = EStatusComment.PENDING
+        };
+        
+        Comment comment2 = new Comment()
+        {
+            Id = 12,
+            Message = "Message comment",
+            ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
+            Status = EStatusComment.PENDING
+        };
+        _commentRepository.AddComment(comment2);
+
+        //Act 
+        var exception = Assert.ThrowsException<CommentNotValidException>(() => _commentRepository.GetCommentById(comment.Id));
+
+        // Assert
+        Assert.AreEqual($"Panel with id: {comment.Id} does not exist", exception.Message);
+    }
+    
+    
     [TestCleanup]
     public void Cleanup()
     {
         _commentRepository.GetAllComments().Clear();
     }
     
-}*/
+}
