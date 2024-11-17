@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository.Interface;
@@ -51,6 +52,43 @@ public class TrashService : ITrashService
             trash.Elements = Count(trashId);
         }
     }
+    
+    public void AddEpicToTrash(Epic epic, int userTrashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(userTrashId);
+        
+        if (!IsFull(userTrashId))
+        {
+            trash.EpicList.Add(epic);
+            trash.Elements = Count(userTrashId);
+        }
+    }
+
+    public void RecoverEpicFromTrash(int epicId, int userTrashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(userTrashId);
+        var epic = trash.EpicList.Find(e => e.Id == epicId);
+        
+        if (epic == null)
+        {
+            throw new EpicNotValidException("Epic not found in trash");
+        }
+        
+        trash.EpicList.Remove(epic);
+        trash.Elements = Count(userTrashId);
+    }
+
+    public void RemoveTaskFromTrash(int taskId, int trashId)
+    {
+        var trash = _trashSqlRepository.GetTrashById(trashId);
+        var task = trash.TaskList.FirstOrDefault(t => t.Id == taskId);
+        if (task != null)
+        {
+            trash.TaskList.Remove(task);
+            trash.Elements = Count(trashId);
+            _trashSqlRepository.UpdateTrash(trash);
+        }
+    }
 
     public Task RecoverTaskFromTrash(int taskId, int trashId)
     {
@@ -67,15 +105,15 @@ public class TrashService : ITrashService
         
         return task;
     }
-    
-    public void RemoveTaskFromTrash(int taskId, int trashId)
+        
+    public void RemoveEpicFromTrash(int epicId, int userTrashId)
     {
-        var trash = _trashSqlRepository.GetTrashById(trashId);
-        var task = trash.TaskList.FirstOrDefault(t => t.Id == taskId);
-        if (task != null)
+        var trash = _trashSqlRepository.GetTrashById(userTrashId);
+        var epic = trash.EpicList.FirstOrDefault(e => e.Id == epicId);
+        if (epic != null)
         {
-            trash.TaskList.Remove(task);
-            trash.Elements = Count(trashId);
+            trash.EpicList.Remove(epic);
+            trash.Elements = Count(userTrashId);
             _trashSqlRepository.UpdateTrash(trash);
         }
     }
@@ -118,7 +156,7 @@ public class TrashService : ITrashService
         var trash = _trashSqlRepository.GetTrashById(trashId);
         return (trash.TaskList.Count + trash.PanelList.Count) >= MaxCapacity;
     }
-    
+
     private int Count(int trashId)
     {
         var trash = _trashSqlRepository.GetTrashById(trashId);
