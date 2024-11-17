@@ -22,10 +22,10 @@
     &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.EpicServiceTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d28979af_002D5ee9_002D4d73_002D95db_002D5bee7598c5de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NotificationSqlRepositoryTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.RepositoryTest.SqlRepositories.NotificationSqlRepositoryTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d28979af_002D5ee9_002D4d73_002D95db_002D5bee7598c5de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NotificationSqlRepositoryTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.RepositoryTest.SqlRepositories.NotificationSqlRepositoryTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	

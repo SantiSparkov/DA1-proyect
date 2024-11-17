@@ -9,12 +9,16 @@ namespace TaskPanelLibrary.Service
     public class EpicService : IEpicService
     {
         private readonly IEpicRepository _epicRepository;
+        
         private readonly IPanelService _panelService;
-
-        public EpicService(IEpicRepository epicRepository, IPanelService panelService)
+        
+        private readonly ITaskService _taskService;
+        
+        public EpicService(IEpicRepository epicRepository, IPanelService panelService, ITaskService taskService)
         {
             _epicRepository = epicRepository;
             _panelService = panelService;
+            _taskService = taskService;
         }
 
         public Epic CreateEpic(Epic epic, int panelId)
