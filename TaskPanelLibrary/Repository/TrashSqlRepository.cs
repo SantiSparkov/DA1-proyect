@@ -53,5 +53,9 @@ public class TrashSqlRepository : ITrashRepository
         
         return trash;
     }
-    
+
+    public List<Trash> GetAllTrash()
+    {
+        return _trashDatabase.Trashes.ToList();
+    }
 }
