@@ -8,7 +8,6 @@
 @using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
-@inject IUserService UserService
 @inject ITaskService TaskService
 @inject Panels Panels
 @inject AuthService AuthorizationService
@@ -110,7 +109,7 @@
                 this.comment.ResolvedAt = DateTime.Now;
                 this.comment.ResolvedBy = currentUser;
                 
-                NotificationService.CreateNotification(this.comment.Id, this.comment.Message);
+                NotificationService.CreateNotification(this.comment.CreatedById, this.comment.Message);
             }
             else
             {
