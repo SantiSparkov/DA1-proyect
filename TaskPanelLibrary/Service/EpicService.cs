@@ -10,24 +10,19 @@ namespace TaskPanelLibrary.Service
     {
         private readonly IEpicRepository _epicRepository;
         private readonly IPanelService _panelService;
-        private readonly ITaskService _taskService;
 
-        public EpicService(IEpicRepository epicRepository, IPanelService panelService, ITaskService taskService)
+        public EpicService(IEpicRepository epicRepository, IPanelService panelService)
         {
             _epicRepository = epicRepository;
             _panelService = panelService;
-            _taskService = taskService;
         }
 
         public Epic CreateEpic(Epic epic, int panelId)
         {
+            IsValidEpic(epic);
+            
             var panel = _panelService.GetPanelById(panelId);
             epic.PanelId = panel.Id;
-
-            if (!IsValidEpic(epic))
-            {
-                throw new EpicNotValidException("Epic is not valid");
-            }
 
             var epicSaved = _epicRepository.AddEpic(epic);
             return epicSaved;
@@ -67,8 +62,8 @@ namespace TaskPanelLibrary.Service
             var epic = _epicRepository.GetEpicById(epicId);
             return epic.Tasks;
         }
-        
-        private bool IsValidEpic(Epic? epic)
+
+        private void IsValidEpic(Epic? epic)
         {
             if (epic == null)
                 throw new EpicNotValidException("Epic is null");
@@ -76,12 +71,6 @@ namespace TaskPanelLibrary.Service
                 throw new EpicNotValidException("Epic title is null or empty");
             if (string.IsNullOrEmpty(epic.Description))
                 throw new EpicNotValidException("Epic description is null or empty");
-            if (epic.DueDateTime == null)
-                throw new EpicNotValidException("Epic due date is null");
-            if (epic.Priority == null)
-                throw new EpicNotValidException("Epic priority is null");
-            
-            return true;
         }
     }
 }

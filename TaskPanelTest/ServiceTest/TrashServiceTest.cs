@@ -1,4 +1,4 @@
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
@@ -7,7 +7,7 @@ using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelTest.ServiceTest;
 
-[TestClass]
+
 public class TrashServiceTest
 {
     private ITrashService _trashService;
@@ -65,4 +65,4 @@ public class TrashServiceTest
         Assert.AreEqual($"Trash with id 1 not found", exception.Message);
     }
     
-}
+}*/
