@@ -154,7 +154,7 @@ public class TrashService : ITrashService
     public bool IsFull(int trashId)
     {
         var trash = _trashSqlRepository.GetTrashById(trashId);
-        return (trash.TaskList.Count + trash.PanelList.Count) >= MaxCapacity;
+        return (trash.TaskList.Count + trash.PanelList.Count + trash.EpicList.Count) >= MaxCapacity;
     }
 
     private int Count(int trashId)
