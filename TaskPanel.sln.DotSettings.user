@@ -14,18 +14,14 @@
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002ECodeDom_002ECompiler_002EGeneratedCodeAttribute/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002EDiagnostics_002ECodeAnalysis_002EExcludeFromCodeCoverageAttribute/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/Filtering/ExcludeAttributeFilters/=System_002EDiagnostics_002ECodeAnalysis_002EExcludeFromCodeCoverageAttribute/@EntryIndexRemoved">True</s:Boolean>
-	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/Users/franciscososa/Library/Caches/JetBrains/Rider2022.3/resharper-host/temp/Rider/vAny/CoverageData/_TaskPanel.1826625369/Snapshot/snapshot.utdcvr</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=38099f10_002Df58f_002D4caa_002Dae0d_002D820eaee1a8ad/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;TaskPanelTest&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Project Location="/Users/spark/Desktop/ORT/Diseno 1/291719_270092_251817/TaskPanelTest" Presentation="&amp;lt;TaskPanelTest&amp;gt;" /&gt;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=bb56404a_002D6b2d_002D4578_002D9240_002Df2f4c0997241/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="EpicServiceTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e2c7390d_002D7c4c_002D47b6_002D929d_002Dd5f1f9edbd01/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d28979af_002D5ee9_002D4d73_002D95db_002D5bee7598c5de/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="NotificationSqlRepositoryTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.RepositoryTest.SqlRepositories.NotificationSqlRepositoryTests&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
-&lt;/SessionState&gt;</s:String>
+	
+	
+	
 	
 	
 	
@@ -59,15 +55,9 @@
 
 	
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa59535d_002Db46f_002D46bb_002D9d5b_002De204c68e1612/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ImportCsvServiceTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;MSTest::35E6E4B5-A90D-42A1-A3FA-E73D4361D039::net6.0::TaskPanelTest.ServiceTest.ImportCsv.ImportCsvServiceTests&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
-&lt;/SessionState&gt;</s:String>
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=fa6362db_002D968f_002D4624_002Db2a7_002D022d906959e5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddTask #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Solution /&gt;
-&lt;/SessionState&gt;</s:String>
+	
+	
 	
 	
 	
