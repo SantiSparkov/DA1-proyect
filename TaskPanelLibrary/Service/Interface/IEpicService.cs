@@ -13,7 +13,9 @@ namespace TaskPanelLibrary.Service.Interface
         
         public Epic UpdateEpic(Epic epic);
         
-        public Epic DeleteEpic(int id);
+        public Epic RestoreEpic(int epicId, User user);
+        
+        public Epic DeleteEpic(int id, User user);
         
         public List<Task> GetTasksFromEpic(int epicId);
     }

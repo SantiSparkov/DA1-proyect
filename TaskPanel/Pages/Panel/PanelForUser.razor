@@ -22,7 +22,11 @@
             <th>Team Name</th>
             <th>Name</th>
             <th>Description</th>
-            <th class="text-center">Actions</th>
+            @if (isAdmin)
+            {
+                <th class="text-center">Actions</th>
+            }
+            <th class="text-center">Tasks & Epics</th>
         </tr>
         </thead>
         <tbody>
@@ -32,13 +36,16 @@
                 <td>@panel.Team.Name</td>
                 <td>@panel.Name</td>
                 <td>@panel.Description</td>
-                <td class="text-center">
-                    @if (isAdmin)
-                    {
+                @if (isAdmin)
+                {
+                    <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
                         <button class="btn btn-outline-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
-                    }
+                    </td>
+                }
+                <td class="text-center">
                     <button class="btn btn-outline-info btn-sm ml-2" style="margin-left: 5px" @onclick:stopPropagation="true" @onclick="() => NavigateToEpics(panel.Id)">Epics</button>
+                    <button class="btn btn-outline-success btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => NavigationPanel(panel.Id)">Tasks</button>
                 </td>
             </tr>
         }
