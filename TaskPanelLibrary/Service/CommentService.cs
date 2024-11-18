@@ -68,10 +68,7 @@ public class CommentService : ICommentService
         
         if (comment.Status == EStatusComment.RESOLVED && comment.ResolvedBy == null)
             throw new CommentNotValidException("Comment resolved by is null");
-        
-        if (comment.Status == null)
-            throw new CommentNotValidException("Comment status is null");
-        
+
         return true;
     }
 }
