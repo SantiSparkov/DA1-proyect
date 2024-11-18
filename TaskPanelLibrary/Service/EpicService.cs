@@ -61,12 +61,6 @@ namespace TaskPanelLibrary.Service
 
             return _epicRepository.DeleteEpic(id);
         }
-        
-        public List<Task> GetTasksFromEpic(int epicId)
-        {
-            var epic = _epicRepository.GetEpicById(epicId);
-            return epic.Tasks;
-        }
 
         private void IsValidEpic(Epic? epic)
         {

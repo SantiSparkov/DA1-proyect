@@ -10,7 +10,7 @@ public class SqlContext : DbContext
     {
         if (!Database.IsInMemory())
         {
-            Database.Migrate(); //Ejecutara las migracione al crear la BD
+            Database.Migrate();
         }
     }
 

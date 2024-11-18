@@ -1,11 +1,10 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
-using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
-namespace TaskPanelTest.RepositoryTest.CommentRepositoryTest;
+namespace TaskPanelTest.RepositoryTest;
 
 [TestClass]
 public class CommentRepositoryTest

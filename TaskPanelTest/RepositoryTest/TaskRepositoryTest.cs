@@ -1,10 +1,10 @@
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Task;
-using Task = TaskPanelLibrary.Entity.Task;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
+using Task = TaskPanelLibrary.Entity.Task;
 
-namespace TaskPanelTest.RepositoryTest.TaskRepositoryTest;
+namespace TaskPanelTest.RepositoryTest;
 
 [TestClass]
 public class TaskRepositoryTests

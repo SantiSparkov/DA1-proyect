@@ -13,11 +13,11 @@ public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
 
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
     
     public Action OnNotificationAdded { get; set; }
 
-    public NotificationService(INotificationRepository notificationRepository, AuthService authService)
+    public NotificationService(INotificationRepository notificationRepository, IAuthService authService)
     {
         _notificationRepository = notificationRepository;
         _authService = authService;

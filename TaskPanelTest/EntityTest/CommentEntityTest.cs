@@ -3,7 +3,6 @@ using TaskPanelLibrary.Entity.Enum;
 
 namespace TaskPanelTest.EntityTest;
 
-
 [TestClass]
 public class CommentEntityTest
 {
@@ -17,11 +16,11 @@ public class CommentEntityTest
             Message = "Message",
             ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0),
             Status = EStatusComment.RESOLVED,
-            TaskId = 1, 
+            TaskId = 1,
             CreatedBy = new User(),
             CreatedById = 1
         };
-        
+
         // ASSERT
 
         Assert.AreEqual(1, comment.Id);
@@ -32,6 +31,5 @@ public class CommentEntityTest
         Assert.IsNotNull(comment.CreatedBy);
         Assert.AreEqual(1, comment.CreatedById);
         Assert.AreEqual(1, comment.TaskId);
-
     }
 }

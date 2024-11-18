@@ -14,7 +14,5 @@ namespace TaskPanelLibrary.Service.Interface
         public Epic UpdateEpic(Epic epic);
         
         public Epic DeleteEpic(int id);
-        
-        public List<Task> GetTasksFromEpic(int epicId);
     }
 }

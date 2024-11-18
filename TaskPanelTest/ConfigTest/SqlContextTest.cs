@@ -15,7 +15,6 @@ public class SqlContexTest
         return new SqlContext(optionsBuilder.Options);
     }
     
-
     public DbSet<User> Users { get; set; }
     
     public DbSet<Team> Teams { get; set; }
