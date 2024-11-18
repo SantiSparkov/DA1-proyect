@@ -2,84 +2,67 @@
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
-using Microsoft.EntityFrameworkCore;
 using TaskPanelLibrary.Config;
+using TaskPanelTest.ConfigTest;
 
 namespace TaskPanelTest.RepositoryTest.SqlRepositories
 {
     [TestClass]
     public class NotificationSqlRepositoryTests
     {
-        private Mock<DbSet<Notification>> _mockNotificationSet;
-        private Mock<SqlContext> _mockContext;
-        private INotificationRepository _notificationRepository;
+        private SqlContext _sqlContext;
 
+        private INotificationRepository _notificationRepository;
+    
         [TestInitialize]
         public void Initialize()
         {
-            _mockNotificationSet = new Mock<DbSet<Notification>>();
-            _mockContext = new Mock<SqlContext>();
-            _mockContext.Setup(c => c.Notifications).Returns(_mockNotificationSet.Object);
-            _notificationRepository = new NotificationSqlRepository(_mockContext.Object);
+            _sqlContext = new SqlContexTest().CreateMemoryContext();
+            _notificationRepository = new NotificationSqlRepository(_sqlContext);
+        }
+    
+        [TestCleanup]
+        public void CleanUp()
+        {
+            _sqlContext?.Database.EnsureDeleted();
         }
 
         [TestMethod]
-        public void CreateNotification_ShouldAddNotification()
+        public void CreateNotification()
         {
             // Arrange
-            var notification = new Notification
+            Notification notification = new Notification
             {
                 Id = 1,
                 Message = "You have a new task assigned",
                 UserId = 1,
-                User = new User { Id = 1, Name = "John", Email = "john@example.com" }
+                User = new User { Id = 1, Name = "John", Email = "john@example.com", LastName = "LastName", Password = "password"}
             };
 
             // Act
             _notificationRepository.CreateNotification(notification);
 
+            List<Notification> notificationsForUser = _notificationRepository.GetNotifications(notification.UserId);
+
             // Assert
-            _mockNotificationSet.Verify(n => n.Add(It.Is<Notification>(not => not == notification)), Times.Once);
-            _mockContext.Verify(c => c.SaveChanges(), Times.Once);
+            Assert.AreEqual(1, notificationsForUser.Count);
         }
 
         [TestMethod]
-        public void GetNotifications_ShouldReturnNotificationsForUser()
+        public void DeleteNotification()
         {
             // Arrange
-            var notifications = new List<Notification>
-            {
-                new Notification { Id = 1, Message = "First", UserId = 1 },
-                new Notification { Id = 2, Message = "Second", UserId = 1 },
-                new Notification { Id = 3, Message = "Other", UserId = 2 }
-            }.AsQueryable();
-
-            _mockNotificationSet.As<IQueryable<Notification>>().Setup(m => m.Provider).Returns(notifications.Provider);
-            _mockNotificationSet.As<IQueryable<Notification>>().Setup(m => m.Expression).Returns(notifications.Expression);
-            _mockNotificationSet.As<IQueryable<Notification>>().Setup(m => m.ElementType).Returns(notifications.ElementType);
-            _mockNotificationSet.As<IQueryable<Notification>>().Setup(m => m.GetEnumerator()).Returns(notifications.GetEnumerator());
+            Notification notification = new Notification { Id = 1, Message = "To Delete", UserId = 1 };
 
             // Act
-            var result = _notificationRepository.GetNotifications(1);
+            _notificationRepository.CreateNotification(notification);
 
-            // Assert
-            Assert.AreEqual(2, result.Count);
-            Assert.IsTrue(result.All(n => n.UserId == 1));
-        }
-
-        [TestMethod]
-        public void DeleteNotification_ShouldRemoveNotification()
-        {
-            // Arrange
-            var notification = new Notification { Id = 1, Message = "To Delete", UserId = 1 };
-            _mockNotificationSet.Setup(m => m.Find(It.IsAny<int>())).Returns(notification);
-
-            // Act
             _notificationRepository.DeleteNotification(notification.Id);
+            List<Notification> notificationsForUser = _notificationRepository.GetNotifications(notification.UserId);
 
             // Assert
-            _mockNotificationSet.Verify(n => n.Remove(It.Is<Notification>(not => not == notification)), Times.Once);
-            _mockContext.Verify(c => c.SaveChanges(), Times.Once);
+            Assert.AreEqual(0, notificationsForUser.Count);
+
         }
     }
 }
