@@ -47,8 +47,8 @@ public class EpicSqlRepositoryTest
         //Act
         _epicRepository.AddEpic(epic);
         List<Epic> epics = _epicRepository.GetAllEpics();
-        //Assert
         
+        //Assert
         Assert.AreEqual(1, epics.Count);
     }
     
