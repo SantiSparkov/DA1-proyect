@@ -26,11 +26,11 @@ public class PanelService : IPanelService
     public Panel CreatePanel(Panel panel, int userId)
     {
         var user = _userService.GetUserById(userId);
-        panel.CreatorId = user.Id;
         
         if (!IsValidPanel(panel))
             throw new PanelNotValidException("Panel is not valid");
 
+        panel.CreatorId = user.Id;
         var panelSaved = _panelRepository.AddPanel(panel);
         return panelSaved;
     }
