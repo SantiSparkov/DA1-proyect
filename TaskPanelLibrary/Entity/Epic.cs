@@ -20,6 +20,8 @@ public class Epic
     
     public int PanelId { get; set; }
     
+    public bool IsDeleted { get; set; } = false;
+    
     public List<Task> Tasks { get; set; }
     
     public Epic()

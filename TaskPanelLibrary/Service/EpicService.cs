@@ -14,11 +14,14 @@ namespace TaskPanelLibrary.Service
         
         private readonly ITaskService _taskService;
         
-        public EpicService(IEpicRepository epicRepository, IPanelService panelService, ITaskService taskService)
+        private readonly ITrashService _trashService;
+        
+        public EpicService(IEpicRepository epicRepository, IPanelService panelService, ITaskService taskService, ITrashService trashService)
         {
             _epicRepository = epicRepository;
             _panelService = panelService;
             _taskService = taskService;
+            _trashService = trashService;
         }
 
         public Epic CreateEpic(Epic epic, int panelId)
@@ -50,16 +53,37 @@ namespace TaskPanelLibrary.Service
             return epicSaved;
         }
 
-        public Epic DeleteEpic(int id)
+        public Epic DeleteEpic(int id, User user)
         {
             var epic = _epicRepository.GetEpicById(id);
-
-            if (epic.Tasks.Count > 0)
+            
+            if (epic.IsDeleted)
             {
-                throw new EpicNotValidException("Epic has tasks");
+                _trashService.RemoveEpicFromTrash(epic.Id, user.TrashId);
+                _epicRepository.DeleteEpic(epic.Id);
+            }
+            else 
+            {
+                epic.IsDeleted = true;
+                _trashService.AddEpicToTrash(epic, user.TrashId);
+                _epicRepository.UpdateEpic(epic);
+            }
+            
+            return epic;
+        }
+        
+        public Epic RestoreEpic(int epicId, User user)
+        {
+            var epic = _epicRepository.GetEpicById(epicId);
+
+            if (_trashService.GetTrashById(user.TrashId).EpicList.Contains(epic))
+            {
+                _trashService.RecoverEpicFromTrash(epicId, user.TrashId);
+                epic.IsDeleted = false;
+                _epicRepository.UpdateEpic(epic);
             }
 
-            return _epicRepository.DeleteEpic(id);
+            return epic;
         }
 
         private void IsValidEpic(Epic? epic)

@@ -8,6 +8,8 @@ public class Trash
     
     public List<Panel> PanelList { get; set; }
     
+    public List<Epic> EpicList { get; set; }
+    
     public int UserId { get; set; }
     
     public int Elements { get; set; }
@@ -16,5 +18,6 @@ public class Trash
     {
         TaskList = new List<Task>();
         PanelList = new List<Panel>();
+        EpicList = new List<Epic>();
     }
 }

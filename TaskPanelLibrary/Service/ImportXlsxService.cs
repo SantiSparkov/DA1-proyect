@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using TaskPanelLibrary.Entity;
+using Microsoft.VisualBasic.CompilerServices;
+using OfficeOpenXml;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Service.Interface;
-using Task = System.Threading.Tasks.Task;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace TaskPanelLibrary.Service
 {
-    public class ImportCsvService : IImportService
+    public class ImportXlsxService : IImportService
     {
         private readonly ITaskService _taskService;
         
@@ -16,7 +17,7 @@ namespace TaskPanelLibrary.Service
         
         private static readonly int InvalidEpicId = -1;
 
-        public ImportCsvService(ITaskService taskService, IPanelService panelService, IEpicService epicService)
+        public ImportXlsxService(ITaskService taskService, IPanelService panelService, IEpicService epicService)
         {
             _taskService = taskService;
             _panelService = panelService;
@@ -25,67 +26,68 @@ namespace TaskPanelLibrary.Service
 
         public async Task ImportTasksFromFile(IBrowserFile file, string userName)
         {
-            using var stream = file.OpenReadStream();
-            using var reader = new StreamReader(stream);
+            LicenseContext licenseContext = LicenseContext.NonCommercial;
 
             var logFilePath = $"ErroresImport-{userName}.txt";
             using var logFile = new StreamWriter(logFilePath, append: true);
 
-            string line;
 
-            while ((line = await reader.ReadLineAsync()) != null)
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            using var package = new ExcelPackage(memoryStream);
+
+            var worksheet = package.Workbook.Worksheets.First();
+            var rowCount = worksheet.Dimension.Rows;
+
+            for (int row = 1; row <= rowCount; row++)
             {
-                var columns = line.Split(',');
+                var title = worksheet.Cells[row, 1].Text;
+                var description = worksheet.Cells[row, 2].Text;
+                string rowContent = $"Row {row}: {title}, {description}";
 
-                if (columns.Length != 7)
+                if (!DateTime.TryParse(worksheet.Cells[row, 3].Text, out var dueDate))
                 {
-                    LogError(logFile, line, "Invalid format: 7 columns required");
+                    LogError(logFile, rowContent, "Invalid date format.");
                     continue;
                 }
 
-                var title = columns[0];
-                var description = columns[1];
-                if (!DateTime.TryParse(columns[2], out var dueDate))
+                if (!int.TryParse(worksheet.Cells[row, 4].Text, out var panelId))
                 {
-                    LogError(logFile, line, "Invalid date format");
+                    LogError(logFile, rowContent, "Panel ID not found.");
                     continue;
                 }
-
-                if (!int.TryParse(columns[3], out var panelId))
-                {
-                    LogError(logFile, line, "Panel ID not found");
-                    continue;
-                }
-
+                
                 try
                 {
                     _panelService.GetPanelById(panelId);
                 }
                 catch (System.Exception ex)
                 {
-                    LogError(logFile, line, $"Panel ID not found: {ex.Message}");
+                    LogError(logFile, rowContent, $"Panel ID not found: {ex.Message}");
                     continue;
                 }
 
-                if (!Enum.TryParse<EPriority>(columns[4], true, out var priority))
+                if (!Enum.TryParse<EPriority>(worksheet.Cells[row, 5].Text, true, out var priority))
                 {
-                    LogError(logFile, line, "Invalid priority value");
+                    LogError(logFile, rowContent, "Invalid priority value.");
                     continue;
                 }
 
                 int epicId = InvalidEpicId;
-                if (!columns[5].Equals(""))
+                if (!worksheet.Cells[row, 6].Text.Equals(""))
                 {
-                    if (!int.TryParse(columns[5], out epicId))
+                    if (!int.TryParse(worksheet.Cells[row, 6].Text, out epicId))
                     {
-                        LogError(logFile, line, "Invalid Epic ID");
-                        continue;
+                        LogError(logFile, rowContent, "Invalid Epic ID.");
+                        continue;   
                     }
                 }
 
-                if (!int.TryParse(columns[6], out var estimatedEffortHours))
+                if (!int.TryParse(worksheet.Cells[row, 7].Text, out var estimatedEffortHours))
                 {
-                    LogError(logFile, line, "Invalid Estimated Effort Hours");
+                    LogError(logFile, rowContent, "Invalid estimated effort hours.");
                     continue;
                 }
 
@@ -99,14 +101,14 @@ namespace TaskPanelLibrary.Service
                     EpicId = epicId == InvalidEpicId ? null : epicId,
                     InvertedEstimateHour = estimatedEffortHours
                 };
-                
+
                 try
                 {
                     _taskService.CreateTask(task);
                 }
                 catch (System.Exception ex)
                 {
-                    LogError(logFile, line, $"Failed to create task: {ex.Message}");
+                    LogError(logFile, rowContent, $"Failed to create task: {ex.Message}");
                 }
             }
 
