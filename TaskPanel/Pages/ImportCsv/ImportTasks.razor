@@ -1,11 +1,9 @@
 ﻿@page "/import-tasks"
-@using Castle.Components.DictionaryAdapter.Xml
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
 @inject ImportCsvService ImportCsvService
-
 
 <title>Import Tasks</title>
 
@@ -13,7 +11,7 @@
 
 <form @onsubmit="HandleFileUpload">
     <div class="form-group mb-3">
-        <label for="taskFile" class="font-weight-bold">Upload File:</label>
+        <label for="taskFile" class="font-weight-bold">Upload CSV file:</label>
         <InputFile OnChange="HandleFileSelected" class="form-control-file"/>
     </div>
 
@@ -47,18 +45,14 @@
     {
         if (_selectedFile == null)
         {
-            _errorMessage = "Please select a file to upload.";
+            _errorMessage = "Please select a CSV file to upload.";
             return;
         }
 
         try
         {
             var user = AuthService.GetCurrentUser();
-
-            string extension = Path.GetExtension(_selectedFile.Name)?.ToLower();
-            var importService = ImportServiceFactory.GetImportService(extension);
-
-            await importService.ImportTasksFromFile(_selectedFile, user.Name);
+            await ImportCsvService.ImportTasksFromFile(_selectedFile, user.Name);
             _successMessage = "Tasks imported successfully!";
             _errorMessage = string.Empty;
         }

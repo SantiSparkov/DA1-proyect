@@ -8,6 +8,7 @@
 @inject IAuthService AuthService;
 @inject NavigationManager Navigation;
 @inject ITrashService TrashService;
+@inject ITeamService ITeamService
                             
 <title>Panels for Team</title>
 
@@ -106,8 +107,7 @@ else
     {
         try
         {
-            // Get the team name
-            var team = TeamService.GetTeamById(idTeam);
+            var team = ITeamService.GetTeamById(idTeam);
             teamName = team?.Name ?? "Unknown Team";
 
             _activePanels = PanelService.GetAllPanelForTeam(idTeam).Where(p => !p.IsDeleted).DistinctBy(p => p.Id).ToList();

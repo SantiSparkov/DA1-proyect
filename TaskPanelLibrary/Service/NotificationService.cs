@@ -1,3 +1,4 @@
+using Microsoft.Identity.Client;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception;
@@ -13,11 +14,11 @@ public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
 
-    private readonly IAuthService _authService;
+    private readonly IUserService _userService;
     
     public Action OnNotificationAdded { get; set; }
 
-    public NotificationService(INotificationRepository notificationRepository, IAuthService authService)
+    public NotificationService(INotificationRepository notificationRepository, IUserService userService)
     {
         _notificationRepository = notificationRepository;
         _userService = userService;

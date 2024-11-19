@@ -2,9 +2,10 @@
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
-@inject IEpicService EpicService
+@inject IEpicService IEpicService
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject ITrashService ITrashService
 
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Epics for Panel</h1>
@@ -107,9 +108,9 @@ else
     {
         try
         {
-            epics = EpicService.GetAllEpicsByPanelId(panelId);
+            epics = IEpicService.GetAllEpicsByPanelId(panelId);
             var userTrashId = AuthService.GetCurrentUser().TrashId;
-            var trash = TrashService.GetTrashById(userTrashId);
+            var trash = ITrashService.GetTrashById(userTrashId);
 
             deletedEpics = trash.EpicList.Where(e => e.PanelId == panelId).ToList();
         }
@@ -149,7 +150,7 @@ else
     {
         try
         {
-            EpicService.DeleteEpic(epic.Id, AuthService.GetCurrentUser());
+            IEpicService.DeleteEpic(epic.Id, AuthService.GetCurrentUser());
             LoadEpics();
         }
         catch (Exception ex)
@@ -162,7 +163,7 @@ else
     {
         try
         {
-            EpicService.RestoreEpic(epic.Id, AuthService.GetCurrentUser());
+            IEpicService.RestoreEpic(epic.Id, AuthService.GetCurrentUser());
             LoadEpics();
         }
         catch (Exception ex)
@@ -175,8 +176,8 @@ else
     {
         try
         {
-            TrashService.RemoveEpicFromTrash(epicId, AuthService.GetCurrentUser().TrashId);
-            EpicService.DeleteEpic(epicId, AuthService.GetCurrentUser());
+            ITrashService.RemoveEpicFromTrash(epicId, AuthService.GetCurrentUser().TrashId);
+            IEpicService.DeleteEpic(epicId, AuthService.GetCurrentUser());
             LoadEpics();
         }
         catch (Exception ex)
