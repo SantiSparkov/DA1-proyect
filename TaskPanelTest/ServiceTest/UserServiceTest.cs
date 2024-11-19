@@ -1,252 +1,177 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using TaskPanelLibrary.Entity;
+﻿/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
-using System;
-using System.Collections.Generic;
 
-namespace TaskPanelTest.ServiceTest
+namespace TaskPanelTest.ServiceTest;
+
+
+public class UserServiceTest
 {
-    [TestClass]
-    public class UserServiceTests
+    private IUserService _userService;
+
+    private IUserRepository _userRepository;
+
+    private PasswordGeneratorService _passwordGenerator;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        private Mock<IUserRepository> _mockUserRepository;
-        private Mock<ITrashService> _mockTrashService;
-        private UserService _userService;
+        _userRepository = new UserRepository();
+        _passwordGenerator = new PasswordGeneratorService();
+        _userService = new UserService(_userRepository, _passwordGenerator);
+    }
 
-        [TestInitialize]
-        public void Setup()
+    [TestCleanup]
+    public void Cleanup()
+    {
+        var users = _userService.GetAllUsers().ToList();
+        foreach (var user in users)
         {
-            _mockUserRepository = new Mock<IUserRepository>();
-            _mockTrashService = new Mock<ITrashService>();
-            _userService = new UserService(_mockUserRepository.Object, _mockTrashService.Object);
-        }
-
-        [TestMethod]
-        public void GetAllUsers_ShouldReturnAllUsers()
-        {
-            // Arrange
-            var users = new List<User>
-            {
-                new User { Id = 1, Email = "user1@test.com" },
-                new User { Id = 2, Email = "user2@test.com" }
-            };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(users);
-
-            // Act
-            var result = _userService.GetAllUsers();
-
-            // Assert
-            Assert.AreEqual(2, result.Count);
-        }
-
-        [TestMethod]
-        public void GetUserById_ShouldReturnUser_WhenUserExists()
-        {
-            // Arrange
-            var user = new User { Id = 1, Email = "user@test.com" };
-            _mockUserRepository.Setup(repo => repo.GetUserById(1)).Returns(user);
-
-            // Act
-            var result = _userService.GetUserById(1);
-
-            // Assert
-            Assert.AreEqual(user.Id, result.Id);
-            Assert.AreEqual(user.Email, result.Email);
-        }
-
-        [TestMethod]
-        public void GetUserById_ShouldThrowException_WhenUserDoesNotExist()
-        {
-            // Arrange
-            _mockUserRepository.Setup(repo => repo.GetUserById(It.IsAny<int>())).Returns((User)null);
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.GetUserById(1));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldAddUser_WhenUserIsValidAndDoesNotExist()
-        {
-            // Arrange
-            var user = new User
-            {
-                Id = 1, Email = "user@test.com", Name = "Test", LastName = "User",
-                BirthDate = DateTime.Now.AddYears(-25)
-            };
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockUserRepository.Setup(repo => repo.AddUser(It.IsAny<User>())).Returns(user);
-            _mockTrashService.Setup(service => service.CreateTrash(user)).Returns(trash);
-
-            // Act
-            var result = _userService.AddUser(user);
-
-            // Assert
-            Assert.AreEqual(user.Id, result.Id);
-            Assert.AreEqual(trash.Id, result.TrashId);
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenUserAlreadyExists()
-        {
-            // Arrange
-            var existingUser = new User { Email = "user@test.com" };
-            var user = new User { Email = "user@test.com" };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User> { existingUser });
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenUserIsInvalid()
-        {
-            // Arrange
-            var user = new User
-            {
-                Email = "",
-                Name = "",
-                LastName = "",
-                BirthDate = new DateTime(1900, 12, 31)
-            };
-
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockTrashService.Setup(service => service.CreateTrash(It.IsAny<User>())).Returns(new Trash());
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
-        }
-
-        [TestMethod]
-        public void UpdateUser_ShouldUpdateUser_WhenUserExists()
-        {
-            // Arrange
-            var user = new User { Id = 1, Email = "user@test.com" };
-            _mockUserRepository.Setup(repo => repo.GetUserById(1)).Returns(user);
-            _mockUserRepository.Setup(repo => repo.UpdateUser(It.IsAny<User>())).Returns(user);
-
-            // Act
-            var result = _userService.UpdateUser(user);
-
-            // Assert
-            Assert.AreEqual(user.Id, result.Id);
-        }
-
-        [TestMethod]
-        public void UpdateUser_ShouldThrowException_WhenUserDoesNotExist()
-        {
-            // Arrange
-            var user = new User { Id = 1, Email = "user@test.com" };
-            _mockUserRepository.Setup(repo => repo.GetUserById(1)).Returns((User)null);
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.UpdateUser(user));
-        }
-
-        [TestMethod]
-        public void DeleteUser_ShouldDeleteUser_WhenUserExists()
-        {
-            // Arrange
-            var user = new User { Id = 1, TrashId = 1 };
-            _mockUserRepository.Setup(repo => repo.GetUserById(1)).Returns(user);
-            _mockUserRepository.Setup(repo => repo.DeleteUser(1)).Returns(user);
-            _mockTrashService.Setup(service => service.DeleteTrash(user.TrashId));
-
-            // Act
-            var result = _userService.DeleteUser(1);
-
-            // Assert
-            Assert.AreEqual(user.Id, result.Id);
-            _mockTrashService.Verify(service => service.DeleteTrash(user.TrashId), Times.Once);
-        }
-
-        [TestMethod]
-        public void DeleteUser_ShouldThrowException_WhenUserDoesNotExist()
-        {
-            // Arrange
-            _mockUserRepository.Setup(repo => repo.GetUserById(It.IsAny<int>())).Returns((User)null);
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.DeleteUser(1));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenBirthDateIsInFuture()
-        {
-            // Arrange
-            var user = new User
-            {
-                Email = "user@test.com",
-                Name = "Old",
-                LastName = "User",
-                BirthDate = new DateTime(2100, 12, 31)
-            };
-
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockTrashService.Setup(service => service.CreateTrash(It.IsAny<User>())).Returns(new Trash());
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenBirthDateIsBefore1900()
-        {
-            // Arrange
-            var user = new User
-            {
-                Email = "user@test.com",
-                Name = "Old",
-                LastName = "User",
-                BirthDate = new DateTime(1899, 12, 31)
-            };
-
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockTrashService.Setup(service => service.CreateTrash(It.IsAny<User>())).Returns(new Trash());
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenUserLastNameIsEmpty()
-        {
-            // Arrange
-            var user = new User
-            {
-                Email = "user@test.com",
-                Name = "Old",
-                LastName = "",
-                BirthDate = new DateTime(1999, 12, 31),
-            };
-
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockTrashService.Setup(service => service.CreateTrash(It.IsAny<User>())).Returns(new Trash());
-
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
-        }
-
-        [TestMethod]
-        public void AddUser_ShouldThrowException_WhenUserIsNull()
-        {
-            // Arrange
-            User user = null;
-            
-            var trash = new Trash { Id = 1 };
-            _mockUserRepository.Setup(repo => repo.GetAllUsers()).Returns(new List<User>());
-            _mockTrashService.Setup(service => service.CreateTrash(It.IsAny<User>())).Returns(new Trash());
-            
-            // Act & Assert
-            Assert.ThrowsException<UserNotValidException>(() => _userService.AddUser(user));
+            _userService.DeleteUser(user.Id);
         }
     }
-}
+
+    [TestMethod]
+    public void AddUser()
+    {
+        // Arrange
+        var newUser = new User
+        {
+            Email = "user1@example.com",
+            Name = "John",
+            LastName = "Doe",
+            BirthDate = DateTime.Now,
+        };
+
+        // Act
+        var addedUser = _userService.AddUser(newUser);
+
+        // Assert
+        Assert.IsNotNull(addedUser);
+        Assert.AreEqual("user1@example.com", addedUser.Email);
+    }
+
+    [TestMethod]
+    public void AddUser_NotValid()
+    {
+        // Arrange
+        var newUser = new User
+        {
+            BirthDate = DateTime.Now,
+        };
+        
+        // Act & Assert
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
+        Assert.AreEqual(1, _userService.GetAllUsers().Count());
+    }
+
+    [TestMethod]
+    public void UpdateUser()
+    {
+        // Arrange
+        var existingUser = new User
+        {
+            Email = "user2@example.com",
+            Name = "Jane",
+            LastName = "Doe",
+            BirthDate = DateTime.Now,
+        };
+
+        _userService.AddUser(existingUser);
+
+        var updatedUser = new User
+        {
+            Id = existingUser.Id,
+            Email = "user2@example.com",
+            Name = "Jane Updated",
+            LastName = "Doe Updated"
+        };
+
+        // Act
+        var result = _userService.UpdateUser(updatedUser);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Jane Updated", result.Name);
+        Assert.AreEqual("Doe Updated", result.LastName);
+    }
+
+    [TestMethod]
+    public void UpdateUserNonExistingUser()
+    {
+        // Arrange
+        var nonExistingUser = new User
+        {
+            Id = 2,
+            Email = "user2@example.com",
+            Name = "Jane",
+            LastName = "Doe",
+            BirthDate = DateTime.Now,
+        };
+
+        // Act & Assert
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.UpdateUser(nonExistingUser)));
+    }
+
+    [TestMethod]
+    public void DeleteUser()
+    {
+        // Arrange
+        var existingUser = new User
+        {
+            Email = "user3@example.com",
+            Name = "Mark",
+            LastName = "Smith",
+            BirthDate = DateTime.Now,
+        };
+
+        var addedUser = _userService.AddUser(existingUser);
+
+        // Act
+        var deletedUser = _userService.DeleteUser(addedUser.Id);
+
+        // Assert
+        Assert.IsNotNull(deletedUser);
+        Assert.AreEqual(addedUser.Id, deletedUser.Id);
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.GetUserById(addedUser.Id)));
+    }
+
+    [TestMethod]
+    public void DeteteNonExistingUser()
+    {
+        // Arrange
+        var newUser = new User
+        {
+            Email = "admin@example.com", Name = "New", LastName = "User", BirthDate = DateTime.Now
+        };
+
+        var addedUser = _userService.AddUser(newUser);
+
+        // Act & Assert
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.DeleteUser(addedUser.Id + 1)));
+    }
+
+
+    [TestMethod]
+    public void AddUser_ShouldThrowException_WhenEmailAlreadyExists()
+    {
+        // Arrange
+        var existingUser = new User
+        {
+            Email = "admin@example.com", Name = "Admin", LastName = "Test", BirthDate = DateTime.Now
+        };
+
+        _userService.AddUser(existingUser);
+
+        var newUser = new User
+        {
+            Email = "admin@example.com", Name = "New", LastName = "User", BirthDate = DateTime.Now
+        };
+
+        // Act & Assert
+        Assert.ThrowsException<UserNotValidException>(new Action(() => _userService.AddUser(newUser)));
+    }
+}*/

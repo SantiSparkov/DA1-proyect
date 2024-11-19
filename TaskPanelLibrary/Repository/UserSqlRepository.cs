@@ -1,9 +1,9 @@
 using TaskPanelLibrary.Config;
 using TaskPanelLibrary.Service.Interface;
-using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Repository.Interface;
 
-namespace TaskPanelLibrary.Repository;
+namespace TaskPanelLibrary.Repository.Interface;
+
+using TaskPanelLibrary.Entity;
 
 public class UserSqlRepository : IUserRepository
 {

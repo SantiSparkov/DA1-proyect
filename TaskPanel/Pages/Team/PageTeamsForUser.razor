@@ -1,7 +1,10 @@
 @page "/teams/user/{idUser:int}"
-
+@using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Service.Interface
+
 @inject ITeamService TeamService
+
+@inject Panels Panels;
 
 <title>PageTeamsForUser</title>
 
@@ -34,6 +37,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        Panels.createTeamAndPanel();
         teams = TeamService.TeamsForUser(idUser);
     }
 

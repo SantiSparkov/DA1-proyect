@@ -9,7 +9,7 @@ namespace TaskPanelTest.ServiceTest
     public class AuthServiceTests
     {
         private Mock<IUserService> _userServiceMock;
-        private IAuthService _authService;
+        private AuthService _authService;
         private List<User> _users;
 
         [TestInitialize]

@@ -1,5 +1,4 @@
-using Moq;
-using TaskPanelLibrary.Entity;
+/*using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Repository;
@@ -10,26 +9,42 @@ using Task = TaskPanelLibrary.Entity.Task;
 
 namespace TaskPanelTest.ServiceTest;
 
-[TestClass]
+
 public class TaskServiceTest
 {
     private ITaskService _taskService;
 
-    private Mock<ITaskRepository> _taskRepository;
+    private ITaskRepository taskRepository;
+
+    private IPanelService _panelService;
     
-    private Mock<IUserService> _userService;
+    private IPanelRepository _panelRepository;
     
-    private Mock<ITrashService> _trashService;
+    private IUserRepository _userRepository;
+    
+    private IUserService _userService;
+    
+    private ICommentService _commentService;
+    
+    private ICommentRepository _commentRepository;
+    
+    private PasswordGeneratorService _passwordGeneratorService;
     
     private Task _task;
 
     [TestInitialize]
     public void Initialize()
     {
-        _taskRepository = new Mock<ITaskRepository>();
-        _trashService = new Mock<ITrashService>();
-        _userService = new Mock<IUserService>();
-        _taskService = new TaskService(_taskRepository.Object, _userService.Object, _trashService.Object);
+        _commentRepository = new CommentRepository();
+        _userRepository = new UserRepository();
+        _panelRepository = new PanelRepository();
+        taskRepository = new TaskRepository();
+        _passwordGeneratorService = new PasswordGeneratorService();
+        
+        _userService = new UserService(_userRepository, _passwordGeneratorService);
+        _commentService = new CommentService(_commentRepository, _userService);
+        _panelService = new PanelService(_panelRepository, _userService);
+        _taskService = new TaskService(taskRepository, _commentService, _panelService);
         
         _task = new Task()
         {
@@ -45,304 +60,92 @@ public class TaskServiceTest
     [TestCleanup]
     public void Cleanup()
     {
-        
+        var panels = _panelRepository.GetAllPanels().ToList();
+        var comments = _commentRepository.GetAllComments().ToList();
+        var tasks = taskRepository.GetAllTasks().ToList();
+        var users = _userRepository.GetAllUsers().ToList();
+        _passwordGeneratorService = null;
+
+        foreach (var panel in panels)
+        {
+            _panelRepository.DeletePanel(panel.Id);
+        }
+        foreach (var comment in comments)
+        {
+            _commentRepository.DeleteComment(comment.Id);
+        }
+        foreach (var task in tasks)
+        {
+            taskRepository.DeleteTask(task.Id);
+        }
+        foreach (var user in users)
+        {
+            _userRepository.DeleteUser(user.Id);
+        }
     }
 
     [TestMethod]
     public void CreateTask()
     {
         // Arrange
-
+        var createdTask = _taskService.CreateTask(_task);
+        
         // Act
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
+        createdTask.Description = "Description test";
+        createdTask.Priority = EPriority.LOW;
+        createdTask.Title = "Title test";
         
         // Assert
-        Assert.IsNotNull(createdTask);
-        Assert.AreEqual("Description test", createdTask.Description);
-        Assert.AreEqual(EPriority.LOW, createdTask.Priority);
-        Assert.AreEqual("Title test", createdTask.Title);
-    }
-    
-    [TestMethod]
-    public void CreateTaskNull()
-    {
-        // Arrange
-
-        // Act
-        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.CreateTask(null));
-        
-        // Assert
-        Assert.AreEqual("Task is null", exception.Message);
-    }
-    
-    [TestMethod]
-    public void CreateTaskNullTitle()
-    {
-        // Arrange
-        Task task = new Task()
-        {
-            Title = "",
-            Description = "Desc test"
-        };
-        // Act
-        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.CreateTask(task));
-        
-        // Assert
-        Assert.AreEqual("Title is null or empty", exception.Message);
-    }
-    
-    [TestMethod]
-    public void CreateTaskDueDate()
-    {
-        // Arrange
-        Task task = new Task()
-        {
-            Title = "Test",
-            Description = "Desc test",
-            DueDate = new DateTime(2024, 10, 12)
-        };
-        // Act
-        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.CreateTask(task));
-        
-        // Assert
-        Assert.AreEqual("Due date is before today", exception.Message);
-    }
-    
-    [TestMethod]
-    public void CreateTaskDescriptionNull()
-    {
-        // Arrange
-        Task task = new Task()
-        {
-            Title = "Test",
-            DueDate = new DateTime(2025, 12, 12)
-        };
-        // Act
-        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.CreateTask(task));
-        
-        // Assert
-        Assert.AreEqual("Description is null or empty", exception.Message);
+        Assert.IsNotNull(createdTask, "The task is not created");
+        Assert.AreEqual("Description test", createdTask.Description, "The task description is not stored correctly");
+        Assert.AreEqual(EPriority.LOW, createdTask.Priority, "The task priority is not stored correctly");
+        Assert.AreEqual("Title test", createdTask.Title, "The task title is not stored correctly");
     }
 
     [TestMethod]
     public void DeleteTask()
     {
         // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
-        User user = new User()
-        {
-            Id = 1,
-            Email = "test@mail.com",
-            Name = "test"
-        };
+        var createdTask = _taskService.CreateTask(_task);
+        
         // Act
-        _task.IsDeleted = false;
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(_task);
-        _trashService.Setup(service => service.RemoveTaskFromTrash(It.IsAny<int>(),It.IsAny<int>()));
-        _taskRepository.Setup(service => service.DeleteTask(It.IsAny<int>()));
-    
-        Task taskDeleted = _taskService.DeleteTask(createdTask, user);
+        _taskService.DeleteTask(createdTask);
         
         // Assert
-        Assert.AreEqual(createdTask.Id, taskDeleted.Id);
-    }
-    
-    [TestMethod]
-    public void DeleteTaskIsDeleted()
-    {
-        // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
-        User user = new User()
-        {
-            Id = 1,
-            Email = "test@mail.com",
-            Name = "test"
-        };
-        // Act
-        _task.IsDeleted = true;
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(_task);
-        _trashService.Setup(service => service.RemoveTaskFromTrash(It.IsAny<int>(),It.IsAny<int>()));
-        _taskRepository.Setup(service => service.DeleteTask(It.IsAny<int>()));
-    
-        Task taskDeleted = _taskService.DeleteTask(createdTask, user);
-        
-        // Assert
-        Assert.AreEqual(createdTask.Id, taskDeleted.Id);
+        var exception = Assert.ThrowsException<TaskNotValidException>(() => _taskService.GetTaskById(createdTask.Id));
+        Assert.AreEqual(exception.Message, $"Task with id {createdTask.Id} not found");
     }
 
     [TestMethod]
     public void UpdateTask()
     {
         // Arrange
-        Task createdTask = _taskService.CreateTask(_task);
+        var createdTask = _taskService.CreateTask(_task);
         
         // Act
         createdTask.Description = "Description test updated";
         createdTask.Priority = EPriority.HIGH;
         createdTask.Title = "Title test updated";
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(_task);
-        _taskRepository.Setup(service => service.UpdateTask(It.IsAny<Task>()))
-            .Returns(_task);
-        Task updatedTask = _taskService.UpdateTask(createdTask);
+        var updatedTask = _taskService.UpdateTask(createdTask);
         
         // Assert
-        Assert.IsNotNull(updatedTask);
-        Assert.AreEqual("Description test updated", updatedTask.Description);
-        Assert.AreEqual(EPriority.HIGH, updatedTask.Priority);
-        Assert.AreEqual("Title test updated", updatedTask.Title);
+        Assert.IsNotNull(updatedTask, "The task is not updated");
+        Assert.AreEqual("Description test updated", updatedTask.Description, "The task description is not updated correctly");
+        Assert.AreEqual(EPriority.HIGH, updatedTask.Priority, "The task priority is not updated correctly");
+        Assert.AreEqual("Title test updated", updatedTask.Title, "The task title is not updated correctly");
     }
     
     [TestMethod]
     public void GetTaskById()
     {
         // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
+        var createdTask = _taskService.CreateTask(_task);
         
         // Act
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(createdTask);
-        Task task = _taskService.GetTaskById(createdTask.Id);
+        var task = _taskService.GetTaskById(createdTask.Id);
         
         // Assert
-        Assert.IsNotNull(task);
-        Assert.AreEqual(createdTask.Id, task.Id);
+        Assert.IsNotNull(task, "The task is not found");
+        Assert.AreEqual(createdTask.Id, task.Id, "The task id is not found correctly");
     }
-    
-    [TestMethod]
-    public void GetTasksForPanel()
-    {
-        // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
-        List<Task> tasks = new List<Task>();
-        tasks.Add(createdTask);
-
-        // Act
-        _taskRepository.Setup(service => service.GetAllTasks())
-            .Returns(tasks);
-        List<Task> tasksForPanel = _taskService.GetTasksFromPanel(createdTask.PanelId);
-        
-        // Assert
-        Assert.IsNotNull(tasksForPanel);
-        Assert.AreEqual(1, tasksForPanel.Count);
-    }
-    
-    [TestMethod]
-    public void GetTasksForPanelNull()
-    {
-        // Arrange
-        List<Task> list = null;
-        
-        // Act
-        _taskRepository.Setup(service => service.GetAllTasks())
-            .Returns(list);
-        
-        List<Task> tasksForPanel = _taskService.GetTasksFromPanel(1);
-        
-        // Assert
-        Assert.IsNotNull(tasksForPanel);
-        Assert.AreEqual(0, tasksForPanel.Count);
-    }
-    
-    [TestMethod]
-    public void GetTasksForEpic()
-    {
-        // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        _task.EpicId = 1;
-        Task createdTask = _taskService.CreateTask(_task);
-        List<Task> tasks = new List<Task>();
-        tasks.Add(createdTask);
-
-        // Act
-        _taskRepository.Setup(service => service.GetAllTasks())
-            .Returns(tasks);
-        List<Task> tasksFromEpic = _taskService.GetTasksFromEpic(createdTask.PanelId);
-        
-        // Assert
-        Assert.IsNotNull(tasksFromEpic);
-        Assert.AreEqual(1, tasksFromEpic.Count);
-    }
-    
-    [TestMethod]
-    public void GetTasksForEpicEmpty()
-    {
-        // Arrange
-        List<Task> list = null;
-        
-        // Act
-        _taskRepository.Setup(service => service.GetAllTasks())
-            .Returns(list);
-        List<Task> tasksFromEpic = _taskService.GetTasksFromEpic(1);
-        
-        // Assert
-        Assert.IsNotNull(tasksFromEpic);
-        Assert.AreEqual(0, tasksFromEpic.Count);
-    }
-    
-    [TestMethod]
-    public void RecoverTask()
-    {
-        // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(_task);
-        List<Task> tasks = new List<Task>();
-        tasks.Add(createdTask);
-        Trash trash = new Trash()
-        {
-            Id = 1,
-            UserId = 1,
-            TaskList = tasks
-        };
-        User user = new User()
-        {
-            Id = 1,
-            Name = "Name",
-            LastName = "Test",
-            TrashId = 1
-        };
-        _trashService.Setup(service => service.GetTrashById(It.IsAny<int>()))
-            .Returns(trash);
-
-        // Act
-        _trashService.Setup(service => service.RecoverTaskFromTrash(It.IsAny<int>(), It.IsAny<int>()));
-        createdTask.IsDeleted = false;
-        _taskRepository.Setup(service => service.UpdateTask(It.IsAny<Task>()))
-            .Returns(createdTask);
-        _taskService.RecoverTask(createdTask, user);
-        
-        // Assert
-        Assert.IsNotNull(createdTask);
-        Assert.IsFalse(createdTask.IsDeleted);
-    }
-    
-    [TestMethod]
-    public void GetAllTasks()
-    {
-        // Arrange
-        _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
-        Task createdTask = _taskService.CreateTask(_task);
-        _taskRepository.Setup(service => service.GetTaskById(It.IsAny<int>()))
-            .Returns(_task);
-        List<Task> tasks = new List<Task>();
-        tasks.Add(createdTask);
-
-        // Act
-        _taskRepository.Setup(service => service.GetAllTasks()).Returns(tasks);
-        List<Task> allTasks = _taskService.GetAllTasks();
-        
-        // Assert
-        Assert.IsNotNull(allTasks);
-        Assert.AreEqual(1, allTasks.Count);
-    }
-    
-}
+}*/

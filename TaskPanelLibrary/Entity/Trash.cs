@@ -1,3 +1,5 @@
+using TaskPanelLibrary.Exception;
+
 namespace TaskPanelLibrary.Entity;
 
 public class Trash
