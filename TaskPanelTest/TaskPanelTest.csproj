@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.9" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
         <PackageReference Include="Microsoft.Testing.Platform.Extensions.CodeCoverage" Version="17.10.0-preview.23622.1" />
         <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />

@@ -41,22 +41,6 @@ public class CommentService : ICommentService
         throw new CommentNotValidException($"Comment with id: {id} do not exist");
     }
 
-    public Comment DeleteComment(Task task, Comment comment)
-    {
-        List<Comment> comments = task.CommentList;
-        foreach (Comment c in comments)
-        {
-            if (c.Id == comment.Id)
-            {
-                _commentRepository.DeleteComment(comment.Id);
-                comments.Remove(c);
-                return c;
-            }
-        }
-
-        throw new CommentNotValidException($"Not exist comment with id: {comment.Id}, not deleted");
-    }
-
     public Comment UpdateComment(Comment comment)
     {
         Comment commentSaved = GetCommentById(comment.Id);
@@ -67,12 +51,6 @@ public class CommentService : ICommentService
         
         _commentRepository.UpdateComment(commentSaved);
         return commentSaved;
-    }
-
-    
-    public List<Comment> GetAllComments()
-    {
-        return _commentRepository.GetAllComments();
     }
 
     public List<Comment> GetCommentForTask(int taskId)
@@ -90,10 +68,7 @@ public class CommentService : ICommentService
         
         if (comment.Status == EStatusComment.RESOLVED && comment.ResolvedBy == null)
             throw new CommentNotValidException("Comment resolved by is null");
-        
-        if (comment.Status == null)
-            throw new CommentNotValidException("Comment status is null");
-        
+
         return true;
     }
 }

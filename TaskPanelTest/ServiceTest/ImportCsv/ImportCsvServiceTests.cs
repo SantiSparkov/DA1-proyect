@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Moq;
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
 using Task = System.Threading.Tasks.Task;
@@ -57,6 +58,21 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
 
             // Assert
             _mockTaskService.Verify(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()), Times.AtLeastOnce);
+        }
+        
+        [TestMethod]
+        public async Task ImportTasksFromFile_InvalidFile_ShouldNotCreateTasks()
+        {
+            // Arrange
+            var mockFile = CreateAndGetCsvFile("taskImport.csv");
+
+            _mockPanelService.Setup(service => service.GetPanelById(It.IsAny<int>())).Throws(new PanelNotValidException("Panel not valid"));
+
+            // Act
+            await _importCsvService.ImportTasksFromFile(mockFile, "testUser");
+
+            // Assert
+            _mockTaskService.Verify(service => service.CreateTask(It.IsAny<TaskPanelLibrary.Entity.Task>()), Times.Never);
         }
 
         [TestMethod]

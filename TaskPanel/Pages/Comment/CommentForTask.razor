@@ -1,14 +1,11 @@
 @page "/comments/{taskId:int}"
 
-@using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
-@using TaskPanelLibrary.Repository.Interface
 @using TaskPanelLibrary.Service.Interface
 @using Task = TaskPanelLibrary.Entity.Task
 
 @inject ICommentService CommentService
 @inject ITaskService TaskService
-@inject Panels Panels
 @inject NavigationManager Navigation
 
 <title>Comments for Task</title>
@@ -62,8 +59,6 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Panels.createTeamAndPanel();
-        
         comments = CommentService.GetCommentForTask(taskId);
         
         foreach (var comment in comments)

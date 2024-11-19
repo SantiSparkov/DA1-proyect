@@ -13,7 +13,6 @@ public class EpicTest
         //Arrange
         Epic epic = new Epic()
         {
-            Id = 1,
             Title = "Test",
             Priority = EPriority.LOW,
             Description = "Desc test",
@@ -21,6 +20,7 @@ public class EpicTest
             PanelId = 1,
             Tasks = new List<Task>()
         };
+        epic.Id = 1;
         
         // ASSERT
         Assert.AreEqual(1,epic.Id);
