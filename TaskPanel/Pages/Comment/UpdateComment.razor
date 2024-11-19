@@ -1,6 +1,5 @@
 @page "/comment/update/{commentId:int}"
 
-@using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
 @using TaskPanelLibrary.Service
@@ -10,8 +9,7 @@
 @inject ICommentService CommentService
 @inject IUserService UserService
 @inject ITaskService TaskService
-@inject Panels Panels
-@inject AuthService AuthorizationService
+@inject IAuthService AuthorizationService
 @inject INotificationService NotificationService
 @inject NavigationManager Navigation
 
@@ -90,7 +88,6 @@
         comment = CommentService.GetCommentById(commentId);
         var task = TaskService.GetTaskById(comment.TaskId);
         panelId = task.PanelId;
-        Panels.createTeamAndPanel();
     }
 
     private void NavigationUpdateComment(Comment comment)

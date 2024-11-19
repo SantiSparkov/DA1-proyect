@@ -1,7 +1,8 @@
 ﻿@page "/import-tasks"
 @using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject ImportCsvService ImportCsvService
 
 <title>Import Tasks</title>
