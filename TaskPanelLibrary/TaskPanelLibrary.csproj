@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="EPPlus" Version="7.5.0" />
       <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.35" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.35" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
