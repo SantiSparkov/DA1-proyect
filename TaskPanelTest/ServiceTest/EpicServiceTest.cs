@@ -36,7 +36,6 @@ public class EpicServiceTest
     [TestCleanup]
     public void CleanUp()
     {
-        
     }
     
     [TestMethod]
