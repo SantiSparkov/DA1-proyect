@@ -30,9 +30,11 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<PasswordGeneratorService>();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<ImportCsvService>();
 builder.Services.AddScoped<ITrashService, TrashService>();
 builder.Services.AddScoped<IEpicService, EpicService>();
+builder.Services.AddScoped<ImportCsvService>();
+builder.Services.AddScoped<ImportXlsxService>();
+builder.Services.AddScoped<ImportServiceFactory>();
 
 
 //Data for test
