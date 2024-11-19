@@ -21,16 +21,13 @@ public class EpicServiceTest
     
     private Mock<IPanelService> _panelService;
     
-    private Mock<ITaskService>  _taskService;
-    
 
     [TestInitialize]
     public void SetUp()
     {
         _epicRepository = new Mock<IEpicRepository>();
         _panelService = new Mock<IPanelService>();
-        _taskService = new Mock<ITaskService>();
-        _epicService = new EpicService(_epicRepository.Object, _panelService.Object, _taskService.Object);
+        _epicService = new EpicService(_epicRepository.Object, _panelService.Object);
     }
 
     [TestCleanup]
@@ -320,5 +317,39 @@ public class EpicServiceTest
         //Act
         var exception = Assert.ThrowsException<EpicNotValidException>(() => _epicService.DeleteEpic(epic.Id));
         Assert.AreEqual(exception.Message, "Epic has tasks");
+    }
+    
+    [TestMethod]
+    public void GetTasksFromEpic()
+    {
+        //Arrange
+        Epic epic = new Epic()
+        {
+            Title = "Title 1",
+            Description = "Epic test 1",
+            DueDateTime = new DateTime(2023, 12, 12),
+            PanelId = 1,
+            Priority = EPriority.LOW,
+            Tasks = new List<Task>()
+        };
+
+        Task task = new Task()
+        {
+            Id = 1
+        };
+        
+        epic.Tasks.Add(task);
+        
+        
+        _epicRepository.Setup(service => service.GetEpicById(It.IsAny<int>()))
+            .Returns(epic);
+        
+
+        //Act
+        List<Task> tasks = _epicService.GetTasksFromEpic(epic.Id);
+
+        Assert.AreEqual(1, tasks.Count);
+        Assert.AreEqual(1, tasks[0].Id);
+        Assert.IsNotNull(tasks);
     }
 }

@@ -1,8 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
-namespace TaskPanelTest.RepositoryTest;
+namespace TaskPanelTest.RepositoryTest.PanelRepositoryTest;
 
 [TestClass]
 public class PanelRepositoryTest

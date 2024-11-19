@@ -8,10 +8,14 @@ public class SqlContext : DbContext
 {
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
-        if (!Database.IsInMemory())
-        {
-            Database.Migrate();
-        }
+        this.Database.Migrate();
+    }
+
+    public SqlContext getMemoryDataBase()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<SqlContext>();
+        optionsBuilder.UseInMemoryDatabase("DataBaseInMemory");
+        return new SqlContext(optionsBuilder.Options);
     }
 
     public DbSet<User> Users { get; set; }

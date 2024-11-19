@@ -4,11 +4,12 @@
 @using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
 
-@inject IPanelService PanelService;
-@inject IAuthService AuthService;
-@inject NavigationManager Navigation;
-@inject ITrashService TrashService;
-                            
+@inject IPanelService PanelService
+@inject ITeamService TeamService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ITrashService TrashService
+
 <title>Panels for Team</title>
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Panels for Team @teamName</h1>

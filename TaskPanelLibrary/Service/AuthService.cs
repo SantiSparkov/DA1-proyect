@@ -3,7 +3,7 @@ using TaskPanelLibrary.Service.Interface;
 
 namespace TaskPanelLibrary.Service;
 
-public class AuthService : IAuthService
+public class AuthService
 {
     private readonly IUserService _userService;
     

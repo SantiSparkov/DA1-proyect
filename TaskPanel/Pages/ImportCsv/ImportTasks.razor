@@ -1,11 +1,9 @@
 ﻿@page "/import-tasks"
 @using Castle.Components.DictionaryAdapter.Xml
 @using TaskPanelLibrary.Service
-@using TaskPanelLibrary.Service.Interface
 @inject NavigationManager NavigationManager
-@inject IAuthService AuthService
-@inject ImportCsvService ImportCsvService
-
+@inject AuthService AuthService
+@inject ImportServiceFactory ImportServiceFactory
 
 <title>Import Tasks</title>
 

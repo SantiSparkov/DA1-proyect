@@ -3,7 +3,7 @@ using TaskPanelLibrary.Exception.User;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 
-namespace TaskPanelTest.RepositoryTest;
+namespace TaskPanelTest.RepositoryTest.UserRepositoryTest;
 
 [TestClass]
 public class UserRepositoryTests
