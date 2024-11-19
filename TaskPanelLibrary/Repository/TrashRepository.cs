@@ -56,5 +56,9 @@ public class TrashRepository : ITrashRepository
         }
         throw new TrashNotValidException(trash.Id);
     }
-    
+
+    public List<Trash> GetAllTrash()
+    {
+        return _trashes;
+    }
 }
