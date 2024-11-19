@@ -2,13 +2,14 @@
 
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Service
+@using ChartJs.Blazor.PieChart
 @using TaskPanelLibrary.Service.Interface
 @inject IEpicService EpicService
 @inject NavigationManager NavigationManager
 
 <h1 class="text-left text-dark font-weight-bold display-4 mb-4">Epics Report</h1>
 
-@if (epic != null)
+@if (epic.Tasks.Any())
 {
     <div class="d-flex">
         <div style="width: 50%; padding-right: 20px;">
@@ -33,6 +34,11 @@
                 </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <div style="width: 50%; padding-left: 20px;">
+            <h3 class="text-primary">Effort Distribution</h3>
+            <Chart Config="_configurationPastel"></Chart>
         </div>
     </div>
 
@@ -108,7 +114,7 @@
 else
 {
     <div class="alert alert-info mt-4" role="alert">
-        Epic data is not available. Please try again.
+        Epic data is not available. Please add tasks to the epic.
     </div>
 }
 
@@ -119,6 +125,7 @@ else
 @code {
     [Parameter] public int epicId { get; set; }
 
+    private PieConfig _configurationPastel;
     private Epic epic;
     private int estimatedEffort;
     private int investedEffort;
@@ -127,6 +134,7 @@ else
     protected override void OnInitialized()
     {
         LoadEpicDetails();
+        ConfigurePieChart();
     }
 
     private void LoadEpicDetails()
@@ -148,6 +156,39 @@ else
         }
     }
 
+    private void ConfigurePieChart()
+    {
+        _configurationPastel = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Accuracy of Task Estimations"
+                }
+            }
+        };
+
+        var accurateTasks = epic.Tasks.Count(task => task.EstimatioHour == task.InvertedEstimateHour);
+        var underestimatedTasks = epic.Tasks.Count(task => task.EstimatioHour > task.InvertedEstimateHour);
+        var overestimatedTasks = epic.Tasks.Count(task => task.EstimatioHour < task.InvertedEstimateHour);
+
+        foreach (var item in new[] { "Accurate", "Underestimated", "Overestimated" })
+        {
+            _configurationPastel.Data.Labels.Add(item);
+        }
+
+        PieDataset<int> dataset = new PieDataset<int>(new[] { accurateTasks, underestimatedTasks, overestimatedTasks })
+        {
+            BackgroundColor = new[] { "#4CAF50", "#FFC107", "#F44336" },
+            HoverBackgroundColor = new[] { "#45A049", "#FFD54F", "#E57373" }
+        };
+
+        _configurationPastel.Data.Datasets.Add(dataset);
+    }
+
     private void NavigateToTasks()
     {
         NavigationManager.NavigateTo($"/tasks/epic/{epicId}");
@@ -166,4 +207,3 @@ else
     }
 
 }
-

@@ -8,10 +8,10 @@
 @inject IAuthService AuthService;
 @inject NavigationManager Navigation;
 @inject ITrashService TrashService;
-
+                            
 <title>Panels for Team</title>
 
-<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Panels for Team</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Panels for Team @teamName</h1>
 
 @if (_activePanels.Any() || _deletedPanels.Any())
 {
@@ -21,7 +21,11 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th class="text-center">Actions</th>
+            @if (isAdmin)
+            {
+                <th class="text-center">Actions</th>
+            }
+            <th class="text-center">Task & Epics</th>
         </tr>
         </thead>
         <tbody>
@@ -30,13 +34,16 @@
             <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
                 <td>@panel.Name</td>
                 <td>@panel.Description</td>
-                <td class="text-center">
-                    @if (isAdmin)
-                    {
+                @if (isAdmin)
+                {
+                    <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
                         <button class="btn btn-outline-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
-                    }
+                    </td>
+                }
+                <td class="text-center">
                     <button class="btn btn-outline-info btn-sm ml-2" style="margin-left: 5px" @onclick:stopPropagation="true" @onclick="() => NavigateToEpics(panel.Id)">Epics</button>
+                    <button class="btn btn-outline-success btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => NavigationPanel(panel.Id)">Tasks</button>
                 </td>
             </tr>
         }
@@ -72,9 +79,9 @@
 }
 else
 {
-<div class="alert alert-info mt-4" role="alert">
-    There are no panels available. Please create one
-</div>
+    <div class="alert alert-info mt-4" role="alert">
+        There are no panels available. Please create one
+    </div>
 }
 
 <div class="d-flex justify-content-start mt-4">
@@ -86,6 +93,7 @@ else
 
     private List<Panel> _activePanels;
     private List<Panel> _deletedPanels;
+    private string teamName;
     private bool isAdmin;
 
     protected override void OnInitialized()
@@ -98,7 +106,12 @@ else
     {
         try
         {
+            // Get the team name
+            var team = TeamService.GetTeamById(idTeam);
+            teamName = team?.Name ?? "Unknown Team";
+
             _activePanels = PanelService.GetAllPanelForTeam(idTeam).Where(p => !p.IsDeleted).DistinctBy(p => p.Id).ToList();
+
             var currentUser = AuthService.GetCurrentUser();
             var trash = TrashService.GetTrashById(currentUser.TrashId);
             _deletedPanels = trash.PanelList.Where(p => p.Team.Id == idTeam && p.IsDeleted).ToList();
@@ -160,5 +173,4 @@ else
     {
         Navigation.NavigateTo($"/EpicForPanel/{panelId}");
     }
-
 }

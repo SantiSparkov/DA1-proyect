@@ -20,19 +20,19 @@ public class NotificationService : INotificationService
     public NotificationService(INotificationRepository notificationRepository, IAuthService authService)
     {
         _notificationRepository = notificationRepository;
-        _authService = authService;
+        _userService = userService;
     }
 
-    public Notification CreateNotification(int id, string message)
+    public Notification CreateNotification(int userId, string message)
     {
         if (message == "")
             throw new NotificationNotValidException("Notification can not be empty.");
 
         Notification notification = new Notification()
         {
-            Message = "Comment #" + id + " has been resolved. Message: " + message,
-            User = _authService.GetCurrentUser(),
-            UserId = _authService.GetCurrentUser().Id
+            Message = "Comment has been resolved. Message: " + message,
+            User = _userService.GetUserById(userId),
+            UserId = userId
             
         };
         _notificationRepository.CreateNotification(notification);

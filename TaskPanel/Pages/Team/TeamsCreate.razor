@@ -14,7 +14,6 @@
 
 <EditForm Model="_newTeam" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
-    <ValidationSummary class="text-danger"/>
 
     <div class="form-group mb-3">
         <label for="teamName" class="font-weight-bold">Team Name:</label>
@@ -37,7 +36,7 @@
     <div class="form-group mb-3">
         <div class="form-group mb-3">
             <label class="font-weight-bold d-block mb-2">Team Members:</label>
-            <button class="btn btn-outline-info btn-sm" @onclick="OpenUserSelectionModal" @onclick:stopPropagation>Select Team Members</button>
+            <button type="button" class="btn btn-outline-info btn-sm" @onclick="OpenUserSelectionModal" @onclick:stopPropagation>Select Team Members</button>
         </div>
 
         <ul class="list-group mt-2">
@@ -81,7 +80,7 @@
                         if (user.Email != AuthService.GetCurrentUser().Email)
                         {
                             <li class="list-group-item d-flex align-items-center">
-                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/> 
+                                <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/>
                                 <span style="margin-left: 10px">@user.Name (@user.Email)</span>
                             </li>
                         }
@@ -97,6 +96,7 @@
 </div>
 
 @code {
+
     private Team _newTeam = new()
     {
         CreationDate = DateTime.Now,
@@ -190,4 +190,5 @@
         _newTeam.Users = new List<User>(_selectedUsers);
         showUserModal = false;
     }
+
 }

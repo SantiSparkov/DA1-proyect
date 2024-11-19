@@ -32,6 +32,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ImportCsvService>();
 builder.Services.AddScoped<ITrashService, TrashService>();
 builder.Services.AddScoped<IEpicService, EpicService>();
+builder.Services.AddScoped<ImportCsvService>();
+builder.Services.AddScoped<ImportXlsxService>();
+builder.Services.AddScoped<ImportServiceFactory>();
 
 
 
