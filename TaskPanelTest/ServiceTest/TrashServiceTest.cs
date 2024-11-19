@@ -284,7 +284,7 @@ namespace TaskPanelTest.ServiceTest
 
             // Assert
             Assert.AreEqual(panel.Id, result.Id);
-            Assert.AreEqual(0, trash.PanelList.Count); // Panel removido de la lista.
+            Assert.AreEqual(0, trash.PanelList.Count);
         }
 
         [TestMethod]
