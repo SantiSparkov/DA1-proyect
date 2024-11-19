@@ -25,9 +25,7 @@ public class TaskService : ITaskService
 
     public Task CreateTask(Task task)
     {
-        if (!IsValidTask(task))
-            throw new TaskNotValidException(task.Id);
-
+        IsValidTask(task);
         _taskRepository.AddTask(task);
         return task;
     }
