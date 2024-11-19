@@ -1,6 +1,7 @@
 ﻿using Moq;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.Comment;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
 using TaskPanelLibrary.Service.Interface;
@@ -11,7 +12,9 @@ namespace TaskPanelTest.ServiceTest
     public class NotificationServiceTest
     {
         private Mock<INotificationRepository> _mockNotificationRepository;
+        
         private Mock<IAuthService> _mockAuthService;
+        
         private NotificationService _notificationService;
 
         [TestInitialize]

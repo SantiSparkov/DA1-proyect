@@ -1,8 +1,8 @@
 ﻿@page "/login"
 @using TaskPanelLibrary.Entity
-@using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
 @layout LoginLayout
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
 <div class="login-container">
