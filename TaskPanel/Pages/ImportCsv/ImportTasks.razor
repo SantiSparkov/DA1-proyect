@@ -3,7 +3,7 @@
 @using TaskPanelLibrary.Service.Interface
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
-@inject ImportCsvService ImportCsvService
+@inject ImportServiceFactory ImportServiceFactory
 
 <title>Import Tasks</title>
 
@@ -11,7 +11,7 @@
 
 <form @onsubmit="HandleFileUpload">
     <div class="form-group mb-3">
-        <label for="taskFile" class="font-weight-bold">Upload CSV file:</label>
+        <label for="taskFile" class="font-weight-bold">Upload CSV or XLSX File:</label>
         <InputFile OnChange="HandleFileSelected" class="form-control-file"/>
     </div>
 
@@ -45,14 +45,18 @@
     {
         if (_selectedFile == null)
         {
-            _errorMessage = "Please select a CSV file to upload.";
+            _errorMessage = "Please select a file to upload.";
             return;
         }
 
         try
         {
             var user = AuthService.GetCurrentUser();
-            await ImportCsvService.ImportTasksFromFile(_selectedFile, user.Name);
+
+            string extension = Path.GetExtension(_selectedFile.Name)?.ToLower();
+            var importService = ImportServiceFactory.GetImportService(extension);
+
+            await importService.ImportTasksFromFile(_selectedFile, user.Name);
             _successMessage = "Tasks imported successfully!";
             _errorMessage = string.Empty;
         }
