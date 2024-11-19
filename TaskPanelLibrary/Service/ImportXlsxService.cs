@@ -10,8 +10,11 @@ namespace TaskPanelLibrary.Service
     public class ImportXlsxService : IImportService
     {
         private readonly ITaskService _taskService;
+        
         private readonly IPanelService _panelService;
+        
         private readonly IEpicService _epicService;
+        
         private static readonly int InvalidEpicId = -1;
 
         public ImportXlsxService(ITaskService taskService, IPanelService panelService, IEpicService epicService)
@@ -98,16 +101,6 @@ namespace TaskPanelLibrary.Service
                     EpicId = epicId == InvalidEpicId ? null : epicId,
                     InvertedEstimateHour = estimatedEffortHours
                 };
-
-                try
-                {
-                    _epicService.GetEpicById(epicId);
-                }
-                catch (System.Exception ex)
-                {
-                    LogError(logFile, rowContent, $"Epic does not exist: {ex.Message}");
-                    continue;
-                }
 
                 try
                 {

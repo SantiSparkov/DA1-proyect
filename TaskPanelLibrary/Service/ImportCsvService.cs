@@ -13,6 +13,8 @@ namespace TaskPanelLibrary.Service
         private readonly IPanelService _panelService;
         
         private readonly IEpicService _epicService;
+        
+        private static readonly int InvalidEpicId = -1;
 
         public ImportCsvService(ITaskService taskService, IPanelService panelService, IEpicService epicService)
         {
@@ -71,20 +73,14 @@ namespace TaskPanelLibrary.Service
                     continue;
                 }
 
-                if (!int.TryParse(columns[5], out var epicId))
+                int epicId = InvalidEpicId;
+                if (!columns[5].Equals(""))
                 {
-                    LogError(logFile, line, "Invalid Epic ID");
-                    continue;
-                }
-                
-                try
-                {
-                    _epicService.GetEpicById(epicId);
-                }
-                catch (System.Exception ex)
-                {
-                    LogError(logFile, line, "Epic does not exist.");
-                    continue;
+                    if (!int.TryParse(columns[5], out epicId))
+                    {
+                        LogError(logFile, line, "Invalid Epic ID");
+                        continue;
+                    }
                 }
 
                 if (!int.TryParse(columns[6], out var estimatedEffortHours))
@@ -100,7 +96,7 @@ namespace TaskPanelLibrary.Service
                     DueDate = dueDate,
                     PanelId = panelId,
                     Priority = priority,
-                    EpicId = epicId,
+                    EpicId = epicId == InvalidEpicId ? null : epicId,
                     InvertedEstimateHour = estimatedEffortHours
                 };
                 
