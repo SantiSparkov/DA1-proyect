@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Identity.Client;
+using Moq;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
@@ -13,7 +14,7 @@ namespace TaskPanelTest.ServiceTest
     {
         private Mock<INotificationRepository> _mockNotificationRepository;
         
-        private Mock<IAuthService> _mockAuthService;
+        private Mock<IUserService> _userService;
         
         private NotificationService _notificationService;
 
@@ -21,8 +22,8 @@ namespace TaskPanelTest.ServiceTest
         public void Initialize()
         {
             _mockNotificationRepository = new Mock<INotificationRepository>();
-            _mockAuthService = new Mock<IAuthService>();
-            _notificationService = new NotificationService(_mockNotificationRepository.Object, _mockAuthService.Object);
+            _userService = new Mock<IUserService>();
+            _notificationService = new NotificationService(_mockNotificationRepository.Object, _userService.Object);
         }
 
         [TestMethod]
@@ -30,8 +31,7 @@ namespace TaskPanelTest.ServiceTest
         {
             // Arrange
             var currentUser = new User { Id = 1, Name = "John", Email = "john@example.com" };
-            _mockAuthService.Setup(a => a.GetCurrentUser()).Returns(currentUser);
-
+            _mockNotificationRepository.Setup(service => service.CreateNotification(It.IsAny<Notification>()));
             // Act
             var notification = _notificationService.CreateNotification(123, "Task resolved");
 
@@ -89,7 +89,7 @@ namespace TaskPanelTest.ServiceTest
         {
             // Arrange
             var currentUser = new User { Id = 1, Name = "John", Email = "john@example.com" };
-            _mockAuthService.Setup(a => a.GetCurrentUser()).Returns(currentUser);
+            _userService.Setup(a => a.GetUserById(It.IsAny<int>())).Returns(currentUser);
 
             bool eventTriggered = false;
             _notificationService.OnNotificationAdded = () => eventTriggered = true;
