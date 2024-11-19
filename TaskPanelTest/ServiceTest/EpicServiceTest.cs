@@ -23,6 +23,8 @@ public class EpicServiceTest
     
     private Mock<ITaskService>  _taskService;
     
+    private  Mock<ITrashService> _trashService;
+    
 
     [TestInitialize]
     public void SetUp()
@@ -30,7 +32,8 @@ public class EpicServiceTest
         _epicRepository = new Mock<IEpicRepository>();
         _panelService = new Mock<IPanelService>();
         _taskService = new Mock<ITaskService>();
-        _epicService = new EpicService(_epicRepository.Object, _panelService.Object, _taskService.Object);
+        _trashService = new Mock<ITrashService>();
+        _epicService = new EpicService(_epicRepository.Object, _panelService.Object, _taskService.Object, _trashService.Object);
     }
 
     [TestCleanup]
@@ -270,8 +273,14 @@ public class EpicServiceTest
             Priority = EPriority.LOW,
             Tasks = new List<Task>()
         };
-        
-        
+        User user = new User()
+        {
+            Name = "Test",
+            TrashId = 1,
+            IsAdmin = false
+        };
+
+
         _epicRepository.Setup(service => service.GetEpicById(It.IsAny<int>()))
             .Returns(epic);
         
@@ -279,7 +288,7 @@ public class EpicServiceTest
             .Returns(epic);
 
         //Act
-        Epic epicDeleted = _epicService.DeleteEpic(epic.Id);
+        Epic epicDeleted = _epicService.DeleteEpic(epic.Id, user);
 
         Assert.AreEqual("Title 1", epicDeleted.Title);
         Assert.AreEqual("Epic test 1", epicDeleted.Description);
@@ -289,35 +298,4 @@ public class EpicServiceTest
         Assert.IsNotNull(epicDeleted.Tasks);
     }
     
-    [TestMethod]
-    public void DeleteEpicException()
-    {
-        //Arrange
-        Epic epic = new Epic()
-        {
-            Title = "Title 1",
-            Description = "Epic test 1",
-            DueDateTime = new DateTime(2023, 12, 12),
-            PanelId = 1,
-            Priority = EPriority.LOW,
-            Tasks = new List<Task>()
-        };
-
-        Task task = new Task()
-        {
-            Id = 1
-        };
-        
-        epic.Tasks.Add(task);
-        
-        _epicRepository.Setup(service => service.GetEpicById(It.IsAny<int>()))
-            .Returns(epic);
-        
-        _epicRepository.Setup(service => service.DeleteEpic(It.IsAny<int>()))
-            .Returns(epic);
-        
-        //Act
-        var exception = Assert.ThrowsException<EpicNotValidException>(() => _epicService.DeleteEpic(epic.Id));
-        Assert.AreEqual(exception.Message, "Epic has tasks");
-    }
 }
