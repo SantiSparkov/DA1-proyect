@@ -1,19 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using TaskPanelLibrary.Config;
 using TaskPanelLibrary.Entity;
-using Task = TaskPanelLibrary.Entity.Task;
+using Task = System.Threading.Tasks.Task;
 
-namespace TaskPanelLibrary.Config;
+namespace TaskPanelTest.ConfigTest;
 
-public class SqlContext : DbContext
+public class SqlContexTest
 {
-    public SqlContext(DbContextOptions<SqlContext> options) : base(options)
-    {
-        if (!Database.IsInMemory())
-        {
-            Database.Migrate();
-        }
-    }
 
+    public SqlContext CreateMemoryContext()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<SqlContext>();
+        optionsBuilder.UseInMemoryDatabase("DataBaseInMemory");
+        return new SqlContext(optionsBuilder.Options);
+    }
+    
     public DbSet<User> Users { get; set; }
     
     public DbSet<Team> Teams { get; set; }
@@ -29,5 +30,4 @@ public class SqlContext : DbContext
     public DbSet<Epic> Epics { get; set; }
 
     public DbSet<Notification> Notifications { get; set; }
-
 }

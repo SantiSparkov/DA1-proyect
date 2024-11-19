@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using TaskPanelLibrary.Config;
-using TaskPanelLibrary.DataTest;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
@@ -29,7 +28,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<PasswordGeneratorService>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ImportCsvService>();
 builder.Services.AddScoped<ITrashService, TrashService>();
 builder.Services.AddScoped<IEpicService, EpicService>();
 builder.Services.AddScoped<ImportCsvService>();
@@ -37,8 +37,6 @@ builder.Services.AddScoped<ImportXlsxService>();
 builder.Services.AddScoped<ImportServiceFactory>();
 
 
-//Data for test
-builder.Services.AddScoped<Panels>();
 
 // Database configuration
 builder.Services.AddDbContextFactory<SqlContext>(
