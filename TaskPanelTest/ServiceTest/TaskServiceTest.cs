@@ -329,33 +329,6 @@ public class TaskServiceTest
     [TestMethod]
     public void GetAllTasks()
     {
-        // Arrange   
-        var panel = new Panel()
-        {
-            Id = 1,
-            Name = "Panel test",
-            Description = "Description test",
-            Team = new Team()
-            {
-                Id = 1,
-            },
-            Tasks = new List<Task>()
-        };
-        
-        _taskService.CreateTask(_task);
-        panel.Tasks.Add(_task);
-        var createdPanel = _panelService.CreatePanel(panel);
-        
-        // Act
-        var tasks = _taskService.GetAllTasks(panel.Id);
-        
-        // Assert
-        Assert.IsNotNull(tasks, "The tasks are not found");
-    }
-
-    [TestMethod]
-    public void GetAllTasks()
-    {
         // Arrange
         _taskRepository.Setup(service => service.AddTask(It.IsAny<Task>()));
         Task createdTask = _taskService.CreateTask(_task);

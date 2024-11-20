@@ -74,13 +74,13 @@ namespace TaskPanelTest.ServiceTest
         {
             Panel panel = null;
             User user = new User { Id = 1 };
-            
+
             _mockUserService.Setup(service => service.GetUserById(It.IsAny<int>())).Returns(user);
-            
+
             // Act & Assert
             Assert.ThrowsException<PanelNotValidException>(() => _panelService.CreatePanel(panel, user.Id));
         }
-        
+
         [TestMethod]
         public void CreatePanel_ShouldThrowException_WhenPanelDescriptionIsEmpty()
         {
@@ -94,7 +94,7 @@ namespace TaskPanelTest.ServiceTest
             Assert.ThrowsException<PanelNotValidException>(() => _panelService.CreatePanel(panel, 1));
         }
 
-        
+
         [TestMethod]
         public void CreatePanel_ShouldThrowException_WhenPanelTeamIsNull()
         {
@@ -169,7 +169,7 @@ namespace TaskPanelTest.ServiceTest
             var deletedPanel = _panelService.DeletePanel(panel.Id, user);
             Assert.IsTrue(deletedPanel.IsDeleted);
         }
-        
+
         [TestMethod]
         public void DeletePanel_NotDeletedPanel_ShouldDeletePanel()
         {
@@ -179,14 +179,14 @@ namespace TaskPanelTest.ServiceTest
             _mockPanelRepository.Setup(repo => repo.GetPanelById(It.IsAny<int>())).Returns(panel);
             _mockTrashService.Setup(service => service.RemovePanelFromTrash(It.IsAny<int>(), It.IsAny<int>()));
             _mockPanelRepository.Setup(repo => repo.DeletePanel(It.IsAny<int>()));
-            
+
             // Act
             var deletedPanel = _panelService.DeletePanel(panel.Id, user);
-            
+
             // Assert
             Assert.IsTrue(deletedPanel.IsDeleted);
         }
-        
+
         [TestMethod]
         public void DeletePanel_NonAdminUser_ShouldThrowException()
         {
@@ -198,7 +198,7 @@ namespace TaskPanelTest.ServiceTest
             // Act & Assert
             Assert.ThrowsException<PanelNotValidException>(() => _panelService.DeletePanel(panel.Id, user));
         }
-        
+
         [TestMethod]
         public void RestorePanel_NonAdminUser_ShouldThrowException()
         {
@@ -262,62 +262,6 @@ namespace TaskPanelTest.ServiceTest
             // Assert
             Assert.AreEqual(2, result.Count);
         }
-    }
 
-    [TestMethod]
-    public void UpdatePanel_Valid()
-    {
-        //Arrange 
-        Panel panel = _panelService.CreatePanel(_panel);
-        panel.Name = "Panel Test Updated";
-        panel.Description = "Description Test Updated";
-        
-        //Act 
-        Panel panelUpdated = _panelService.UpdatePanel(panel);
-        
-        // Assert
-        Assert.IsNotNull(panelUpdated);
-        Assert.AreEqual(panelUpdated.Name, panel.Name);
-        Assert.AreEqual(panelUpdated.Description, panel.Description);
-    }
-    
-    [TestMethod]
-    public void UpdatePanel_Invalid()
-    {
-        //Arrange 
-        Panel panel = _panelService.CreatePanel(_panel);
-        panel.Name = "Panel Test Updated";
-        panel.Description = "Description Test Updated";
-        
-        //Act 
-        Panel panelUpdated = _panelService.UpdatePanel(panel);
-        
-        // Assert
-        Assert.IsNotNull(panelUpdated);
-        Assert.AreEqual(panelUpdated.Name, panel.Name);
-        Assert.AreEqual(panelUpdated.Description, panel.Description);
-    }
-    
-    [TestMethod]
-    public void DeletePanel_Valid()
-    {
-        //Arrange 
-        Panel panel = _panelService.CreatePanel(_panel);
-        
-        //Act 
-        _panelService.DeletePanel(panel.Id, _user);
-        
-        // Assert
-        Assert.AreEqual(_panelRepository.GetAll().Count, 0);
-    }
-    
-    [TestMethod]
-    public void DeletePanel_Invalid()
-    {
-        //Arrange 
-        Panel panel = _panelService.CreatePanel(_panel);
-        
-        //Act && Assert 
-        Assert.ThrowsException<PanelNotValidException>(() => _panelService.DeletePanel(panel.Id, new User()));
     }
 }
