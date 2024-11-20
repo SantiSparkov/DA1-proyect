@@ -45,6 +45,8 @@ builder.Services.AddDbContextFactory<SqlContext>(
         providerOptions => providerOptions.EnableRetryOnFailure()
         )
 );
+
+builder.WebHost.UseStaticWebAssets();
     
 var app = builder.Build();
 
