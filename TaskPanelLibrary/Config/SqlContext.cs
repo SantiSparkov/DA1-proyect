@@ -8,10 +8,6 @@ public class SqlContext : DbContext
 {
     public SqlContext(DbContextOptions<SqlContext> options) : base(options)
     {
-        if (!Database.IsInMemory())
-        {
-            Database.Migrate();
-        }
     }
 
     public DbSet<User> Users { get; set; }
