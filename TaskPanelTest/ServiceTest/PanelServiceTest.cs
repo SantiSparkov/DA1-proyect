@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TaskPanelTest.ServiceTest
 {
+
     [TestClass]
     public class PanelServiceTests
     {
@@ -83,6 +84,7 @@ namespace TaskPanelTest.ServiceTest
         [TestMethod]
         public void CreatePanel_ShouldThrowException_WhenPanelDescriptionIsEmpty()
         {
+
             // Arrange
             var team = new Team { Id = 1 };
 
@@ -91,6 +93,7 @@ namespace TaskPanelTest.ServiceTest
             // Act & Assert
             Assert.ThrowsException<PanelNotValidException>(() => _panelService.CreatePanel(panel, 1));
         }
+
         
         [TestMethod]
         public void CreatePanel_ShouldThrowException_WhenPanelTeamIsNull()
@@ -259,5 +262,62 @@ namespace TaskPanelTest.ServiceTest
             // Assert
             Assert.AreEqual(2, result.Count);
         }
+    }
+
+    [TestMethod]
+    public void UpdatePanel_Valid()
+    {
+        //Arrange 
+        Panel panel = _panelService.CreatePanel(_panel);
+        panel.Name = "Panel Test Updated";
+        panel.Description = "Description Test Updated";
+        
+        //Act 
+        Panel panelUpdated = _panelService.UpdatePanel(panel);
+        
+        // Assert
+        Assert.IsNotNull(panelUpdated);
+        Assert.AreEqual(panelUpdated.Name, panel.Name);
+        Assert.AreEqual(panelUpdated.Description, panel.Description);
+    }
+    
+    [TestMethod]
+    public void UpdatePanel_Invalid()
+    {
+        //Arrange 
+        Panel panel = _panelService.CreatePanel(_panel);
+        panel.Name = "Panel Test Updated";
+        panel.Description = "Description Test Updated";
+        
+        //Act 
+        Panel panelUpdated = _panelService.UpdatePanel(panel);
+        
+        // Assert
+        Assert.IsNotNull(panelUpdated);
+        Assert.AreEqual(panelUpdated.Name, panel.Name);
+        Assert.AreEqual(panelUpdated.Description, panel.Description);
+    }
+    
+    [TestMethod]
+    public void DeletePanel_Valid()
+    {
+        //Arrange 
+        Panel panel = _panelService.CreatePanel(_panel);
+        
+        //Act 
+        _panelService.DeletePanel(panel.Id, _user);
+        
+        // Assert
+        Assert.AreEqual(_panelRepository.GetAll().Count, 0);
+    }
+    
+    [TestMethod]
+    public void DeletePanel_Invalid()
+    {
+        //Arrange 
+        Panel panel = _panelService.CreatePanel(_panel);
+        
+        //Act && Assert 
+        Assert.ThrowsException<PanelNotValidException>(() => _panelService.DeletePanel(panel.Id, new User()));
     }
 }

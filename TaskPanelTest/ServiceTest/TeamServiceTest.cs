@@ -326,5 +326,173 @@ namespace TaskPanelTest.ServiceTest
             // Assert
             Assert.AreEqual(0, result.Count);
         }
+
+        [TestMethod]
+        public void UpdateTeam()
+        {
+            // Arrange
+            _userService.AddUser(_adminUser);
+
+            var team = new Team
+            {
+                Id = 1,
+                Name = "Team G",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team G"
+            };
+
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
+
+            var updatedTeam = new Team
+            {
+                Id = 1,
+                Name = "Team G Updated",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team G Updated"
+            };
+
+            // Act
+            _teamService.UpdateTeam(updatedTeam, _adminUser.Id);
+            
+            // Assert
+            Assert.AreEqual(updatedTeam.Name, createdTeam.Name);
+            Assert.AreEqual(updatedTeam.TasksDescription, createdTeam.TasksDescription);
+        }
+
+        [TestMethod]
+        public void GetAllTeams()
+        {
+            // Arrange
+            _userService.AddUser(_adminUser);
+
+            var team1 = new Team
+            {
+                Id = 1,
+                Name = "Team H",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team H"
+            };
+
+            var team2 = new Team
+            {
+                Id = 2,
+                Name = "Team I",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team I"
+            };
+
+            var team3 = new Team
+            {
+                Id = 3,
+                Name = "Team J",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team J"
+            };
+
+            _teamService.CreateTeam(team1, _adminUser.Id);
+            _teamService.CreateTeam(team2, _adminUser.Id);
+            _teamService.CreateTeam(team3, _adminUser.Id);
+
+            // Act
+            var teams = _teamService.GetAllTeams();
+            
+            // Assert
+            Assert.AreEqual(3, teams.Count);
+        }
+
+        [TestMethod]
+        public void GetTeamById()
+        {
+            // Arrange
+            _userService.AddUser(_adminUser);
+
+            var team = new Team
+            {
+                Id = 1,
+                Name = "Team K",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team K"
+            };
+
+            var createdTeam = _teamService.CreateTeam(team, _adminUser.Id);
+
+            // Act
+            var teamById = _teamService.GetTeamById(createdTeam.Id);
+            
+            // Assert
+            Assert.AreEqual(createdTeam.Id, teamById.Id);
+        }
+        
+        [TestMethod]
+        public void GetTeamById_TeamDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            _userService.AddUser(_adminUser);
+
+            var team = new Team
+            {
+                Id = 1,
+                Name = "Team L",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team L"
+            };
+
+            _teamService.CreateTeam(team, _adminUser.Id);
+
+            // Act && assert
+            
+            Assert.ThrowsException<TeamNotValidException>(() => _teamService.GetTeamById(2));
+        }
+
+        [TestMethod]
+        public void GetTeamsForUser()
+        {
+            // Arrange
+            _userService.AddUser(_adminUser);
+
+            var team1 = new Team
+            {
+                Id = 1,
+                Name = "Team M",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team M"
+            };
+
+            var team2 = new Team
+            {
+                Id = 2,
+                Name = "Team N",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team N"
+            };
+
+            var team3 = new Team
+            {
+                Id = 3,
+                Name = "Team O",
+                TeamLeader = _adminUser,
+                MaxAmountOfMembers = 5,
+                TasksDescription = "Task description for Team O"
+            };
+
+            _teamService.CreateTeam(team1, _adminUser.Id);
+            _teamService.CreateTeam(team2, _adminUser.Id);
+            _teamService.CreateTeam(team3, _adminUser.Id);
+
+            // Act
+            var teams = _teamService.TeamsForUser(_adminUser.Id);
+            
+            // Assert
+            Assert.AreEqual(3, teams.Count);
+        }
     }
 }

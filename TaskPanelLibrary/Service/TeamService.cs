@@ -152,6 +152,7 @@ public class TeamService : ITeamService
         return true;
     }
 
+
     private bool IsTeamNameUnique(string teamName)
     {
         return _teamRepository.GetAllTeams().All(t => t.Name != teamName);

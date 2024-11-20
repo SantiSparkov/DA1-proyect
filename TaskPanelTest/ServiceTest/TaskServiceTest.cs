@@ -303,6 +303,7 @@ public class TaskServiceTest
             UserId = 1,
             TaskList = tasks
         };
+      
         User user = new User()
         {
             Id = 1,
@@ -324,7 +325,34 @@ public class TaskServiceTest
         Assert.IsNotNull(createdTask);
         Assert.IsFalse(createdTask.IsDeleted);
     }
-    
+
+    [TestMethod]
+    public void GetAllTasks()
+    {
+        // Arrange   
+        var panel = new Panel()
+        {
+            Id = 1,
+            Name = "Panel test",
+            Description = "Description test",
+            Team = new Team()
+            {
+                Id = 1,
+            },
+            Tasks = new List<Task>()
+        };
+        
+        _taskService.CreateTask(_task);
+        panel.Tasks.Add(_task);
+        var createdPanel = _panelService.CreatePanel(panel);
+        
+        // Act
+        var tasks = _taskService.GetAllTasks(panel.Id);
+        
+        // Assert
+        Assert.IsNotNull(tasks, "The tasks are not found");
+    }
+
     [TestMethod]
     public void GetAllTasks()
     {
