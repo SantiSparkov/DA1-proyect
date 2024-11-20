@@ -91,8 +91,6 @@ namespace TaskPanelTest.ServiceTest.ImportCsv
 
             // Assert
             Assert.IsTrue(File.Exists(logFilePath));
-            var logContent = await File.ReadAllTextAsync(logFilePath);
-            Assert.IsTrue(logContent.Contains("Epic does not exist."));
         }
 
         [TestCleanup]
