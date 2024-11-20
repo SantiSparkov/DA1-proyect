@@ -30,20 +30,27 @@ namespace TaskPanelTest.ServiceTest
         public void CreateNotification_ShouldAddNotification()
         {
             // Arrange
-            var currentUser = new User { Id = 1, Name = "John", Email = "john@example.com" };
-            _mockNotificationRepository.Setup(service => service.CreateNotification(It.IsAny<Notification>()));
+            var userId = 123;
+            var currentUser = new User { Id = userId, Name = "John", Email = "john@example.com" };
+            var message = "Task resolved";
+
+            _userService.Setup(service => service.GetUserById(userId))
+                .Returns(currentUser);
+            _mockNotificationRepository.Setup(repo => repo.CreateNotification(It.IsAny<Notification>()));
+
             // Act
-            var notification = _notificationService.CreateNotification(123, "Task resolved");
+            var notification = _notificationService.CreateNotification(userId, message);
 
             // Assert
             _mockNotificationRepository.Verify(
-                n => n.CreateNotification(It.Is<Notification>(not =>
-                    not.Message == "Comment #123 has been resolved. Message: Task resolved" &&
-                    not.UserId == 1 &&
+                repo => repo.CreateNotification(It.Is<Notification>(not =>
+                    not.Message == $"Comment has been resolved. Message: {message}" &&
+                    not.UserId == userId &&
                     not.User == currentUser)),
                 Times.Once
             );
         }
+
 
         [TestMethod]
         public void CreateNotification_ShouldThrowExceptionForEmptyMessage()
