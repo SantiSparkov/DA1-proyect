@@ -7,33 +7,33 @@
 
 @inject ICommentService CommentService
 
-<PageTitle> View Comment Content</PageTitle>
+<title>View Comment Content</title>
 
-<h1> Comment Details</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Comment Details</h1>
 
 @if (comment != null)
 {
-    <div class="card">
-        <div class="card-header">
-            <h3>@comment.Message</h3>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@comment.Message</h5>
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">Comment ID</dt>
+                <dt class="col-sm-3 font-weight-bold">Comment ID</dt>
                 <dd class="col-sm-9">@comment.Id</dd>
 
-                <dt class="col-sm-3">Message</dt>
+                <dt class="col-sm-3 font-weight-bold">Message</dt>
                 <dd class="col-sm-9">@comment.Message</dd>
 
-                <dt class="col-sm-3">Status</dt>
+                <dt class="col-sm-3 font-weight-bold">Status</dt>
                 <dd class="col-sm-9">@comment.Status</dd>
 
                 @if (comment.Status == EStatusComment.RESOLVED)
                 {
-                    <dt class="col-sm-3">Resolved At</dt>
-                    <dd class="col-sm-9">@comment.ResolvedAt.ToString("g")</dd>
+                    <dt class="col-sm-3 font-weight-bold">Resolved At</dt>
+                    <dd class="col-sm-9">@comment.ResolvedAt?.ToString("yyyy-MM-dd")</dd>
 
-                    <dt class="col-sm-3">Resolved By</dt>
+                    <dt class="col-sm-3 font-weight-bold">Resolved By</dt>
                     <dd class="col-sm-9">@comment.ResolvedBy.Name</dd>
                 }
             </dl>
@@ -41,26 +41,24 @@
     </div>
 }
 
-<button class="btn btn-primary mt-3" @onclick="() => NavigationGoBack()">Back</button>
-
+<div class="d-flex justify-content-start">
+    <button class="btn btn-secondary" @onclick="NavigationGoBack">Back</button>
+</div>
 
 @code {
-    [Parameter] 
-    public int commentId { get; set; }
-    
-    [Parameter] 
-    public int taskId { get; set; }
+    [Parameter] public int commentId { get; set; }
 
-    Comment comment;
+    [Parameter] public int taskId { get; set; }
+
+    private Comment comment;
 
     protected override Task OnInitializedAsync()
     {
-        comment = CommentService.FindById(commentId);
+        comment = CommentService.GetCommentById(commentId);
         return base.OnInitializedAsync();
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
+
+    [Inject] private NavigationManager Navigation { get; set; }
 
     private void NavigationGoBack()
     {

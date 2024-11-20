@@ -1,0 +1,209 @@
+@page "/EpicReport/{epicId:int}"
+
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service
+@using ChartJs.Blazor.PieChart
+@using TaskPanelLibrary.Service.Interface
+@inject IEpicService EpicService
+@inject NavigationManager NavigationManager
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Epics Report</h1>
+
+@if (epic.Tasks.Any())
+{
+    <div class="d-flex">
+        <div style="width: 50%; padding-right: 20px;">
+            <h3 class="text-primary">Epic Summary</h3>
+            <table class="table table-bordered table-hover shadow-sm rounded bg-white text-dark">
+                <tbody>
+                <tr>
+                    <th>Title</th>
+                    <td>@epic.Title</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>@epic.Description</td>
+                </tr>
+                <tr>
+                    <th>Priority</th>
+                    <td>@epic.Priority</td>
+                </tr>
+                <tr>
+                    <th>Due Date</th>
+                    <td>@epic.DueDateTime.ToShortDateString()</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="width: 50%; padding-left: 20px;">
+            <h3 class="text-primary">Effort Distribution</h3>
+            <Chart Config="_configurationPastel"></Chart>
+        </div>
+    </div>
+
+    <h3 class="text-warning mt-3">Effort Summary</h3>
+    <table class="table table-bordered table-hover shadow-sm rounded bg-white text-dark">
+        <thead class="thead-light">
+        <tr>
+            <th>Estimated Effort</th>
+            <th>Invested Effort</th>
+            <th>Remaining Effort</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>@estimatedEffort hours</td>
+            <td>@investedEffort hours</td>
+            @if (remainingEffort < 0)
+            {
+                <td class="text-danger">@Math.Abs(remainingEffort) overestimated hours</td>
+            }
+            else
+            {
+                <td>@remainingEffort hours</td>
+            }
+            <td class="text-center">
+                <button class="btn btn-outline-info btn-sm" @onclick="NavigateToTasks">View Tasks</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 class="text-success mt-5">Task Effort Comparison</h3>
+    <table class="table table-bordered table-hover shadow-sm rounded bg-white text-dark">
+        <thead class="thead-light">
+        <tr>
+            <th>Title</th>
+            <th>Estimated Effort</th>
+            <th>Invested Effort</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var task in epic.Tasks)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.EstimatioHour hours</td>
+                <td>@task.InvertedEstimateHour hours</td>
+                <td>
+                    @if (task.IsDeleted)
+                    {
+                        <span class="text-muted">Deleted</span>
+                    }
+                    else if (task.EstimatioHour < task.InvertedEstimateHour)
+                    {
+                        <span class="text-danger">Overestimated</span>
+                    }
+                    else if (task.EstimatioHour > task.InvertedEstimateHour)
+                    {
+                        <span class="text-warning">Underestimated</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">OK</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-4" role="alert">
+        Epic data is not available. Please add tasks to the epic.
+    </div>
+}
+
+<div class="d-flex justify-content-start mt-4">
+    <button class="btn btn-primary text-white" @onclick="NavigationGoBack">Back</button>
+</div>
+
+@code {
+    [Parameter] public int epicId { get; set; }
+
+    private PieConfig _configurationPastel;
+    private Epic epic;
+    private int estimatedEffort;
+    private int investedEffort;
+    private int remainingEffort;
+
+    protected override void OnInitialized()
+    {
+        LoadEpicDetails();
+        ConfigurePieChart();
+    }
+
+    private void LoadEpicDetails()
+    {
+        try
+        {
+            epic = EpicService.GetEpicById(epicId);
+
+            if (epic != null && epic.Tasks.Any())
+            {
+                estimatedEffort = epic.Tasks.Sum(task => task.EstimatioHour);
+                investedEffort = epic.Tasks.Sum(task => task.InvertedEstimateHour);
+                remainingEffort = estimatedEffort - investedEffort;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading epic data: {ex.Message}");
+        }
+    }
+
+    private void ConfigurePieChart()
+    {
+        _configurationPastel = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Accuracy of Task Estimations"
+                }
+            }
+        };
+
+        var accurateTasks = epic.Tasks.Count(task => task.EstimatioHour == task.InvertedEstimateHour);
+        var underestimatedTasks = epic.Tasks.Count(task => task.EstimatioHour > task.InvertedEstimateHour);
+        var overestimatedTasks = epic.Tasks.Count(task => task.EstimatioHour < task.InvertedEstimateHour);
+
+        foreach (var item in new[] { "Accurate", "Underestimated", "Overestimated" })
+        {
+            _configurationPastel.Data.Labels.Add(item);
+        }
+
+        PieDataset<int> dataset = new PieDataset<int>(new[] { accurateTasks, underestimatedTasks, overestimatedTasks })
+        {
+            BackgroundColor = new[] { "#4CAF50", "#FFC107", "#F44336" },
+            HoverBackgroundColor = new[] { "#45A049", "#FFD54F", "#E57373" }
+        };
+
+        _configurationPastel.Data.Datasets.Add(dataset);
+    }
+
+    private void NavigateToTasks()
+    {
+        NavigationManager.NavigateTo($"/tasks/epic/{epicId}");
+    }
+
+    private void NavigationGoBack()
+    {
+        if (epic != null)
+        {
+            NavigationManager.NavigateTo($"/EpicForPanel/{epic.PanelId}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/EpicForPanel");
+        }
+    }
+
+}

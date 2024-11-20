@@ -4,8 +4,66 @@
 @using TaskPanelLibrary.Service.Interface
 @using Task = System.Threading.Tasks.Task
 @inject IUserService UserService
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
+
+<title>Edit User</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Edit User</h1>
+
+@if (_user != null)
+{
+    <EditForm Model="_user" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary class="text-danger"/>
+
+        <div class="form-group mb-3">
+            <label class="font-weight-bold">Name:</label>
+            <InputText @bind-Value="_user.Name" class="form-control"/>
+            <ValidationMessage For="@(() => _user.Name)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="font-weight-bold">Last Name:</label>
+            <InputText @bind-Value="_user.LastName" class="form-control"/>
+            <ValidationMessage For="@(() => _user.LastName)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="font-weight-bold">Email:</label>
+            <InputText @bind-Value="_user.Email" class="form-control"/>
+            <ValidationMessage For="@(() => _user.Email)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="font-weight-bold">Born Date:</label>
+            <InputDate @bind-Value="_user.BirthDate" class="form-control"/>
+            <ValidationMessage For="@(() => _user.BirthDate)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="font-weight-bold">Is Admin:</label>
+            <div class="custom-control custom-checkbox">
+                <InputCheckbox @bind-Value="_user.IsAdmin" class="custom-control-input" id="isAdminCheckbox"/>
+                <label class="custom-control-label" for="isAdminCheckbox">Admin</label>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-start">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" @onclick="CancelEdit">Cancel</button>
+        </div>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-4">@_errorMessage</div>
+}
 
 @code {
     [Parameter] public int Id { get; set; }
@@ -50,56 +108,4 @@
     {
         return _user == null || !AuthService.GetCurrentUser().IsAdmin || _user.IsAdmin || AuthService.GetCurrentUser().Email.Equals(_user.Email);
     }
-
-}
-
-<h3>Edit User</h3>
-
-@if (_user != null)
-{
-    <EditForm Model="_user" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
-
-        <div class="form-group">
-            <label>Name:</label>
-            <InputText @bind-Value="_user.Name" class="form-control"/>
-            <ValidationMessage For="@(() => _user.Name)"/>
-        </div>
-
-        <div class="form-group">
-            <label>Last Name:</label>
-            <InputText @bind-Value="_user.LastName" class="form-control"/>
-            <ValidationMessage For="@(() => _user.LastName)"/>
-        </div>
-
-        <div class="form-group">
-            <label>Email:</label>
-            <InputText @bind-Value="_user.Email" class="form-control"/>
-            <ValidationMessage For="@(() => _user.Email)"/>
-        </div>
-
-        <div class="form-group">
-            <label>Born Date:</label>
-            <InputDate @bind-Value="_user.BirthDate" class="form-control"/>
-            <ValidationMessage For="@(() => _user.BirthDate)"/>
-        </div>
-
-        <div class="form-group">
-            <label>Is Admin:</label>
-            <InputCheckbox @bind-Value="_user.IsAdmin" class="custom-checkbox"/>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
-    </EditForm>
-}
-else
-{
-    <p>Loading...</p>
-}
-
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <div class="alert alert-danger" style="margin-top: 10px">@_errorMessage</div>
 }

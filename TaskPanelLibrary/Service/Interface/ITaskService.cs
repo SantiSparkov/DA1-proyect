@@ -5,17 +5,19 @@ namespace TaskPanelLibrary.Service.Interface;
 
 public interface ITaskService
 {
-    Task GetTaskById(int id);
+    public Task GetTaskById(int id);
     
-    List<Task> GetAllTasks(int panelId);
+    public List<Task> GetTasksFromPanel(int panelId);
     
-    Task CreateTask(Task task);
+    public Task CreateTask(Task task);
     
-    Task UpdateTask(Task task);
+    public Task UpdateTask(Task task);
 
-    Task DeleteTask(Task task);
+    public Task DeleteTask(Task task, User user);
     
-    void AddComentToTask(int taskId, Comment comment);
+    public Task RecoverTask(Task task, User user);
     
-    void MarkCommentAsDone(int taskId, int commentId);
+    public List<Task> GetAllTasks();
+    
+    public List<Task> GetTasksFromEpic(int epicId);
 }

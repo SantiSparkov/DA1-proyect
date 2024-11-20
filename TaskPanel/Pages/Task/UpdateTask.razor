@@ -8,49 +8,54 @@
 
 <title>Update Task</title>
 
-<h1>Update Task</h1>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Update Task</h1>
 
 <EditForm Model="@task" OnValidSubmit="NavigationUpdateTask">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
 
-    <div class="form-group">
-        <label for="taskId">Task Id:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold" for="taskId">Task Id:</label>
         <p>@task.Id</p>
     </div>
 
-    <div class="form-group">
-        <label for="taskTitle">Title:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold" for="taskTitle">Title:</label>
         <InputText id="taskTitle" @bind-Value="task.Title" class="form-control" placeholder="Task Title"/>
-        <ValidationMessage For="@(() => task.Title)"/>
+        <ValidationMessage For="@(() => task.Title)" class="text-danger validation-message"/>
     </div>
 
-    <div class="form-group">
-        <label for="taskPriority">Priority:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold" for="taskPriority">Priority:</label>
         <InputSelect id="taskPriority" @bind-Value="task.Priority" class="form-control">
-            @foreach (var priority in Enum.GetValues(typeof(ETaskPriority)))
+            @foreach (var priority in Enum.GetValues(typeof(EPriority)))
             {
                 <option value="@priority">@priority</option>
             }
         </InputSelect>
-        <ValidationMessage For="@(() => task.Priority)"/>
+        <ValidationMessage For="@(() => task.Priority)" class="text-danger validation-message"/>
     </div>
 
-    <div class="form-group">
-        <label for="taskDescription">Description:</label>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold" for="taskDescription">Description:</label>
         <InputTextArea id="taskDescription" @bind-Value="task.Description" class="form-control" placeholder="Task Description"/>
-        <ValidationMessage For="@(() => task.Description)"/>
+        <ValidationMessage For="@(() => task.Description)" class="text-danger validation-message"/>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="font-weight-bold" for="taskDueDate">Due Date:</label>
+        <InputDate id="taskDueDate" @bind-Value="task.DueDate" class="form-control"/>
+        <ValidationMessage For="@(() => task.DueDate)" class="text-danger validation-message"/>
     </div>
 
     <div class="form-group">
-        <label for="taskDueDate">Due Date:</label>
-        <InputDate id="taskDueDate" @bind-Value="task.DueDate" class="form-control"/>
-        <ValidationMessage For="@(() => task.DueDate)"/>
+        <label for="taskDueDate">Inverted estimate hour:</label>
+        <InputNumber id="taskInvertedEstimate" @bind-Value="task.InvertedEstimateHour" class="form-control"/>
     </div>
 
     <div class="mt-4">
         <button class="btn btn-primary" type="submit">Update</button>
-        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+        <button class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
 
@@ -59,13 +64,19 @@
 
     Task task;
 
+    int estimationHour;
+
     protected override void OnInitialized()
     {
         task = TaskService.GetTaskById(taskId);
+        estimationHour = task.InvertedEstimateHour;
+        task.InvertedEstimateHour = 0;
     }
 
     private void NavigationUpdateTask()
     {
+        estimationHour += task.InvertedEstimateHour;
+        task.InvertedEstimateHour = estimationHour;
         TaskService.UpdateTask(task);
         Navigation.NavigateTo($"/tasks/panel/{task.PanelId}");
     }

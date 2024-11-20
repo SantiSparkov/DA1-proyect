@@ -1,31 +1,34 @@
 ﻿@page "/import-tasks"
 @using TaskPanelLibrary.Service
+@using TaskPanelLibrary.Service.Interface
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
-@inject ImportCsvService ImportCsvService
+@inject IAuthService AuthService
+@inject ImportServiceFactory ImportServiceFactory
 
-<h3>Import Tasks</h3>
+<title>Import Tasks</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Import Tasks</h1>
 
 <form @onsubmit="HandleFileUpload">
-    <div class="form-group">
-        <label for="taskFile">Upload CSV file:</label>
-        <InputFile OnChange="HandleFileSelected" />
+    <div class="form-group mb-3">
+        <label for="taskFile" class="font-weight-bold">Upload CSV or XLSX File:</label>
+        <InputFile OnChange="HandleFileSelected" class="form-control-file"/>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 d-flex justify-content-start">
         <button type="submit" class="btn btn-primary">Import Tasks</button>
-        <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn btn-danger text-white ml-3" style="cursor: pointer; margin-left: 10px;" @onclick="Cancel">Cancel</button>
     </div>
 </form>
 
 @if (!string.IsNullOrEmpty(_errorMessage))
 {
-    <div class="alert alert-danger">@_errorMessage</div>
+    <div class="alert alert-danger mt-4">@_errorMessage</div>
 }
 
 @if (!string.IsNullOrEmpty(_successMessage))
 {
-    <div class="alert alert-success">@_successMessage</div>
+    <div class="alert alert-success mt-4">@_successMessage</div>
 }
 
 @code {
@@ -42,14 +45,18 @@
     {
         if (_selectedFile == null)
         {
-            _errorMessage = "Please select a CSV file to upload.";
+            _errorMessage = "Please select a file to upload.";
             return;
         }
 
         try
         {
             var user = AuthService.GetCurrentUser();
-            await ImportCsvService.ImportTasksFromFile(_selectedFile, user.Name);
+
+            string extension = Path.GetExtension(_selectedFile.Name)?.ToLower();
+            var importService = ImportServiceFactory.GetImportService(extension);
+
+            await importService.ImportTasksFromFile(_selectedFile, user.Name);
             _successMessage = "Tasks imported successfully!";
             _errorMessage = string.Empty;
         }
@@ -64,4 +71,5 @@
     {
         NavigationManager.NavigateTo("/");
     }
+
 }

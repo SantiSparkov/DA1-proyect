@@ -17,7 +17,8 @@ public class UserEntityTest
             BirthDate = new DateTime(2008, 6, 1, 7, 47, 0),
             Password = "password",
             IsAdmin = false,
-            Trash = new Trash()
+            Teams = new List<Team>(),
+            TrashId = 1
         };
         
         //Act 
@@ -28,7 +29,8 @@ public class UserEntityTest
         Assert.AreEqual("email@email.com", user.Email);
         Assert.AreEqual(new DateTime(2008, 6, 1, 7, 47, 0), user.BirthDate);
         Assert.AreEqual("password", user.Password);
+        Assert.AreEqual(1, user.TrashId);
+        Assert.IsNotNull(user.Teams);
         Assert.IsFalse(user.IsAdmin);
-        Assert.IsNotNull(user.Trash);
     }
 }

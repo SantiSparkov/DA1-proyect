@@ -6,7 +6,102 @@
 @inject ITeamService TeamService
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
-@inject AuthService AuthService
+@inject IAuthService AuthService
+
+<title>Edit Team</title>
+
+<h1 class="text-left text-dark display-4 mb-4">Edit Team</h1>
+
+@if (_teamToEdit != null)
+{
+    <EditForm Model="_teamToEdit" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary class="text-danger"/>
+
+        <div class="form-group mb-3">
+            <label for="teamName" class="font-weight-bold">Team Name:</label>
+            <InputText id="teamName" @bind-Value="_teamToEdit.Name" class="form-control"/>
+            <ValidationMessage For="@(() => _teamToEdit.Name)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="taskDescription" class="font-weight-bold">Task Description:</label>
+            <InputTextArea id="taskDescription" @bind-Value="_teamToEdit.TasksDescription" class="form-control"/>
+            <ValidationMessage For="@(() => _teamToEdit.TasksDescription)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="maxMembers" class="font-weight-bold">Max Members:</label>
+            <InputNumber id="maxMembers" @bind-Value="_teamToEdit.MaxAmountOfMembers" class="form-control"/>
+            <ValidationMessage For="@(() => _teamToEdit.MaxAmountOfMembers)" class="text-danger"/>
+        </div>
+
+        <div class="form-group mb-3">
+            <div class="form-group mb-3">
+                <label class="font-weight-bold d-block mb-2">Team Members:</label>
+                <button type="button" class="btn btn-outline-info btn-sm" @onclick="OpenUserSelectionModal" @onclick:stopPropagation>Select Team Members</button>
+            </div>
+
+            <ul class="list-group mt-2">
+                @if (_teamToEdit.Users != null && _teamToEdit.Users.Any())
+                {
+                    @foreach (var user in _teamToEdit.Users)
+                    {
+                        <li class="list-group-item">@user.Name (@user.Email)</li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">No users assigned</li>
+                }
+            </ul>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-start">
+            <button type="submit" class="btn btn-primary">Update Team</button>
+            <button type="button" class="btn btn-danger text-white ml-3" style="margin-left: 10px; cursor: pointer;" @onclick="Cancel">Cancel</button>
+        </div>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <div class="alert alert-danger mt-4">@_errorMessage</div>
+    }
+
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showUserModal ? "block" : "none");" aria-hidden="@(showUserModal ? "false" : "true")">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title">Select Team Members</h5>
+                    <button type="button" class="btn-close text-white" aria-label="Close" @onclick="CloseUserModal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        @foreach (var user in _availableUsers)
+                        {
+                            @if (user.Email != AuthService.GetCurrentUser().Email)
+                            {
+                                <li class="list-group-item d-flex align-items-center">
+                                    <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)" class="mr-2"/>
+                                    <span style="margin-left: 10px">@user.Name (@user.Email)</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="ConfirmUserSelection">Confirm Selection</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseUserModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading team information...</p>
+}
+
 
 @code {
     [Parameter] public int id { get; set; }
@@ -100,92 +195,4 @@
         showUserModal = false;
     }
 
-}
-
-<h3>Edit Team</h3>
-
-@if (_teamToEdit != null)
-{
-    <EditForm Model="_teamToEdit" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator/>
-        <ValidationSummary/>
-
-        <div class="form-group">
-            <label for="teamName">Team Name:</label>
-            <InputText id="teamName" @bind-Value="_teamToEdit.Name" class="form-control"/>
-            <ValidationMessage For="@(() => _teamToEdit.Name)"/>
-        </div>
-
-        <div class="form-group">
-            <label for="taskDescription">Task Description:</label>
-            <InputTextArea id="taskDescription" @bind-Value="_teamToEdit.TasksDescription" class="form-control"/>
-            <ValidationMessage For="@(() => _teamToEdit.TasksDescription)"/>
-        </div>
-
-        <div class="form-group">
-            <label for="maxMembers">Max Members:</label>
-            <InputNumber id="maxMembers" @bind-Value="_teamToEdit.MaxAmountOfMembers" class="form-control"/>
-            <ValidationMessage For="@(() => _teamToEdit.MaxAmountOfMembers)"/>
-        </div>
-
-        <div class="form-group">
-            <label>Team Members:</label>
-            <button type="button" class="btn btn-info" @onclick="OpenUserSelectionModal">Select Team Members</button>
-            <ul class="list-group mt-2">
-                @if (_teamToEdit.Users != null && _teamToEdit.Users.Any())
-                {
-                    @foreach (var user in _teamToEdit.Users)
-                    {
-                        <li class="list-group-item">@user.Name (@user.Email)</li>
-                    }
-                }
-                else
-                {
-                    <li class="list-group-item">No users assigned</li>
-                }
-            </ul>
-        </div>
-
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Update Team</button>
-            <button type="button" class="btn btn-secondary ml-3" @onclick="Cancel">Cancel</button>
-        </div>
-    </EditForm>
-
-    @if (!string.IsNullOrEmpty(_errorMessage))
-    {
-        <div class="alert alert-danger">@_errorMessage</div>
-    }
-
-    <div class="modal fade show" tabindex="-1" role="dialog" style="display:@(showUserModal ? "block" : "none");" aria-hidden="@(showUserModal ? "false" : "true")">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Select Team Members</h5>
-                    <button type="button" class="btn-close" aria-label="Close" @onclick="CloseUserModal"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        @foreach (var user in _availableUsers)
-                        {
-                            @if (user.Email != AuthService.GetCurrentUser().Email)
-                            {
-                                <li class="list-group-item">
-                                    <input type="checkbox" checked="@_selectedUsers.Contains(user)" @onchange="(e) => OnUserCheckboxChange(e, user)"/> @user.Name (@user.Email)
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="ConfirmUserSelection">Confirm Selection</button>
-                    <button type="button" class="btn btn-secondary" @onclick="CloseUserModal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <p>Loading team information...</p>
 }

@@ -12,9 +12,13 @@ public class Comment
     [Required(ErrorMessage = "Message is required")]
     public string Message { get; set; }
     
-    public User ResolvedBy { get; set; }
+    public int CreatedById { get; set; }
     
-    public DateTime ResolvedAt { get; set; }
+    public User? CreatedBy { get; set; }
+    
+    public User? ResolvedBy { get; set; }
+    
+    public DateTime? ResolvedAt { get; set; }
     
     [Required(ErrorMessage = "Status is required")]
     public EStatusComment Status { get; set; }

@@ -1,158 +1,170 @@
-using TaskPanelLibrary.Entity;
-using TaskPanelLibrary.Entity.Enum;
-using TaskPanelLibrary.Exception.Comment;
-using TaskPanelLibrary.Repository;
-using TaskPanelLibrary.Repository.Interface;
-using TaskPanelLibrary.Service;
-using TaskPanelLibrary.Service.Interface;
-using Task = TaskPanelLibrary.Entity.Task;
-
-namespace TaskPanelTest.ServiceTest;
-[TestClass]
-public class CommentServiceTest
-{
-    private ICommentRepository _commentRepository;
-    
-    private IUserRepository _userRepository;
-    
-    private ICommentService _commentService;
-    
-    private IUserService _userService;
-    
-    private PasswordGeneratorService _passwordGeneratorService;
-    
-    private User _user;
-
-    private Task _task;
-    
-    private Comment _comment;
-    
-    [TestInitialize]
-    public void Initialize()
-    {
-        //Arrange
-        _commentRepository = new CommentRepository();
-        _userRepository = new UserRepository();
-        _userService = new UserService(_userRepository, _passwordGeneratorService);
-        _commentService = new CommentService(_commentRepository,_userService); 
-        
-        _task = new Task()
-        {
-            Id = 1,
-            PanelId = 1,
-            Description = "Description test",
-            Priority = ETaskPriority.LOW
-
-        };
-        _user = new User()
-        {
-            Name = "User Manager",
-            Id = 1,
-            IsAdmin = true,
-            Email = "prueba@hotmail.com"
-        };
-        _comment = new Comment()
-        {
-            Id = 1,
-            Message = "Comment test",
-            Status = EStatusComment.PENDING
-        };
-    }
-
-    [TestMethod]
-    public void CreateComment()
-    {
-        //Arrange
-        Comment createdComment = _commentService.CreateComment(_comment);
-        createdComment.Message = "Comment test";
-        createdComment.Status = EStatusComment.PENDING;
-
-        //Act
-        _task.CommentList.Add(createdComment);
-        Comment commentSaved = _commentService.FindById(createdComment.Id);
-
-        //Assert
-        Assert.AreEqual(createdComment.Id, commentSaved.Id);
-        Assert.AreEqual(createdComment.Message, commentSaved.Message);
-        Assert.AreEqual(createdComment.Status, commentSaved.Status);
-    }
-    
-    [TestMethod]
-    public void FindByIdNotExist()
-    {
-        //Arrange
-        //Act
-        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.FindById(12));
-
-        //Assert
-        Assert.AreEqual("Comment with id: 12 do not exist", exception.Message);
-    }
-    
-    [TestMethod]
-    public void FindById()
-    {
-        //Arrange
-        Comment comment = _commentService.CreateComment(_comment);
-        comment.Message = "Comment test";
-        comment.Status = EStatusComment.PENDING;
-        
-        //Act
-        _task.CommentList.Add(comment);
-        Comment commentSaved = _commentService.FindById(comment.Id);
-        
-        //Assert
-        Assert.AreEqual(comment.Message, commentSaved.Message);
-        Assert.AreEqual(comment.Id, commentSaved.Id);
-        Assert.AreEqual(comment.Status, commentSaved.Status);
-    }
-    
-    [TestMethod]
-    public void DeleteComment()
-    {
-        //Arrange
-        Comment comment = _commentService.CreateComment(_comment);
-        comment.Message = "Comment test";
-        comment.Status = EStatusComment.PENDING;
-        
-        //Act
-        _task.CommentList.Add(comment);
-        Comment commentDeleted = _commentService.DeleteComment(_task, comment);
-        var exception= Assert.ThrowsException<CommentNotValidException>(() =>_commentService.FindById(commentDeleted.Id));
-        
-        //Assert
-        Assert.AreEqual(comment.Message, commentDeleted.Message);
-        Assert.AreEqual(comment.Id, commentDeleted.Id);
-        Assert.AreEqual(comment.Status, commentDeleted.Status);
-        Assert.AreEqual($"Comment with id: {commentDeleted.Id} do not exist", exception.Message);
-    }
-    
-    [TestMethod]
-    public void UpdateComment()
-    {
-        //Arrange
-        Comment comment = new Comment()
-        {
-            Id = 1,
-            Message = "Comment test",
-            Status = EStatusComment.PENDING
-        };
-
-        Comment commentToUpdate = _commentService.CreateComment(comment);
-        commentToUpdate.Message = "Comment update";
-        commentToUpdate.Status = EStatusComment.RESOLVED;
-        commentToUpdate.ResolvedBy = _user;
-        commentToUpdate.ResolvedAt = new DateTime(2008, 6, 1, 7, 47, 0);
-    
-        //Act
-        _task.CommentList.Add(comment);
-        _commentService.UpdateComment(commentToUpdate);
-        Comment comentUpdated = _commentService.FindById(comment.Id);
-        
-        //Assert
-        Assert.AreEqual(comentUpdated.Message, commentToUpdate.Message);
-        Assert.AreEqual(comentUpdated.Id, commentToUpdate.Id);
-        Assert.AreEqual(comentUpdated.Status, commentToUpdate.Status);
-        Assert.AreEqual(comentUpdated.ResolvedAt, commentToUpdate.ResolvedAt);
-        Assert.AreEqual(comentUpdated.ResolvedBy, commentToUpdate.ResolvedBy);
-    }
-}
+using Moq;
+   using TaskPanelLibrary.Entity;
+   using TaskPanelLibrary.Entity.Enum;
+   using TaskPanelLibrary.Exception.Comment;
+   using TaskPanelLibrary.Repository.Interface;
+   using TaskPanelLibrary.Service;
+   using Microsoft.VisualStudio.TestTools.UnitTesting;
+   
+   namespace TaskPanelTest.ServiceTest
+   {
+       [TestClass]
+       public class CommentServiceTest
+       {
+           private Mock<ICommentRepository> _mockCommentRepository;
+           private CommentService _commentService;
+           private List<Comment> _mockComments;
+           private User _user;
+   
+           [TestInitialize]
+           public void Setup()
+           {
+               _mockCommentRepository = new Mock<ICommentRepository>();
+               
+               _user = new User { Id = 1, Name = "John", LastName = "Smith" ,Email = "a@gmail.com", Password = "123", IsAdmin = true };
+               
+               _mockComments = new List<Comment>
+               {
+                   new Comment { Id = 1, Message = "Test comment 1", Status = EStatusComment.PENDING, TaskId = 101 },
+                   new Comment { Id = 2, Message = "Test comment 2", Status = EStatusComment.RESOLVED, TaskId = 102, ResolvedBy = _user, ResolvedAt = DateTime.Now },
+               };
+   
+               _mockCommentRepository.Setup(repo => repo.GetAllComments()).Returns(_mockComments);
+               _commentService = new CommentService(_mockCommentRepository.Object);
+           }
+   
+           [TestMethod]
+           public void CreateComment_ValidComment_ShouldAddComment()
+           {
+               // Arrange
+               var newComment = new Comment
+               {
+                   Id = 3,
+                   Message = "New comment",
+                   Status = EStatusComment.PENDING,
+                   TaskId = 103
+               };
+   
+               _mockCommentRepository.Setup(repo => repo.AddComment(It.IsAny<Comment>())).Verifiable();
+   
+               // Act
+               var createdComment = _commentService.CreateComment(newComment);
+   
+               // Assert
+               Assert.AreEqual(newComment.Message, createdComment.Message);
+               Assert.AreEqual(newComment.Status, createdComment.Status);
+               Assert.AreEqual(newComment.TaskId, createdComment.TaskId);
+               _mockCommentRepository.Verify(repo => repo.AddComment(It.IsAny<Comment>()), Times.Once);
+           }
+   
+           [TestMethod]
+           [ExpectedException(typeof(CommentNotValidException))]
+           public void CreateComment_NullComment_ShouldThrowException()
+           {
+               // Act
+               var result = _commentService.CreateComment(null);
+               
+                // Assert
+                Assert.IsNull(result);
+           }
+   
+           [TestMethod]
+           [ExpectedException(typeof(CommentNotValidException))]
+           public void CreateComment_EmptyMessage_ShouldThrowException()
+           {
+               // Arrange
+               var invalidComment = new Comment
+               {
+                   Id = 3,
+                   Message = "",
+                   Status = EStatusComment.PENDING,
+                   TaskId = 103
+               };
+   
+               // Act
+               _commentService.CreateComment(invalidComment);
+           }
+   
+           [TestMethod]
+           [ExpectedException(typeof(CommentNotValidException))]
+           public void CreateComment_ResolvedWithoutResolvedBy_ShouldThrowException()
+           {
+               // Arrange
+               var invalidComment = new Comment
+               {
+                   Id = 3,
+                   Message = "Resolved comment",
+                   Status = EStatusComment.RESOLVED,
+                   TaskId = 103
+               };
+   
+               // Act
+               _commentService.CreateComment(invalidComment);
+           }
+   
+           [TestMethod]
+           public void GetCommentById_ValidId_ShouldReturnComment()
+           {
+               // Act
+               var comment = _commentService.GetCommentById(1);
+   
+               // Assert
+               Assert.AreEqual(1, comment.Id);
+               Assert.AreEqual("Test comment 1", comment.Message);
+           }
+   
+           [TestMethod]
+           [ExpectedException(typeof(CommentNotValidException))]
+           public void GetCommentById_InvalidId_ShouldThrowException()
+           {
+               // Act
+               _commentService.GetCommentById(99);
+           }
+   
+           [TestMethod]
+           public void UpdateComment_ValidComment_ShouldUpdateAndReturnComment()
+           {
+               // Arrange
+               var updatedComment = new Comment
+               {
+                   Id = 1,
+                   Message = "Updated comment",
+                   Status = EStatusComment.RESOLVED,
+                   ResolvedBy = _user,
+                   ResolvedAt = DateTime.Now
+               };
+   
+               _mockCommentRepository.Setup(repo => repo.UpdateComment(It.IsAny<Comment>())).Verifiable();
+   
+               // Act
+               var result = _commentService.UpdateComment(updatedComment);
+   
+               // Assert
+               Assert.AreEqual(updatedComment.Message, result.Message);
+               Assert.AreEqual(updatedComment.Status, result.Status);
+               _mockCommentRepository.Verify(repo => repo.UpdateComment(It.IsAny<Comment>()), Times.Once);
+           }
+   
+           [TestMethod]
+           public void GetCommentForTask_ValidTaskId_ShouldReturnComments()
+           {
+               // Act
+               var comments = _commentService.GetCommentForTask(101);
+   
+               // Assert
+               Assert.AreEqual(1, comments.Count);
+               Assert.AreEqual("Test comment 1", comments[0].Message);
+           }
+   
+           [TestMethod]
+           public void GetCommentForTask_InvalidTaskId_ShouldReturnEmptyList()
+           {
+               // Act
+               var comments = _commentService.GetCommentForTask(999);
+   
+               // Assert
+               Assert.AreEqual(0, comments.Count);
+           }
+       }
+   }
+   

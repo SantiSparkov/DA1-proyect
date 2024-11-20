@@ -1,4 +1,5 @@
-using TaskPanelLibrary.DataTest;
+using Microsoft.EntityFrameworkCore;
+using TaskPanelLibrary.Config;
 using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service;
@@ -9,27 +10,44 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
     
-// Repositories
-
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<ITeamRepository, TeamRepository>();
-builder.Services.AddSingleton<IPanelRepository, PanelRepository>();
-builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
-builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+// Repositories 
+builder.Services.AddScoped<IUserRepository, UserSqlRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamSqlRepository>();
+builder.Services.AddScoped<IPanelRepository, PanelSqlRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskSqlRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentSqlRepository>();
+builder.Services.AddScoped<ITrashRepository, TrashSqlRepository>();
+builder.Services.AddScoped<IEpicRepository, EpicSqlRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationSqlRepository>();
 
 // Services
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<ITeamService, TeamService>();
-builder.Services.AddSingleton<IPanelService, PanelService>();
-builder.Services.AddSingleton<ITaskService, TaskService>();
-builder.Services.AddSingleton<ICommentService, CommentService>();
-builder.Services.AddSingleton<PasswordGeneratorService>();
-builder.Services.AddSingleton<AuthService>();
-builder.Services.AddSingleton<ImportCsvService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IPanelService, PanelService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<PasswordGeneratorService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ImportCsvService>();
+builder.Services.AddScoped<ITrashService, TrashService>();
+builder.Services.AddScoped<IEpicService, EpicService>();
+builder.Services.AddScoped<ImportCsvService>();
+builder.Services.AddScoped<ImportXlsxService>();
+builder.Services.AddScoped<ImportServiceFactory>();
 
-//Data for test
-builder.Services.AddSingleton<Panels>();
 
+
+// Database configuration
+builder.Services.AddDbContextFactory<SqlContext>(
+    options => options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        providerOptions => providerOptions.EnableRetryOnFailure()
+        )
+);
+
+builder.WebHost.UseStaticWebAssets();
+    
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

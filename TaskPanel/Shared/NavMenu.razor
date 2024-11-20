@@ -1,9 +1,10 @@
 ﻿@using TaskPanelLibrary.Service
-@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Service.Interface
+@using Task = System.Threading.Tasks.Task
 
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
-
+@inject INotificationService NotificationService
 
 @if (AuthService.IsLoggedIn())
 {
@@ -29,28 +30,52 @@
         <li class="nav-item">
             <a class="nav-link" href="/import-tasks">Import Tasks</a>
         </li>
+        
+        <li class="nav-item">
+            <a class="nav-link" href="/notifications">
+                Notifications 
+                @if (notificationCount > 0)
+                {
+                    <span class="badge bg-danger ms-2">@notificationCount</span>
+                }
+            </a>
+        </li>
 
         <li class="nav-item">
             <button class="nav-link" @onclick="Logout">Log Out</button>
         </li>
-
     </ul>
 }
 
 @code {
-    
+    private int notificationCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthService.IsLoggedIn())
+        {
+            var currentUser = AuthService.GetCurrentUser();
+            if (currentUser != null)
+            {
+                notificationCount = NotificationService.GetNotifications(currentUser.Id).Count;
+                NotificationService.OnNotificationAdded += UpdateNotificationCount;
+            }
+        }
+    }
+
+    private void UpdateNotificationCount()
+    {
+        var currentUser = AuthService.GetCurrentUser();
+        if (currentUser != null)
+        {
+            notificationCount = NotificationService.GetNotifications(currentUser.Id).Count;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
     private void Logout()
     {
         AuthService.Logout();
         NavigationManager.NavigateTo("/login");
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
-
-    private void NavigateTeamsForUser(int teamId)
-    {
-        Navigation.NavigateTo($"/teamsforuser/{teamId}");
-    }
-
 }

@@ -1,7 +1,9 @@
+using Microsoft.Identity.Client;
 using TaskPanelLibrary.Entity;
 using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Exception.Task;
+using TaskPanelLibrary.Repository;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
 using Task = TaskPanelLibrary.Entity.Task;
@@ -11,20 +13,24 @@ namespace TaskPanelLibrary.Service;
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
+    private readonly ITrashService _trashService;
+    private readonly IUserService _userService;
 
-    private readonly ICommentService _commentService;
-
-    private readonly IPanelService _panelService;
-
-    public TaskService(ITaskRepository taskRepository, ICommentService commentService, IPanelService panelService)
+    public TaskService(ITaskRepository taskSqlRepository, IUserService userService, ITrashService trashService)
     {
-        _taskRepository = taskRepository;
-
-        _commentService = commentService;
-        _panelService = panelService;
+        _taskRepository = taskSqlRepository;
+        _userService = userService;
+        _trashService = trashService;
     }
 
-    public List<Task> GetAllTasks(int panelId)
+    public Task CreateTask(Task task)
+    {
+        IsValidTask(task);
+        _taskRepository.AddTask(task);
+        return task;
+    }
+
+    public List<Task> GetTasksFromPanel(int panelId)
     {
         try
         {
@@ -35,14 +41,17 @@ public class TaskService : ITaskService
             return new List<Task>();
         }
     }
-
-    public Task CreateTask(Task task)
+    
+    public List<Task> GetTasksFromEpic(int epicId)
     {
-        if (!IsValidTask(task))
-            throw new TaskNotValidException(task.Id);
-
-        _taskRepository.AddTask(task);
-        return task;
+        try
+        {
+            return _taskRepository.GetAllTasks().Where(i => i.EpicId == epicId).ToList();
+        }
+        catch (ArgumentException e)
+        {
+            return new List<Task>();
+        }
     }
 
     public Task GetTaskById(int id)
@@ -58,46 +67,56 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public Task DeleteTask(Task task)
+    public Task DeleteTask(Task task, User user)
     {
         var existingTask = _taskRepository.GetTaskById(task.Id);
-        _taskRepository.DeleteTask(existingTask.Id);
+
+        if (existingTask.IsDeleted)
+        {
+            _trashService.RemoveTaskFromTrash(existingTask.Id, user.TrashId);
+            _taskRepository.DeleteTask(existingTask.Id);
+        }
+        else
+        {
+            existingTask.IsDeleted = true;
+            _trashService.AddTaskToTrash(existingTask, user.TrashId);
+            _taskRepository.UpdateTask(existingTask);
+        }
+        
 
         return existingTask;
     }
-
-    public void AddComentToTask(int taskId, Comment comment)
+    
+    public Task RecoverTask(Task task, User user)
     {
-        var task = _taskRepository.GetTaskById(taskId);
-        if (comment == null)
-            throw new CommentNotValidException("Comment is null");
-        task.CommentList.Add(comment);
-        _taskRepository.UpdateTask(task);
+        var existingTask = _taskRepository.GetTaskById(task.Id);
+
+        if (_trashService.GetTrashById(user.TrashId).TaskList.Contains(existingTask))
+        {
+            _trashService.RecoverTaskFromTrash(existingTask.Id, user.TrashId);
+            existingTask.IsDeleted = false;
+            _taskRepository.UpdateTask(existingTask);
+        }
+        
+        return existingTask;
     }
 
-    public void MarkCommentAsDone(int taskId, int commentId)
+    public List<Task> GetAllTasks()
     {
-        var task = _taskRepository.GetTaskById(taskId);
-        var existingComment = _commentService.FindById(commentId);
-
-        existingComment.ResolvedAt = DateTime.Now;
-        existingComment.Status = EStatusComment.RESOLVED;
-
-        _commentService.UpdateComment(existingComment);
-        _taskRepository.UpdateTask(task);
+        return _taskRepository.GetAllTasks();
     }
 
     private bool IsValidTask(Task? task)
     {
-        if(task == null)
+        if (task == null)
             throw new TaskNotValidException("Task is null");
         if (string.IsNullOrEmpty(task.Title))
             throw new TaskNotValidException("Title is null or empty");
         if (string.IsNullOrEmpty(task.Description))
             throw new TaskNotValidException("Description is null or empty");
         if (task.DueDate < DateTime.Now)
-            throw new TaskNotValidException("DueDate is less than current date");
-        
+            throw new TaskNotValidException("Due date is before today");
+
         return true;
     }
 }

@@ -14,8 +14,6 @@ public interface ITeamService
     public Team GetTeamById(int id);
     
     public List<Team> GetAllTeams();
-    
-    public void AddUserToTeam(int userId, Team team);
 
     public List<Team> TeamsForUser(int userId);
 }

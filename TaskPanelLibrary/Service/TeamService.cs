@@ -3,6 +3,7 @@ using TaskPanelLibrary.Exception.Panel;
 using TaskPanelLibrary.Exception.Task;
 using TaskPanelLibrary.Exception.Team;
 using TaskPanelLibrary.Exception.User;
+using TaskPanelLibrary.Repository;
 using DateTime = System.DateTime;
 using TaskPanelLibrary.Repository.Interface;
 using TaskPanelLibrary.Service.Interface;
@@ -16,13 +17,10 @@ public class TeamService : ITeamService
 
     private readonly IUserService _userService;
     
-    private readonly IPanelService _panelService;
-    
-    public TeamService(ITeamRepository teamRepository, IUserService userService, IPanelService panelService)
+    public TeamService(ITeamRepository teamRepository, IUserService userService)
     {
         _teamRepository = teamRepository;
         _userService = userService;
-        _panelService = panelService;
     }
 
     public Team CreateTeam(Team team, int userId)
@@ -40,7 +38,7 @@ public class TeamService : ITeamService
             CreationDate = DateTime.Now,
             TasksDescription = team.TasksDescription,
             MaxAmountOfMembers = team.MaxAmountOfMembers == 1 ? 2 : team.MaxAmountOfMembers,
-            TeamLeader = user,
+            TeamLeaderId = user.Id,
             Users = team.Users
         };
 
@@ -82,41 +80,29 @@ public class TeamService : ITeamService
         var teams = _teamRepository.GetAllTeams();
         return teams;
     }
-
-    public void AddUserToTeam(int userId, Team team)
-    {
-        var user = _userService.GetUserById(userId);
-
-        if (!CanAddUserToTeam(user, team))
-        {
-            throw new UserNotValidException("User is not admin");
-        }
-
-        team.Users.Add(user);
-        _teamRepository.UpdateTeam(team);
-    }
     
     public List<Team> TeamsForUser(int userId)
     {
         List<Team> result = new List<Team>();
+        List<User> users = _userService.GetAllUsers();
         List<Team> teams = _teamRepository.GetAllTeams();
+    
         foreach (Team team in teams)
         {
-            List<User> users = team.Users;
-            users.Where(i => i.Id == userId).ToList();
-            if (users.Count > 0)
+            if (team.Users.Any(user => user.Id == userId))
             {
                 result.Add(team);
             }
         }
+
         return result;
     }
-
+    
     private bool CanUpdateTeam(User updater, Team updatedTeam)
     {
         Team existingTeam = _teamRepository.GetTeamById(updatedTeam.Id);
 
-        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeader.Id)
+        if (!updater.IsAdmin || updater.Id != existingTeam.TeamLeaderId)
             throw new UserNotValidException("User is not admin or team leader.");
 
         if (string.IsNullOrEmpty(updatedTeam.Name) && updatedTeam.Name != existingTeam.Name)
@@ -166,24 +152,9 @@ public class TeamService : ITeamService
         return true;
     }
 
-    private bool CanAddUserToTeam(User user, Team team)
-    {
-        if (IsTeamFull(team))
-            throw new TeamNotValidException("Team is full");
-
-        if (team.Users.Contains(user))
-            throw new UserNotValidException("User is already in team");
-
-        return true;
-    }
 
     private bool IsTeamNameUnique(string teamName)
     {
         return _teamRepository.GetAllTeams().All(t => t.Name != teamName);
-    }
-
-    private bool IsTeamFull(Team team)
-    {
-        return team.Users.Count >= team.MaxAmountOfMembers;
     }
 }

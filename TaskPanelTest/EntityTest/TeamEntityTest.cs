@@ -13,8 +13,10 @@ public class TeamEntityTest
         {
             Name = "Team Name",
             CreationDate = new DateTime(),
+            TeamLeaderId = 1,
             TasksDescription = "task description",
             MaxAmountOfMembers = 1,
+            Panels = new List<Panel>(),
             Users = new List<User>()
         };
         
@@ -23,7 +25,9 @@ public class TeamEntityTest
         Assert.IsNotNull(team.CreationDate);
         Assert.AreEqual("task description", team.TasksDescription);
         Assert.AreEqual(1, team.MaxAmountOfMembers);
+        Assert.AreEqual(1, team.TeamLeaderId);
         Assert.IsNotNull(team.Users);
+        Assert.IsNotNull(team.Panels);
 
     }
 }

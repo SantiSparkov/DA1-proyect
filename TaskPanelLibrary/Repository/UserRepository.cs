@@ -16,11 +16,11 @@ public class UserRepository : IUserRepository
             Name = "Admin",
             LastName = "User",
             Email = "admin@admin.com",
-            Password = "admin",
+            Password = "Aa1@",
             IsAdmin = true,
             BirthDate = new DateTime(1990, 1, 1)
         };
-
+        
         _users.Add(adminUser);
     }
 

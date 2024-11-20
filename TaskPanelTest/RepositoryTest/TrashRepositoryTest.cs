@@ -23,7 +23,7 @@ public class TrashRepositoryTest
         //Arrange
         Trash trash = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            Id = 1
         };
 
         //Act
@@ -40,7 +40,7 @@ public class TrashRepositoryTest
         //Arrange
         Trash trash = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            Id = 1
         };
 
         //Act
@@ -52,17 +52,39 @@ public class TrashRepositoryTest
     }
     
     [TestMethod]
+    public void DeleteTrashNoExistTest()
+    {
+        //Arrange
+        Trash trash = new Trash()
+        {
+            Id = 1
+        };
+        _trashRepository.AddTrash(trash);
+        Trash trash2 = new Trash()
+        {
+            Id = 2
+        };
+        _trashRepository.AddTrash(trash2);
+
+        //Act
+        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashRepository.DeleteTrashForId(3));
+        
+        // Assert
+        Assert.AreEqual($"Trash with id {3} not found", exception.Message);
+    }
+    
+    [TestMethod]
     public void DeleteTrashTest()
     {
         //Arrange
         Trash trash = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            Id = 1
         };
         _trashRepository.AddTrash(trash);
         Trash trash2 = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            Id = 2
         };
         _trashRepository.AddTrash(trash2);
 
@@ -75,27 +97,57 @@ public class TrashRepositoryTest
     }
     
     [TestMethod]
-    public void DeleteTrashTestDoNOtExist()
+    public void UpdateTrash()
     {
         //Arrange
+        Trash trash3 = new Trash()
+        {
+            Id = 3
+        };
+        _trashRepository.AddTrash(trash3);
+        
         Trash trash = new Trash()
         {
-            Id = _trashRepository.Count() + 1
+            Id = 1
         };
-
-        //Act
         _trashRepository.AddTrash(trash);
-        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashRepository.DeleteTrashForId(2));
         
+        //Act
+        trash.Id = 2;
+        _trashRepository.UpdateTrash(trash);
+        Trash trashSaved = _trashRepository.GetTrashById(trash.Id);        
         // Assert
-        Assert.AreEqual("Trash with id 2 not found", exception.Message);
+        Assert.AreEqual(2, trashSaved.Id);
     }
-    
-    
+
+    [TestMethod]
+    public void UpdateTrashNoExist()
+    {
+        //Arrange
+        Trash trash3 = new Trash()
+        {
+            Id = 3
+        };
+        _trashRepository.AddTrash(trash3);
+        
+        Trash trash = new Trash()
+        {
+            Id = 1
+        };
+        
+        //Act
+        trash.Id = 2;
+        var exception = Assert.ThrowsException<TrashNotValidException>(() => _trashRepository.UpdateTrash(trash));
+
+        // Assert
+        Assert.AreEqual($"Trash with id {trash.Id} not found", exception.Message);
+    }
+
+
     [TestCleanup]
     public void Cleanup()
     {
-        _trashRepository.GetAll().Clear();
+        _trashRepository.GetAllTrash().Clear();
     }
     
 }

@@ -1,0 +1,105 @@
+@page "/epic/create/{panelId:int}"
+@using TaskPanelLibrary.Entity
+@using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service.Interface
+@inject IEpicService EpicService
+@inject IPanelService PanelService
+@inject NavigationManager Navigation
+
+<title>Create Epic</title>
+
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create Epic</h1>
+
+<EditForm Model="_epic" OnValidSubmit="HandleValidSubmit" class="shadow p-4 rounded bg-light">
+    <DataAnnotationsValidator/>
+
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Title:</label>
+        <InputText @bind-Value="_epic.Title" class="form-control" placeholder="Enter epic title"/>
+        <ValidationMessage For="@(() => _epic.Title)" class="text-danger validation-message"/>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Description:</label>
+        <InputTextArea @bind-Value="_epic.Description" class="form-control" placeholder="Enter epic description"/>
+        <ValidationMessage For="@(() => _epic.Description)" class="text-danger validation-message"/>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Priority:</label>
+        <InputSelect @bind-Value="_epic.Priority" class="form-control">
+            <option value="" disabled selected>Select priority</option>
+            @foreach (var priority in Enum.GetValues(typeof(EPriority)))
+            {
+                <option value="@priority">@priority</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => _epic.Priority)" class="text-danger validation-message"/>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Due Date:</label>
+        <InputDate @bind-Value="_epic.DueDateTime" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" class="form-control"/>
+        <ValidationMessage For="@(() => _epic.DueDateTime)" class="text-danger validation-message"/>
+    </div>
+    
+    <div class="d-flex justify-content-start mt-4">
+        <button class="btn btn-primary" type="submit">Create Epic</button>
+        <button class="btn btn-danger text-white ml-3" style="cursor: pointer; margin-left: 10px;" type="button" @onclick="NavigationGoBack">Cancel</button>
+    </div>
+
+</EditForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        @_errorMessage
+    </div>
+}
+
+@code {
+    [Parameter] public int panelId { get; set; }
+
+    private Epic _epic = new Epic();
+    private string _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            base.OnInitialized();
+            var panel = PanelService.GetPanelById(panelId);
+            _epic.PanelId = panel.Id;
+            _epic.DueDateTime = DateTime.Now.AddDays(1);
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error loading panel information: " + e.Message;
+        }
+    }
+
+    private void HandleValidSubmit()
+    {
+        if (_epic.DueDateTime < DateTime.Now)
+        {
+            _errorMessage = "The due date must be a future date.";
+            return;
+        }
+
+        try
+        {
+            EpicService.CreateEpic(_epic, panelId);
+            NavigationGoBack();
+        }
+        catch (Exception e)
+        {
+            _errorMessage = "Error creating epic: " + e.Message;
+        }
+    }
+
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/EpicForPanel/{panelId}");
+    }
+
+}

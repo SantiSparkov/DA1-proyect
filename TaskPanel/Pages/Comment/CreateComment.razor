@@ -2,74 +2,83 @@
 @using TaskPanelLibrary.Service.Interface
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service
 @using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
 @inject NavigationManager Navigation
+@inject IAuthService AuthService
 
-<h3>Create Comment</h3>
+<title>Create Comment</title>
 
-<EditForm Model="_newComment" OnValidSubmit="SaveComment">
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Create Comment</h1>
+
+<EditForm Model="_newComment" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
 
-    <div class="form-group">
-        <label>Message:</label>
-        <InputText @bind-Value="_newComment.Message" class="form-control"/>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Message:</label>
+        <InputText @bind-Value="_newComment.Message" class="form-control" placeholder="Enter your comment message"/>
         <ValidationMessage For="@(() => _newComment.Message)" class="text-danger validation-message"/>
     </div>
 
-    <div class="form-group">
-        <label>Status:</label>
-        <InputSelect @bind-Value="_newComment.Status" class="form-control">
-            @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
-            {
-                <option value="@status">@status</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => _newComment.Status)" class="text-danger validation-message"/>
+    <div class="form-group mb-3">
+        <label class="font-weight-bold">Status:</label>
+        <span class="form-control-plaintext">PENDING</span>
+        <input type="hidden" value="PENDING"/>
     </div>
 
-    <div class="mt-4">
+    <div class="d-flex justify-content-start mt-4">
         <button class="btn btn-primary" type="submit">Save</button>
-        <button class="btn btn-secondary ml-3" type="button" @onclick="NavigationGoBack">Cancel</button>
+        <button class="btn btn-danger ml-3" style="margin-left: 10px" type="button" @onclick="NavigationGoBack">Cancel</button>
     </div>
 </EditForm>
 
-<style>
-    .validation-message {
-        font-size: 0.875rem;
-        color: #dc3545;
-        margin-top: 5px;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-</style>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        <strong>Error!</strong> @_errorMessage
+    </div>
+}
 
 @code {
     [Parameter] public int taskId { get; set; }
 
     private Comment _newComment;
+    private string _errorMessage;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         _newComment = new Comment
         {
-            TaskId = taskId
+            TaskId = taskId,
+            Status = EStatusComment.PENDING,
+            CreatedBy = AuthService.GetCurrentUser(),
+            CreatedById = AuthService.GetCurrentUser().Id
         };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await SaveComment();
     }
 
     private async Task SaveComment()
     {
-        CommentService.CreateComment(_newComment);
-        NavigationGoBack();
+        try
+        {
+            CommentService.CreateComment(_newComment);
+            NavigationGoBack();
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+        }
     }
 
     private void NavigationGoBack()
     {
         Navigation.NavigateTo($"/comments/{taskId}");
     }
-
 }

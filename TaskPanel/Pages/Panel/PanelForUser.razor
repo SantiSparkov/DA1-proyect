@@ -5,47 +5,119 @@
 @using TaskPanelLibrary.Service.Interface
 
 @inject IPanelService PanelService
-@inject AuthService AuthService
+@inject IAuthService AuthService
 @inject NavigationManager Navigation
+@inject ITrashService TrashService
 
-<h1>Panels for User</h1>
+<title>Panels for User</title>
 
-<table class="table table-hover table-striped">
-    <thead>
-    <tr>
-        <th>Team Id</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th class="text-center">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var panel in _panels)
-    {
-        <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
-            <td>@panel.Team.Id</td>
-            <td>@panel.Name</td>
-            <td>@panel.Description</td>
-            <td class="text-center">
-                <button class="btn btn-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
-                <button class="btn btn-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
-            </td>
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Panels for User</h1>
+
+@if (_activePanels.Any() || deletedPanels.Any())
+{
+    <h3 class="mt-5 text-success">Active Panels</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
+        <tr>
+            <th>Team Name</th>
+            <th>Name</th>
+            <th>Description</th>
+            @if (isAdmin)
+            {
+                <th class="text-center">Actions</th>
+            }
+            <th class="text-center">Tasks & Epics</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var panel in _activePanels)
+        {
+            <tr @onclick="() => NavigationPanel(panel.Id)" style="cursor: pointer;" class="selectable-row">
+                <td>@panel.Team.Name</td>
+                <td>@panel.Name</td>
+                <td>@panel.Description</td>
+                @if (isAdmin)
+                {
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" @onclick:stopPropagation="true" @onclick="() => NavigateUpdatePanel(panel.Id)">Update</button>
+                        <button class="btn btn-outline-danger btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                    </td>
+                }
+                <td class="text-center">
+                    <button class="btn btn-outline-info btn-sm ml-2" style="margin-left: 5px" @onclick:stopPropagation="true" @onclick="() => NavigateToEpics(panel.Id)">Epics</button>
+                    <button class="btn btn-outline-success btn-sm ml-2" @onclick:stopPropagation="true" @onclick="() => NavigationPanel(panel.Id)">Tasks</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
-<button class="btn btn-primary mt-3" @onclick="CreateNewPanel">New Panel</button>
+    <h3 class="mt-5 text-danger">Deleted Panels</h3>
+    <table class="table table-bordered table-hover mt-3 shadow-sm rounded bg-white">
+        <thead class="thead-light">
+        <tr>
+            <th>Team Name</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var panel in deletedPanels)
+        {
+            <tr>
+                <td>@panel.Team.Name</td>
+                <td>@panel.Name</td>
+                <td>@panel.Description</td>
+                <td class="text-center">
+                    @if (isAdmin)
+                    {
+                        <button class="btn btn-outline-success btn-sm" @onclick="() => RestorePanel(panel.Id)">Restore</button>
+                        <button class="btn btn-outline-danger btn-sm ml-2" @onclick="() => ConfirmDeletePanel(panel.Id)">Delete</button>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-4" role="alert">
+        There are no panels available. Please create a new panel.
+    </div>
+}
+
+<div class="d-flex justify-content-start mt-4">
+    <button class="btn btn-primary" @onclick="CreateNewPanel">New Panel</button>
+</div>
 
 @code {
-
     [Parameter] public int userId { get; set; }
 
-    private List<Panel> _panels;
+    private List<Panel> _activePanels;
+    private List<Panel> deletedPanels = new();
+    private bool isAdmin;
 
     protected override void OnInitialized()
     {
-        _panels = PanelService.GetAllPanelForUser(userId);
+        isAdmin = AuthService.GetCurrentUser().IsAdmin;
+        LoadPanels();
+    }
+
+    private void LoadPanels()
+    {
+        try
+        {
+            var currentUser = AuthService.GetCurrentUser();
+            _activePanels = PanelService.GetAllPanelForUser(currentUser.Id).Where(p => !p.IsDeleted).ToList();
+            var trash = TrashService.GetTrashById(currentUser.TrashId);
+            deletedPanels = trash.PanelList.Where(p => p.IsDeleted).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error loading panels: " + ex.Message);
+        }
     }
 
     private void NavigationPanel(int panelId)
@@ -65,8 +137,33 @@
 
     private void ConfirmDeletePanel(int panelId)
     {
-        PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
-        _panels = PanelService.GetAllPanelForUser(userId);
+        try
+        {
+            PanelService.DeletePanel(panelId, AuthService.GetCurrentUser());
+            LoadPanels();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error deleting panel: " + ex.Message);
+        }
+    }
+
+    private void RestorePanel(int panelId)
+    {
+        try
+        {
+            PanelService.RestorePanel(panelId, AuthService.GetCurrentUser());
+            LoadPanels();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error restoring panel: " + ex.Message);
+        }
+    }
+
+    private void NavigateToEpics(int panelId)
+    {
+        Navigation.NavigateTo($"/EpicForPanel/{panelId}");
     }
 
 }

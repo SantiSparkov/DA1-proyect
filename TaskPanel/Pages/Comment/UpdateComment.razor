@@ -1,107 +1,135 @@
 @page "/comment/update/{commentId:int}"
 
-@using TaskPanelLibrary.Service
-@using TaskPanelLibrary.DataTest
 @using TaskPanelLibrary.Entity
 @using TaskPanelLibrary.Entity.Enum
+@using TaskPanelLibrary.Service
 @using TaskPanelLibrary.Service.Interface
-@using System.Data
+@using Task = System.Threading.Tasks.Task
 
 @inject ICommentService CommentService
+@inject ITaskService TaskService
+@inject IAuthService AuthorizationService
+@inject INotificationService NotificationService
+@inject NavigationManager Navigation
 
-@inject IUserService UserService;
+<title>Update Comment</title>
 
-@inject Panels Panels;
-
-<title>UpdateComment</title>
-
-<h1>Update comment</h1>
-
-
+<h1 class="text-left text-dark font-weight-bold display-4 mb-4">Update Comment</h1>
 
 <EditForm Model="@comment" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
 
-    <table class="table">
-        <thead>
+    <div class="table-responsive">
+        <table class="table table-bordered mt-3">
+            <thead class="thead-light">
             <tr>
                 <th>Message</th>
                 <th>Status</th>
                 <th>Resolved by</th>
                 <th>Resolved at</th>
-                <th>Comment</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr>
-                <td>@comment.Message</td>
                 <td>
-                    <InputSelect @bind-Value="comment.Status">
-                        @foreach (var status in Enum.GetValues(typeof(EStatusComment))) 
+                    <InputText @bind-Value="comment.Message" class="form-control" />
+                </td>
+                <td>
+                    <InputSelect @bind-Value="comment.Status" class="form-control">
+                        @foreach (var status in Enum.GetValues(typeof(EStatusComment)))
                         {
                             <option value="@status">@status</option>
                         }
                     </InputSelect>
                 </td>
-               <td>
-                   <InputSelect @bind-Value="userId">
-                       @foreach (User user in UserService.GetAllUsers())
-                       {
-                           <option value="@user.Id">@user.Email</option>
-                       }
-                   </InputSelect>
-               </td>
-                <td>@comment.ResolvedAt</td>
                 <td>
-                    <InputText @bind-Value="comment.Message" />
+                    @if (comment.Status == EStatusComment.RESOLVED)
+                    {
+                        <span>@AuthorizationService.GetCurrentUser().Name</span>
+                    }
+                    else
+                    {
+                        <span>Not resolved</span>
+                    }
+                </td>
+                <td>
+                    @if (comment.Status == EStatusComment.RESOLVED)
+                    {
+                        <span>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    }
+                    else
+                    {
+                        <span>Not resolved</span>
+                    }
                 </td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
-    <button class="btn btn-primary mt-3" @onclick="() => NavigationUpdateComment(comment)">Update</button>
-    <button class="btn btn-secondary mt-3" @onclick="() => NavigationGoBack()" >Cancel</button>
-
+    <div class="d-flex justify-content-start mt-4">
+        <button class="btn btn-primary" @onclick="() => NavigationUpdateComment(comment)">Update</button>
+        <button class="btn btn-danger ml-3" style="margin-left: 10px" type="button" @onclick="() => NavigationGoBack()">Cancel</button>
+    </div>
 </EditForm>
 
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        <strong>Error!</strong> @_errorMessage
+    </div>
+}
 
 @code {
-    
-    [Parameter]
-    public int commentId { get; set; }
-
+    [Parameter] public int commentId { get; set; }
     Comment comment;
 
-    int userId;
-    
+    private string _errorMessage;
+    private int panelId;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        comment = CommentService.FindById(commentId);
-        Panels.createTeamAndPanel();
-        
+        comment = CommentService.GetCommentById(commentId);
+        var task = TaskService.GetTaskById(comment.TaskId);
+        panelId = task.PanelId;
     }
-    
-    [Inject]
-    private NavigationManager Navigation { get; set; }
 
     private void NavigationUpdateComment(Comment comment)
     {
-        this.comment.ResolvedAt = DateTime.Now;
-        User user = UserService.GetUserById(userId);
-        comment.ResolvedBy = user;
-        CommentService.UpdateComment(comment);
-        Navigation.NavigateTo($"/comments/{comment.TaskId}");
-    }
-    
-    private void NavigationGoBack()
-    {
-        Navigation.NavigateTo($"/comments/{comment.TaskId}");    }
-    
-    private void HandleValidSubmit()
-    {
-        
+        try
+        {
+            if (comment.Status == EStatusComment.RESOLVED)
+            {
+                var currentUser = AuthorizationService.GetCurrentUser();
+                this.comment.ResolvedAt = DateTime.Now;
+                this.comment.ResolvedBy = currentUser;
+                
+                NotificationService.CreateNotification(this.comment.CreatedById, this.comment.Message);
+            }
+            else
+            {
+                this.comment.ResolvedAt = null;
+                this.comment.ResolvedBy = null;
+            }
+            
+            CommentService.UpdateComment(comment);
+            Navigation.NavigateTo($"/tasks/panel/{panelId}");
+        }
+        catch (Exception e)
+        {
+            _errorMessage = e.Message;
+        }
     }
 
+    private void NavigationGoBack()
+    {
+        Navigation.NavigateTo($"/panels/user/{AuthorizationService.GetCurrentUser().Id}");
+    }
+
+    private Task HandleValidSubmit()
+    {
+        return Task.CompletedTask;
+    }
 }

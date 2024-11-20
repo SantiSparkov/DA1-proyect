@@ -1,4 +1,5 @@
 using TaskPanelLibrary.Entity;
+using TaskPanelLibrary.Entity.Enum;
 using TaskPanelLibrary.Exception;
 using TaskPanelLibrary.Exception.Comment;
 using TaskPanelLibrary.Repository;
@@ -12,24 +13,23 @@ public class CommentService : ICommentService
 {
     private readonly ICommentRepository _commentRepository;
 
-    private IUserService _userService;
-
-    public CommentService(ICommentRepository commentRepository, IUserService userService)
+    public CommentService(ICommentRepository commentRepository)
     {
         _commentRepository = commentRepository;
-        _userService = userService;
     }
 
     public Comment CreateComment(Comment comment)
     {
-        comment.Id = _commentRepository.GetAll().Count + 1;
-        _commentRepository.Add(comment);
+        if (!IsValidComment(comment))
+            throw new CommentNotValidException("Comment not valid");
+        
+        _commentRepository.AddComment(comment);
         return comment;
     }
 
-    public Comment FindById(int id)
+    public Comment GetCommentById(int id)
     {
-        List<Comment> comments = _commentRepository.GetAll();
+        List<Comment> comments = _commentRepository.GetAllComments();
         foreach (Comment comment in comments)
         {
             if (comment.Id == id)
@@ -41,55 +41,34 @@ public class CommentService : ICommentService
         throw new CommentNotValidException($"Comment with id: {id} do not exist");
     }
 
-    public Comment DeleteComment(Task task, Comment comment)
-    {
-        List<Comment> comments = task.CommentList;
-        foreach (Comment c in comments)
-        {
-            if (c.Id == comment.Id)
-            {
-                _commentRepository.Delete(comment.Id);
-                comments.Remove(c);
-                return c;
-            }
-            
-        }
-
-        throw new CommentNotValidException($"Not exist comment with id: {comment.Id}, not deleted");
-    }
-
     public Comment UpdateComment(Comment comment)
     {
-        Comment commentSaved = FindById(comment.Id);
+        Comment commentSaved = GetCommentById(comment.Id);
         commentSaved.Message = comment.Message ?? commentSaved.Message;
         commentSaved.Status = comment.Status;
         commentSaved.ResolvedAt = comment.ResolvedAt;
         commentSaved.ResolvedBy = comment.ResolvedBy;
+        
+        _commentRepository.UpdateComment(commentSaved);
         return commentSaved;
-    }
-
-    public Comment AddComment(Comment comment)
-    {
-        VerifyComment(comment);
-        _commentRepository.Add(comment);
-        return comment;
-    }
-    
-    public List<Comment> GetAllComments()
-    {
-        return _commentRepository.GetAll();
     }
 
     public List<Comment> GetCommentForTask(int taskId)
     {
-        return _commentRepository.GetAll().Where(i => i.TaskId == taskId).ToList();
+        return _commentRepository.GetAllComments().Where(i => i.TaskId == taskId).ToList();
     }
 
-    public void VerifyComment(Comment comment)
+    private bool IsValidComment(Comment comment)
     {
-        if (String.IsNullOrEmpty(comment.Message) || comment.Status == null)
-        {
-            throw new CommentNotValidException("Comment not valid");
-        }
+        if (comment == null)
+            throw new CommentNotValidException("Comment is null");
+        
+        if (string.IsNullOrEmpty(comment.Message))
+            throw new CommentNotValidException("Comment message is null or empty");
+        
+        if (comment.Status == EStatusComment.RESOLVED && comment.ResolvedBy == null)
+            throw new CommentNotValidException("Comment resolved by is null");
+
+        return true;
     }
 }
