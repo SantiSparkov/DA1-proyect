@@ -219,7 +219,15 @@ CREATE TABLE TaskPanel.dbo.Comments (
 
 INSERT INTO TaskPanel.dbo.Teams (Name,CreationDate,TasksDescription,MaxAmountOfMembers,TeamLeaderId) VALUES
 	 (N'Equipo 1','2024-11-20 00:10:05.7832483',N'Este es el primer equipo de prueba',5,1),
-	 (N'Equipo 2','2024-11-20 00:10:19.5677750',N'Este es el segundo equipo de pruebas.',2,1);
+	 (N'Equipo 2','2024-11-20 00:10:19.5677750',N'Este es el segundo equipo de pruebas.',2,1),
+     (N'Equipo 3','2024-11-20 00:10:19.5677750',N'Este es el tercer equipo de pruebas.',3,1),
+     (N'Equipo 4','2024-11-20 00:10:19.5677750',N'Este es el cuarto equipo de pruebas.',2,1),
+     (N'Equipo 5','2024-11-20 00:10:19.5677750',N'Este es el quinto equipo de pruebas.',2,1),
+     (N'Equipo 6','2024-11-20 00:10:19.5677750',N'Este es el sexto equipo de pruebas.',2,1),
+     (N'Equipo 7','2024-11-20 00:10:19.5677750',N'Este es el septimo equipo de pruebas.',2,1),
+     (N'Equipo 8','2024-11-20 00:10:19.5677750',N'Este es el octavo equipo de pruebas.',2,1),
+     (N'Equipo 9','2024-11-20 00:10:19.5677750',N'Este es el noveno equipo de pruebas.',2,1),
+     (N'Equipo 10','2024-11-20 00:10:19.5677750',N'Este es el decimo equipo de pruebas.',2,1);
 
 INSERT INTO TaskPanel.dbo.Trashes (UserId,Elements) VALUES
 	 (1,0),
@@ -235,28 +243,74 @@ INSERT INTO TaskPanel.dbo.Users (Name,Email,Password,LastName,BirthDate,IsAdmin,
 
 INSERT INTO TaskPanel.dbo.Panels (Name,TeamId,Description,IsDeleted,CreatorId,TrashId) VALUES
 	 (N'Panel 1',1,N'Este es el primer panel de pruebas.',0,1,NULL),
-	 (N'Panel 2',2,N'Este es el segundo panel de pruebas.',0,1,NULL);
+	 (N'Panel 2',2,N'Este es el segundo panel de pruebas.',0,1,NULL),
+     (N'Panel 3',1,N'Este es el tercer panel de pruebas.',0,1,NULL),
+     (N'Panel 4',2,N'Este es el cuarto panel de pruebas.',0,1,NULL),
+     (N'Panel 5',1,N'Este es el quinto panel de pruebas.',0,1,NULL),
+     (N'Panel 6',2,N'Este es el sexto panel de pruebas.',0,1,NULL);
 
 INSERT INTO TaskPanel.dbo.TeamUser (TeamsId,UsersId) VALUES
 	 (1,1),
+     (1,2),
+     (1,3),
+     (1,4),
 	 (2,1),
-	 (1,2),
-	 (1,3),
 	 (2,3),
-	 (1,4);
+     (3,2),
+     (3,3),
+     (4,3),
+     (4,4),
+     (5,4),
+     (5,1),
+     (6,1),
+     (6,3),
+     (7,3),
+     (7,2),
+     (8,3),
+     (8,2),
+     (9,1),
+     (9,3),
+     (10,4),
+     (10,2);
 
 INSERT INTO TaskPanel.dbo.Epics (Title,Priority,Description,DueDateTime,PanelId,IsDeleted,TrashId) VALUES
 	 (N'Epic 1',0,N'Epica de prueba','2024-11-21 00:12:57.7510751',1,0,NULL),
-	 (N'Epic 2',0,N'Epica de prueba','2024-11-21 00:13:08.9343602',2,0,NULL);
+	 (N'Epic 2',0,N'Epica de prueba','2024-11-21 00:13:08.9343602',2,0,NULL),
+    (N'Epic 3',0,N'Epica de prueba','2024-11-21 00:13:08.9343602',3,0,NULL);
 
 INSERT INTO TaskPanel.dbo.Tasks (PanelId,Title,Description,DueDate,Priority,IsDeleted,EpicId,EstimatioHour,InvertedEstimateHour,TrashId) VALUES
-	 (1,N'Task 1',N'This is the first task','2024-12-15 00:00:00.0000000',0,0,NULL,0,5,NULL),
-	 (1,N'Task 2',N'This is the second task','2024-12-01 00:00:00.0000000',1,0,1,0,3,NULL),
-	 (1,N'Task 3',N'This is the third task','2024-12-10 00:00:00.0000000',2,0,1,0,8,NULL),
-	 (1,N'Tarea 2',N'Esta es una tarea de pruebas','2024-11-21 00:00:00.0000000',0,0,NULL,1,0,NULL),
-	 (1,N'Task 1',N'This is the first task','2024-12-15 00:00:00.0000000',0,0,NULL,0,5,NULL),
-	 (1,N'Task 2',N'This is the second task','2024-12-01 00:00:00.0000000',1,0,1,0,3,NULL),
-	 (1,N'Task 3',N'This is the third task','2024-12-10 00:00:00.0000000',2,0,1,0,8,NULL);
+	 (1,N'Task 1',N'Descripcion tarea 1','2024-12-15 00:00:00.0000000',0,0,NULL,2,2,NULL),
+	 (2,N'Task 2',N'Descripcion tarea 2','2024-12-01 00:00:00.0000000',1,0,1,5,3,NULL),
+	 (3,N'Task 3',N'Descripcion tarea 3','2024-12-10 00:00:00.0000000',2,0,2,1,1,NULL),
+	 (4,N'Task 4',N'Descripcion tarea 4','2024-11-21 00:00:00.0000000',0,0,NULL,1,1,NULL),
+	 (5,N'Task 5',N'Descripcion tarea 5','2024-12-15 00:00:00.0000000',0,0,NULL,0,0,NULL),
+	 (6,N'Task 6',N'Descripcion tarea 6','2024-12-01 00:00:00.0000000',1,0,1,0,0,NULL),
+	 (1,N'Task 7',N'Descripcion tarea 7','2024-12-10 00:00:00.0000000',2,0,3,3,2,NULL),
+     (2,N'Task 8',N'Descripcion tarea 8','2024-12-10 00:00:00.0000000',2,0,NULL,0,0,NULL),
+     (3,N'Task 9',N'Descripcion tarea 9','2024-12-10 00:00:00.0000000',2,0,1,2,2,NULL),
+     (4,N'Task 10',N'Descripcion tarea 10','2024-12-10 00:00:00.0000000',2,0,1,2,1,NULL),
+     (5,N'Task 11',N'Descripcion tarea 11','2024-12-10 00:00:00.0000000',2,0,3,1,1,NULL),
+     (6,N'Task 12',N'Descripcion tarea 12','2024-12-10 00:00:00.0000000',2,0,1,0,0,NULL),
+     (1,N'Task 13',N'Descripcion tarea 13','2024-12-10 00:00:00.0000000',2,0,NULL,1,1,NULL),
+     (2,N'Task 14',N'Descripcion tarea 14','2024-12-10 00:00:00.0000000',2,0,1,3,1,NULL),
+     (3,N'Task 15',N'Descripcion tarea 15','2024-12-10 00:00:00.0000000',2,0,3,3,2,NULL),
+     (4,N'Task 16',N'Descripcion tarea 16','2024-12-10 00:00:00.0000000',2,0,2,2,2,NULL),
+     (5,N'Task 17',N'Descripcion tarea 17','2024-12-10 00:00:00.0000000',2,0,2,0,0,NULL),
+     (6,N'Task 18',N'Descripcion tarea 18','2024-12-10 00:00:00.0000000',2,0,3,1,1,NULL),
+     (1,N'Task 19',N'Descripcion tarea 19','2024-12-10 00:00:00.0000000',2,0,1,1,1,NULL),
+     (2,N'Task 20',N'Descripcion tarea 20','2024-12-10 00:00:00.0000000',2,0,1,0,0,NULL);
 
 INSERT INTO TaskPanel.dbo.Comments (TaskId,Message,CreatedById,ResolvedById,ResolvedAt,Status) VALUES
-	 (1,N'Comentario test',1,NULL,NULL,1);
+	 (1,N'Comentario test',1,NULL,NULL,1),
+     (2,N'Comentario test',1,NULL,NULL,1),
+     (3,N'Comentario test',1,NULL,NULL,1),
+     (2,N'Comentario test',1,NULL,NULL,1),
+     (3,N'Comentario test',1,NULL,NULL,1),
+     (1,N'Comentario test',1,NULL,NULL,1),
+     (2,N'Comentario test',1,NULL,NULL,1),
+     (3,N'Comentario test',1,NULL,NULL,1),
+     (1,N'Comentario test',1,NULL,NULL,1),
+     (1,N'Comentario test',1,NULL,NULL,1);
+
+INSERT INTO TaskPanel.dbo.Notifications (Message,UserId) VALUES
+    (N'Comment has been resolved. Message: asdf',1);
